@@ -45,63 +45,59 @@ configure_file(
 )
 
 
-
+######################################################################
 # Include packages
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
-
-set(Boost_USE_STATIC_LIBS        ON)
-#set(Boost_USE_MULTITHREADED      ON)
-set(Boost_DEBUG      ON)
-#set(Boost_USE_STATIC_RUNTIME    OFF)
-#set(BOOST_ROOT "C:/Program Files/boost/boost_1_53_0")
-#set(BOOST_LIBRARYDIR "C:/Program Files/boost/boost_1_53_0/libs;C:/Program Files/boost/boost_1_53_0/bin.v2/libs")
-#set(Boost_LIB_PREFIX "lib")
+# First, we need to find boost
 find_package(Boost COMPONENTS system filesystem REQUIRED)
-#find_package(Boost REQUIRED)
 
-if(Boost_FOUND)
-   MESSAGE(STATUS "FOUND BOOST")
-endif(Boost_FOUND)
+# If the above doesn't work on your system (say due to unconventional 
+# install location), then uncomment the lines below, substituting in 
+# your own boost location.
+#
+# set(BOOST_ROOT "/home/username/Boost/boost_1_53_0")
+# set(BOOST_LIBRARYDIR "/home/username/Boost/boost_1_53_0/bin/lib")
+# set(Boost_USE_STATIC_LIBS ON)
+# set(Boost_DEBUG ON)
+# find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-# find_package(Matlab)
-# if(NOT MATLAB_FOUND)
-#        MESSAGE(STATUS "Could not find MATLAB package, setting paths manually")
-#        SET(MATLAB_ROOT /Applications/MATLAB_R2011b.app)
-#        SET(MATLAB_LIBRARIES ${MATLAB_ROOT}/bin/maci64)
-#        SET(MATLAB_INCLUDE_DIR ${MATLAB_ROOT}/extern/include)
-#        SET(MATLAB_MEX_LIBRARY ${MATLAB_LIBRARIES}/libmex.dylib)
-#        SET(MATLAB_MX_LIBRARY  ${MATLAB_LIBRARIES}/libmx.dylib)
-#        SET(MATLAB_ENG_LIBRARY ${MATLAB_LIBRARIES}/libeng.dylib)
-# endif(NOT MATLAB_FOUND)
+# Second, we need to make sure the system finds matlab.  Unfortunately
+# there is no reliable findMatlab cmake file available (yet), so 
+# enter the path to your own installation of matlab manually
 
-SET(MATLAB_ROOT "C:/Program Files/MATLAB/R2013a")
-SET(MATLAB_LIBRARIES ${MATLAB_ROOT}/bin/win32)
-SET(MATLAB_INCLUDE_DIR ${MATLAB_ROOT}/extern/include)
-SET(MATLAB_MEX_LIBRARY ${MATLAB_LIBRARIES}/libmex.dll)
-SET(MATLAB_MX_LIBRARY  ${MATLAB_LIBRARIES}/libmx.dll)
-SET(MATLAB_ENG_LIBRARY ${MATLAB_LIBRARIES}/libeng.dll)
+# Linux example
+# SET(MATLAB_ROOT "/usr/local/MATLAB/R2012a")
+# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/glnx86")
+
+# Windows example
+# SET(MATLAB_ROOT "C:/Program Files/MATLAB")
+# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/win32")
+
+# Mac example
+SET(MATLAB_ROOT "/Applications/MATLAB_R2012a.app/")
+SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/maci64")
 
 
-# Ensure MATLAB is on the path
+######################################################################
+# The rest of this file should work on all platforms
 
-# set(ENV{LD_LIBRARY_PATH} ENV{LD_LIBRARY_PATH} ${MATLAB_LIBRARIES})
-
-# Find source and header files
-
+SET(MATLAB_INCLUDE_DIR   "${MATLAB_ROOT}/extern/include")
+find_library(MATLAB_MEX_LIBRARY mex ${MATLAB_LIBRARIES_DIR})
+find_library(MATLAB_MX_LIBRARY  mx  ${MATLAB_LIBRARIES_DIR})
+find_library(MATLAB_ENG_LIBRARY eng ${MATLAB_LIBRARIES_DIR})
+        
+# Find POSSIM source and header files
 FILE(GLOB_RECURSE POSSIM_SOURCES src/*.cpp)
 FILE(GLOB_RECURSE POSSIM_HEADERS src/*.h)
 
-
-
 include_directories(
         ${Boost_INCLUDE_DIRS}
-	${MATLAB_INCLUDE_DIR}
+    	${MATLAB_INCLUDE_DIR}
         ${PROJECT_BINARY_DIR}
 )
 
 link_directories( 
-        ${MATLAB_LIBRARIES_PATHS} 
+        ${MATLAB_LIBRARIES_DIR} 
         ${Boost_LIBRARY_DIRS} 
 )
 
@@ -117,4 +113,3 @@ target_link_libraries(possim
 )
 
 install (TARGETS possim DESTINATION bin)
-
