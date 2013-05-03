@@ -190,7 +190,6 @@ void MatlabInterface::printModel(std::string targetDir) {
 void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households) {
     std::string houseName, meterHandle, vmBase;
     std::vector<std::string> tokens;
-    int lastIndex;
     
     std::string phaseNames_V[4] = {"Voltage Phase A", "Voltage Phase B", "Voltage Phase C", "Voltage Neutral"};
     std::string phaseNames_I[4] = {"Current Phase A", "Current Phase B", "Current Phase C", "Current Neutral"};
@@ -271,7 +270,7 @@ void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eo
         
         ss.str("");
         ss << "value = logsout.";
-        for(int i=1; i<tokens.size()-1; i++)
+        for(size_t i=1; i<tokens.size()-1; i++)
             ss << "('" << tokens.at(i) << "').";
         ss << "('Voltage Measurement').";
         vmBase = ss.str();

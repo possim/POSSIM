@@ -60,7 +60,7 @@ TrafficModel::TrafficModel(Config* config) {
 
         vehicleRecord.name = tokens[0];
         vehicleRecord.travelPairs.clear();
-        for(int i=2; i<tokens.size(); i+=2) {
+        for(size_t i=2; i<tokens.size(); i+=2) {
             travelPair.time.setTime(utility::string2int(tokens[i]));
             travelPair.distance = utility::string2double(tokens[i+1]);
             vehicleRecord.travelPairs.push_back(travelPair);
@@ -82,7 +82,7 @@ TrafficModel::TrafficModel(Config* config) {
     home2away = 0;
     away2home = 0;
     
-    srand(time(NULL));
+    srand((unsigned int)(time(NULL)));
 
     std::cout << "OK" << std::endl;
     std::cout.flush();

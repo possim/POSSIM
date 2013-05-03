@@ -82,7 +82,7 @@ void DateTime::tokenize(const char* dateTime) {
         year = atoi(tokens.at(4).c_str());
         weekday = findDayOfWeek(day, month, year);
     }
-    catch(std::out_of_range& e) {
+    catch(const std::out_of_range& e) {
         std::cout << "Sorry, couldn't parse your string!" << std::endl;
         hour = 0;
         minute = 0;

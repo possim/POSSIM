@@ -178,7 +178,6 @@ std::string Logging::getDir() {
 void Logging::createDir() {
     time_t rawtime;
     struct tm *t;
-    struct stat st;
     std::string dirName;
     
     boost::filesystem::path logDir("logs");

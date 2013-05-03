@@ -103,7 +103,7 @@ void Simulator::timingUpdate(boost::posix_time::time_duration lastCycleLength) {
               << " - Now at : " << currTime.toString() << std::endl
               << " - End    : " << finishTime.toString() << std::endl
               << " - " << std::setprecision(2) << double(complete)/double(total)*100 << "% complete, approximately " 
-              << utility::timeDisplay(togo*lastCycleLength.total_milliseconds()) << " remaining." << std::endl;
+              << utility::timeDisplay(togo*(long)(lastCycleLength.total_milliseconds())) << " remaining." << std::endl;
 }
 
 // Run simulation
@@ -160,7 +160,7 @@ void Simulator::run() {
         
         // Estimate timing
         lastCycleLength = boost::posix_time::microsec_clock::local_time() - time_cycleStart;
-        std::cout << "Cycle complete, took: " << utility::timeDisplay(lastCycleLength.total_milliseconds()) << std::endl;
+        std::cout << "Cycle complete, took: " << utility::timeDisplay((long)(lastCycleLength.total_milliseconds())) << std::endl;
 
         currTime.increment(config->getInt("simulationinterval"));
         
@@ -169,7 +169,7 @@ void Simulator::run() {
     // Simulation complete, provide some output, generate report.
     totalSimLength = boost::posix_time::microsec_clock::local_time() - time_runStart;
     std::cout << "-------------------------------------------" << std::endl
-              << "Simulation complete, took " << utility::timeDisplay(totalSimLength.total_milliseconds()) << std::endl;
+              << "Simulation complete, took " << utility::timeDisplay((long)(totalSimLength.total_milliseconds())) << std::endl;
     if(config->getBool("generatereport")) {
         std::cout << "Generating report ..." << std::endl; 
         loadflow->generateReport(log.getDir(), currTime.month, currTime.isWeekday(), config->getInt("simulationinterval"));

@@ -117,7 +117,7 @@ void Config::correctValues() {
 }
 
 std::string Config::getConfigVar(std::string name) {
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         if(configVars.at(i).name == name)
             return configVars.at(i).value;
     
@@ -190,14 +190,14 @@ double* Config::getRandomArray(std::string name) {
 
 
 void Config::setConfigVar(std::string name, std::string value) {
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         if(configVars.at(i).name == name)
             configVars.at(i).value = value;
 }
 
 void Config::setConfigVarByFlag(std::string flagIn, std::string value) {
     std::string flag = flagIn.substr(1,flagIn.size());
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         if(configVars.at(i).flag == flag)
             configVars.at(i).value = value;
     
@@ -205,7 +205,7 @@ void Config::setConfigVarByFlag(std::string flagIn, std::string value) {
 }
 
 void Config::printOptions() {
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         std::cout << " -" << std::setw(5) << std::left << std::setiosflags(std::ios::fixed) << configVars.at(i).flag
                   << " "  << std::setw(20) << std::left << std::setiosflags(std::ios::fixed) << configVars.at(i).name
                   << " (default: " << configVars.at(i).value << ")"
@@ -213,14 +213,14 @@ void Config::printOptions() {
 }
 
 void Config::printAll() {
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         std::cout << " "  << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << configVars.at(i).name
                   << ": " << configVars.at(i).value << std::endl;
 }
 
 std::string Config::toString() {
     std::stringstream ss;
-    for(int i=0; i<configVars.size(); i++)
+    for(size_t i=0; i<configVars.size(); i++)
         ss << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << configVars.at(i).name
            << ": " << configVars.at(i).value << std::endl;
     return ss.str();

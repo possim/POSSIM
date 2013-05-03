@@ -74,7 +74,7 @@ void GridModel::loadGridModel(LoadFlowInterface* lf) {
     std::cout << " - MATLAB model contains " << houseNames.size() << " houses" << std::endl;
 
     // create each house (find name, parent transformer)
-    for(int i=0; i<houseNames.size(); i++) {
+    for(size_t i=0; i<houseNames.size(); i++) {
         
         // Find name, nmi
         try {
@@ -82,7 +82,7 @@ void GridModel::loadGridModel(LoadFlowInterface* lf) {
             nmi = i+1;
             std::cout << nmi << " " << name << std::endl;
         }
-        catch(std::out_of_range& e) {
+        catch(const std::out_of_range& e) {
             std::cout << "Error: household has invalid component name syntax (name)" << std::endl;
             name = "House x";
             nmi = 999;
@@ -122,7 +122,7 @@ void GridModel::addVehicles(Config* config) {
     }
     
     if(generateRandom) {
-        srand(time(NULL));
+        srand((unsigned int)(time(NULL)));
 
         // Calculate number of EVs
         numEVs = std::min(households.size()*evPenetration/100, households.size());
@@ -130,7 +130,7 @@ void GridModel::addVehicles(Config* config) {
         std::cout.flush();
 
         // Randomly pick from households to associate EVs
-        for(int i=1; i<=households.size(); i++) indexVector.push_back(i);
+        for(size_t i=1; i<=households.size(); i++) indexVector.push_back(i);
         utility::random_unique(indexVector.begin(), indexVector.end(), numEVs);
     }
     
@@ -364,7 +364,7 @@ void GridModel::runLoadFlow(DateTime currTime) {
     loadflow->getOutputs(phaseV, phaseI, eolV, households);
 
     length_loadFlow = boost::posix_time::microsec_clock::local_time() - time_startLoadFlow;
-    std::cout << "complete, took: " << utility::timeDisplay(length_loadFlow.total_milliseconds()) << std::endl;
+    std::cout << "complete, took: " << utility::timeDisplay((long)(length_loadFlow.total_milliseconds())) << std::endl;
 }
 
 
