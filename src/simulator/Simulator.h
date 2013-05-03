@@ -52,38 +52,66 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../charging/ChargingTOU.h"
 
 
+/** The outer Simulator loop.
+ * This class defines the main outer loop of the entire simulation.
+ * It loads all components, starts the simulation, interrupts or delays the 
+ * simulation as required, and ends the simulation, ensuring that all output is
+ * logged.  If you want to understand how POSSIM works, start here.
+ */
 class Simulator {
 private:
    
-    LoadFlowInterface *loadflow;        // Interface to load flow software
+    /** The interface to whatever load flow software is being used.  This
+     *  is a derived object and could point to any of a number of interfaces
+     *  (matlab, digsilent, opendss, etc.). */
+    LoadFlowInterface *loadflow;
     
-    ChargingBaseClass *charger;         // EV charging algorithm
+    /** The interface to whatever charging algorithm is being used to charge
+      * electric vehicles.  This is a derived object and could point to any
+      * number of charging algorithms.*/
+    ChargingBaseClass *charger;
 
-    Logging log;                        // For logging
+    /** The model of the grid.  This contains all houses, vehicles, and 
+      * special network components of any other sort. */
+    GridModel gridModel;
     
-    DateTime startTime;                 // Time at which simulation is to start (inclusive)
-    DateTime currTime;                  // Time of current simulation cycle
-    DateTime finishTime;                // Time at which simulation is to finish (inclusive)
+    /** This will be moved to Household soon. */
+    HouseholdDemand householdDemand;
     
-    int simInterval;                    // Length of each interval in minutes
-    int delay;                          // Optional delay for each simulation
-    bool showDebug;                     // Optional show debug info
-    bool generateReport;                // Optional generate graphs at end of run
+    /** This will be moved to Vehicle soon */
+    TrafficModel trafficModel;
     
-    GridModel gridModel;                // Grid model
-    HouseholdDemand householdDemand;    // Household demand model
-    TrafficModel trafficModel;          // Traffic model
-    SpotPrice spotPrice;                // Electricity spot price
+    /** Maintains the changing electricity spot price using specifed data files */
+    SpotPrice spotPrice;
     
-    long lastIteration;   // How long last iteration took (for estimating time remaining)
+    /** Takes care of all logging */
+    Logging log;
+    
+    /** Time at which simulation is to start (inclusive) */
+    DateTime startTime;
+    
+    /** Time of current simulation cycle */
+    DateTime currTime;
+    
+    /** Time at which simulation is to finish (inclusive) */
+    DateTime finishTime;
+    
+    /** Local pointer to config object */
+    Config *config;
 
-    
-    void timingUpdate();
+    /** A simple timing update to give the user an indication of how much
+      * longer the simulation will run for. */
+    void timingUpdate(boost::posix_time::time_duration lastCycleLength);
     
 public:
+    /** Constructor.  
+      * Accepts config object to set configuration parameters.*/
     Simulator(Config* config);
+    
+    /** Destructor*/
     virtual ~Simulator();
     
+    /** Start the simulation! */
     void run();
     
 };

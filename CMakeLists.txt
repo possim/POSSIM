@@ -70,8 +70,8 @@ find_package(Boost COMPONENTS system filesystem REQUIRED)
 # SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/glnx86")
 
 # Windows example
-# SET(MATLAB_ROOT "C:/Program Files/MATLAB")
-# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/win32")
+# SET(MATLAB_ROOT "C:/Program Files/MATLAB/R2012a")
+# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/extern/lib/win32/microsoft")
 
 # Mac example
 SET(MATLAB_ROOT "/Applications/MATLAB_R2012a.app/")

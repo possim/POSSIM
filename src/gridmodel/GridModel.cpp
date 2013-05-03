@@ -347,7 +347,8 @@ void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDe
 
 
 void GridModel::runLoadFlow(DateTime currTime) {
-    boost::posix_time::ptime time_startLoadFlow(boost::posix_time::microsec_clock::local_time());
+    boost::posix_time::ptime time_startLoadFlow = boost::posix_time::microsec_clock::local_time();
+    boost::posix_time::time_duration length_loadFlow;
 
     std::cout << "Running load flow analysis ... ";
     std::cout.flush();
@@ -362,7 +363,8 @@ void GridModel::runLoadFlow(DateTime currTime) {
     
     loadflow->getOutputs(phaseV, phaseI, eolV, households);
 
-    std::cout << "complete, took: " << utility::timeDisplay(utility::timeElapsed(time_startLoadFlow)) << std::endl;
+    length_loadFlow = boost::posix_time::microsec_clock::local_time() - time_startLoadFlow;
+    std::cout << "complete, took: " << utility::timeDisplay(length_loadFlow.total_milliseconds()) << std::endl;
 }
 
 

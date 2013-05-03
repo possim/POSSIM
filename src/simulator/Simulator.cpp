@@ -34,25 +34,20 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Simulator.h"
 
-Simulator::Simulator(Config* config):
-        trafficModel(config),
-        householdDemand(config),
-        spotPrice(config)
+Simulator::Simulator(Config* configIn):
+        trafficModel(configIn),
+        householdDemand(configIn),
+        spotPrice(configIn)
 {
     std::cout << "Loading Simulator..." << std::endl;
-    std::cout.flush();
     
-    lastIteration = 0;
-    
+    // Store local pointer to config object
+    config = configIn;
+
     // Set parameters
     startTime.set(config->getConfigVar("starttime"));
     currTime = startTime;
     finishTime.set(config->getConfigVar("finishtime"));
-    
-    showDebug = config->getBool("showdebug");
-    generateReport = config->getBool("generatereport");
-    simInterval = config->getInt("simulationinterval");
-    delay = config->getInt("intervaldelay");
     
     // Create interface to load flow simulator
     std::string modelname = config->getString("modelname");
@@ -88,7 +83,7 @@ Simulator::Simulator(Config* config):
     // Initialise log
     log.initialise(config, gridModel);
     
-    // Print load flow model to log directory
+    // Optional: print load flow model to log directory
     //loadflow->printModel(log->getDir());
     
     std::cout << " - Simulator loaded OK" << std::endl << std::endl;
@@ -97,11 +92,31 @@ Simulator::Simulator(Config* config):
 Simulator::~Simulator() {
 }
 
+// Provide an update on how long the simulation is expected to take to the user
+void Simulator::timingUpdate(boost::posix_time::time_duration lastCycleLength) {
+    long total = finishTime.minus(startTime, config->getInt("simulationinterval"));
+    long complete = currTime.minus(startTime, config->getInt("simulationinterval"));
+    long togo = finishTime.minus(currTime, config->getInt("simulationinterval"));
+    
+    std::cout << "Simulation progress: " << std::endl
+              << " - Start  : " << startTime.toString() << std::endl
+              << " - Now at : " << currTime.toString() << std::endl
+              << " - End    : " << finishTime.toString() << std::endl
+              << " - " << std::setprecision(2) << double(complete)/double(total)*100 << "% complete, approximately " 
+              << utility::timeDisplay(togo*lastCycleLength.total_milliseconds()) << " remaining." << std::endl;
+}
+
+// Run simulation
 void Simulator::run() {
+    // Several variables to keep track of how long cycle / full simulation took
     boost::posix_time::ptime time_runStart, time_cycleStart;
     time_runStart = boost::posix_time::microsec_clock::local_time();
+    boost::posix_time::time_duration lastCycleLength, totalSimLength;
     
+    // Outer simulation loop!
     while(!currTime.isLaterThan(finishTime)) {
+        
+        // For timing purposes, keep track of time cycle started
         time_cycleStart = boost::posix_time::microsec_clock::local_time();
         
         std::cout << "-------------------------------------------" << std::endl;        
@@ -109,7 +124,7 @@ void Simulator::run() {
         std::cout << std::endl;
 
         // Update electricity spot price
-        // spotPrice.update(currTime);
+        //spotPrice.update(currTime);
         
         // Update traffic model
         trafficModel.update(currTime, gridModel.vehicles);
@@ -122,18 +137,17 @@ void Simulator::run() {
 
         // Update grid model - generate household loads & apply charge rates
         gridModel.generateLoads(currTime, householdDemand);
-                
-   
-        // Show some results
-        if(showDebug) {
-            //spotPrice.display();
+
+        // If desired, show some results
+        if(config->getBool("showdebug")) {
+            spotPrice.display();
             trafficModel.displaySummary(gridModel.vehicles);
             gridModel.displayVehicleSummary();
             gridModel.displayLoadSummary();
         }
 
         // Provide quick update on timing to output
-        timingUpdate();
+        timingUpdate(lastCycleLength);
 
         // Run load flow (typically the bottleneck)
         gridModel.runLoadFlow(currTime);
@@ -142,37 +156,26 @@ void Simulator::run() {
         log.update(currTime, gridModel, charger, spotPrice);
         
         // Add optional user specified delay into cycle
-        // while(utility::timediff(boost::posix_time::microsec_clock::local_time(), time_cycleStart) < delay);
+        // while(utility::timediff(boost::posix_time::microsec_clock::local_time(), time_cycleStart) < config->getInt("intervaldelay"));
         
         // Estimate timing
-        lastIteration = long(utility::timeElapsed(time_cycleStart));
-        std::cout << "Cycle complete" << std::endl; //, took: " << utility::timeDisplay(lastIteration) << std::endl;
+        lastCycleLength = boost::posix_time::microsec_clock::local_time() - time_cycleStart;
+        std::cout << "Cycle complete, took: " << utility::timeDisplay(lastCycleLength.total_milliseconds()) << std::endl;
 
-        currTime.increment(simInterval);
+        currTime.increment(config->getInt("simulationinterval"));
         
     }
     
-    std::cout << "-------------------------------------------" << std::endl; 
-    std::cout << "Simulation complete, took " << utility::timeDisplay(utility::timeElapsed(time_runStart)) << std::endl;
-    std::cout << "Generating report ..." << std::endl; 
-    
-    if(generateReport)
-        loadflow->generateReport(log.getDir(), currTime.month, currTime.isWeekday(), simInterval);
-    
-    std::cout << "Report written to " << log.getDir() << std::endl; 
+    // Simulation complete, provide some output, generate report.
+    totalSimLength = boost::posix_time::microsec_clock::local_time() - time_runStart;
+    std::cout << "-------------------------------------------" << std::endl
+              << "Simulation complete, took " << utility::timeDisplay(totalSimLength.total_milliseconds()) << std::endl;
+    if(config->getBool("generatereport")) {
+        std::cout << "Generating report ..." << std::endl; 
+        loadflow->generateReport(log.getDir(), currTime.month, currTime.isWeekday(), config->getInt("simulationinterval"));
+        std::cout << "Report written to " << log.getDir() << std::endl; 
+    }
     std::cout << "-------------------------------------------" << std::endl; 
 }
 
 
-void Simulator::timingUpdate() {
-    long total = finishTime.minus(startTime, simInterval);
-    long complete = currTime.minus(startTime, simInterval);
-    long togo = finishTime.minus(currTime, simInterval);
-    
-    std::cout << "Simulation progress: " << std::endl
-              << " - Start  " << startTime.toString() << std::endl
-              << " - End    " << finishTime.toString() << std::endl
-              << " - Now at " << currTime.toString() << std::endl
-              << " - " << std::setprecision(2) << double(complete)/double(total)*100 << "% complete" << std::endl;//, approximately " 
-              //<< utility::timeDisplay(togo*lastIteration) << " remaining." << std::endl;
-}
