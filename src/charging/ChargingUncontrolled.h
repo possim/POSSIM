@@ -44,14 +44,25 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChargingBaseClass.h"
 
-
+/** Implements simple, straightforward uncontrolled charging.  When a vehicle
+  * arrives at home it connects, starts charging, and charges until battery is
+  * full or the car disconnects to leave again. */
 class ChargingUncontrolled : public ChargingBaseClass  {
 
-public:
+private:
+    /** Maximum possible charging rate */
+    double maxChargeRate;
+    
+    
+public:   
+    /** Constructor */
     ChargingUncontrolled(Config* config, GridModel gridModel);
+    
+    /** Destructor */
     ~ChargingUncontrolled();
     
-    void setChargeRates(DateTime datetime, GridModel &gridmodel);
+    /** Set charge rates for all vehicles at this date and time. */
+    void setChargeRates(DateTime datetime, GridModel &gridModel);
 };
 
 #endif	/* CHARGING_UNCONTROLLED_H */

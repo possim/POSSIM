@@ -36,15 +36,26 @@ POSSIBILITY OF SUCH DAMAGE.
 
 using namespace boost::posix_time;
     
-int utility::timediff(ptime t1, ptime t2){       
+// Return time difference between two time points, in milliseconds
+long utility::timeDiff(ptime t1, ptime t2){       
     time_duration td = t2 - t1;
-    return (int)(td.total_milliseconds());
+    return (long)(td.total_milliseconds());
 } 
 
-int utility::timeElapsed(ptime start) {
-    return(timediff(microsec_clock::local_time(), start));
+// Return time since start in milliseconds
+long utility::timeSince(ptime start) {
+    boost::posix_time::time_duration duration = boost::posix_time::microsec_clock::local_time() - start;
+    return((long)(duration.total_milliseconds()));
 }
 
+std::string utility::time2string(int n) {
+    std::ostringstream result;
+    if(n<10) result << "0";
+    result << n;
+    return result.str();
+}
+
+// Display time according to how much is left
 std::string utility::timeDisplay(long time) {
     int numHrs, numMins, numSecs, numMsecs;
     std::stringstream ss;
@@ -123,17 +134,10 @@ std::vector<int>::iterator utility::random_unique(std::vector<int>::iterator beg
     return begin;
 }
 
-std::string utility::time2string(int n) {
-    std::ostringstream result;
-    if(n<10) result << "0";
-    result << n;
-    return result.str();
-}
-
 // Returns random number according to random distribution having mean and standard dev sigma
 // values above max and below min are set to mean
 double utility::randomNormal(double mean, double sigma, double min, double max) {
-    /*typedef boost::mt19937                     ENG;    // Mersenne Twister
+    typedef boost::mt19937                     ENG;    // Mersenne Twister
     typedef boost::normal_distribution<double> DIST;   // Normal Distribution
     typedef boost::variate_generator<ENG,DIST> GEN;    // Variate generator
     struct timeval timemilli;
@@ -145,8 +149,7 @@ double utility::randomNormal(double mean, double sigma, double min, double max) 
     double curr = gen();
     if(curr < min || curr > max) curr = mean;
 
-    return curr;*/
-	return 0;
+    return curr;
 }
 
 double utility::randomNormal(double *vars) {
@@ -158,12 +161,13 @@ double utility::randomUniform() {
     return (double)rand()/RAND_MAX;
 }
 
+// Return uniform random number, scaled to range (min, max)
 double utility::randomUniform(double min, double max) {
     double f = (double)rand()/RAND_MAX;
     return min + f * (max-min);
 }
 
+// Return power factor given scalar V, I
 double utility::calcPowerFactor(double phaseV, double phaseI) {
-    //std::cout<<phaseV<<" "<<phaseI<<" "<<M_PI/180<<" "<<M_PI/180 * (phaseV-phaseI)<<" "<<cos(M_PI/180 * (phaseV-phaseI))<<" "<<abs(cos(M_PI/180 * (phaseV-phaseI)))<<std::endl;
     return fabs(cos(M_PI/180 * (phaseV-phaseI)));
 }

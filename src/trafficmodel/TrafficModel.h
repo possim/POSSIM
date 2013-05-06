@@ -43,7 +43,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <time.h>
 #include <iomanip>
 
 #include "../simulator/Config.h"
@@ -51,26 +50,48 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../utility/DateTime.h"
 #include "../utility/Utility.h"
 
-
+/** Simulates vehicle traffic using vehicle travel records.  Keeps track of
+  * whether vehicles are home or away, as well as how far they have driven. */
 class TrafficModel {
-private:
-    std::vector<vehicleRecord_t> weekdayRecords;  // vehicle records on weekdays
-    std::vector<vehicleRecord_t> weekendRecords;  // vehicle records on weekends
     
-    int home2away;      // keep track of number of transitions
-    int away2home;      // keep track of number of transitions
+private:  
+    /** Vector of weekday travel records.  Each record has the format:
+      * <vehicleID>, <dayOfWeek>, <timeDeparted>, <timeArrived>, <distanceDriven>, <timeDeparted>, etc...*/
+    std::vector<vehicleRecord_t> weekdayRecords;
+   
+    /** Vector of weekend travel records.  Each record has the format:
+      * <vehicleID>, <dayOfWeek>, <timeDeparted>, <timeArrived>, <distanceDriven>, <timeDeparted>, etc...*/
+     std::vector<vehicleRecord_t> weekendRecords;
+    
+    /** Keep track of transitions */
+    int home2away;
+
+    /** Keep track of transitions */
+    int away2home;
     
 public:
+    /** Constructor */
     TrafficModel(Config* config);
+    
+    /** Destructor */
     virtual ~TrafficModel();
     
+    /** Initialise: assign all vehicles a travel profile */
     void initialise(DateTime datetime, std::map<int,Vehicle> &vehicles);
+    
+    /** Update status of each vehicle (home, away, plugged in, etc).  If
+      * passing midnight, assign a new random record to each vehicle. */
     void update(DateTime datetime, std::map<int,Vehicle> &vehicles);
+    
+    /** Display summary of all vehicle traffic behaviour */
     void displaySummary(std::map<int,Vehicle> vehicles);
+    
 private:
+    /** Input data */
     void inputData(std::string filename);
+    
+    /** Assign a random vehicle record to each vehicle */
     void assignVehicleRecords(DateTime datetime, std::map<int,Vehicle> &vehicles);
-    void getVehicleRecord(Vehicle &vehicle, int n);
 };
 
 #endif	/* TRAFFICMODEL_H */

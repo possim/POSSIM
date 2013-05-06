@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingDistributed::ChargingDistributed(Config* config, GridModel gridModel) :
     ChargingBaseClass(config, gridModel){
+    maxChargeRate = config->getDouble("maxchargerate");
 }
 
 ChargingDistributed::~ChargingDistributed() {
@@ -47,11 +48,22 @@ ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, D
     minVoltage = config->getInt("minvoltage");
     simInterval = config->getInt("simulationinterval");
     periodOfLoadSchedule = config->getInt("loadscheduleperiod");
+    
+    // To properly initialise, run a "valley load flow".  In other words, choose
+    // a valley load time (say 4:30 am), assign typical household loads, and store
+    // voltages at each house.  In other words, calibrate the system.  We now 
+    // know that each house can safely schedule additional load when its voltage
+    // is at or near this "valley" level.
     gridModel.runValleyLoadFlow(datetime, hhDemand);
 
     std::cout << " - Distributed charging algorithm init complete!" << std::endl;   
 }
 
+
+/* For more detail on how this algorithm works, see:
+ * J. de Hoog, D. A. Thomas, V. Muenzel, D. C. Jayasuriya, T. Alpcan, M. Brazil, and I. Mareels,
+ * "Electric Vehicle Charging and Grid Constraints: Comparing Distributed and Centralized Approaches",
+ * In Proceedings of the IEEE Power and Energy Society General Meeting. Vancouver, Canada, July 2013. */
 void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel) {
     double L, N, P, P_applied;
     int currNMI;
@@ -107,8 +119,6 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
         }
 
         // If we reach this point, vehicle is connected, needs charge, but is not yet charging
-        
-
 
         //std::cout << std::setw(3) << std::right << std::setiosflags(std::ios::fixed) << currV << " " 
          //         << std::setw(3) << std::right << std::setiosflags(std::ios::fixed) << valleyV << " " 
@@ -117,9 +127,8 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
          //         << std::setw(3) << std::right << std::setiosflags(std::ios::fixed) << N << " = " 
          //         << std::setw(3) << std::right << std::setiosflags(std::ios::fixed) << P;
         
-
         if(utility::randomUniform(0,1) < P_applied) {
-            it->second.chargeRate = baseChargeRate;
+            it->second.chargeRate = maxChargeRate;
             it->second.isCharging = true;
             it->second.switchon = true;
             //std::cout << " Yes, started charging " << it->second.isCharging;

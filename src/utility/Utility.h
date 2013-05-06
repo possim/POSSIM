@@ -35,10 +35,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTILITY_H
 #define	UTILITY_H
 
+#ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
+#endif /*M_PI*/
 
-//#include <time.h>
-//#include <sys/time.h>
 #include <sstream>
 #include <vector>
 #include <iostream>
@@ -51,78 +51,64 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "DateTime.h"
+#include "Phasor.h"
 
-class phasor {
-public:
-    double amplitude;           // amplitude
-    double phase;               // phase in radians
-    
-    phasor() {
-        amplitude = 0;
-        phase = 0;
-    }
-    
-    phasor(double a, double p) {
-        amplitude = a;
-        phase = p*M_PI/180;
-    }
-    
-    double real() {return amplitude*cos(phase);}
-    double imag() {return amplitude*sin(phase);}
-    double toRMS() {return amplitude/sqrt(double(2));}
-    
-    phasor plus(phasor other) {
-        phasor sum;
-        double sumReal, sumImag;
-        
-        sumReal = real() + other.real();
-        sumImag = imag() + other.imag();
-        sum.phase = atan2(sumImag,sumReal);
-        sum.amplitude = sqrt((double)(pow(sumReal,2)+pow(sumImag,2)));
-        
-        return sum;
-    }
-    
-    phasor times(phasor other) {
-        phasor product;
-        
-        product.amplitude = amplitude * other.amplitude;
-        product.phase = phase + other.phase;
-        
-        return product;
-    }
-    
-    phasor squared() {return times(*this);}
-    
-    phasor divideByConst(double n) {amplitude /= n; return *this;}
-    
-    phasor timesConst(double n) {amplitude *= n; return *this;}
-    
-    std::string toString() {
-        std::stringstream ss;
-        ss << "RMS " << toRMS() << ", Amp " << amplitude << ", Pha " << phase;
-        return ss.str();
-    }
-};
 
 namespace utility {
-    int timediff(boost::posix_time::ptime t1, boost::posix_time::ptime t2);
-    int timeElapsed(boost::posix_time::ptime start);
-    std::string timeDisplay(long time);
-    std::string int2string(int i);
-    int string2int(std::string s);
-    double string2double(std::string s);
-    void tokenize(const std::string& str, std::vector<std::string>& tokens, std::string del);
-    std::vector<int>::iterator random_unique(std::vector<int>::iterator begin, std::vector<int>::iterator end, size_t num_random);
-    std::string time2string(int n);
-    double randomNormal(double mean, double sigma, double min, double max);
-    double randomNormal(double *vars);
-    double randomUniform();
-    double randomUniform(double min, double max);
-    double calcPowerFactor(double phaseV, double phaseI);
-}
+// Please leave the below comment for doxygen documentation
+/** \addtogroup Utility 
+ *  Various generally useful functions accessible throughout POSSIM. 
+ *  @{ 
+ */
 
-//template<class bidiiter> bidiiter random_unique(bidiiter begin, bidiiter end, size_t num_random);
+    /** Utility
+      * Calculate difference between two time points (mainly for displaying
+      * simulation progress) */
+    long timeDiff(boost::posix_time::ptime t1, boost::posix_time::ptime t2);
+    
+    /** Return time since start in milliseconds */
+    long timeSince(boost::posix_time::ptime start);
+    
+    /** Add leading zeros as required for time output */
+    std::string time2string(int n);
+    
+    /** Display a time (where input is in milliseconds) in a convenient format. */
+    std::string timeDisplay(long time);
+    
+    /** Convert an integer to a string */
+    std::string int2string(int i);
+    
+    /** Convert a string to an integer */
+    int string2int(std::string s);
+    
+    /** Convert a string to a double */
+    double string2double(std::string s);
+    
+    /** Tokenize a string according to a specific delimiter */
+    void tokenize(const std::string& str, std::vector<std::string>& tokens, std::string del);
+    
+    /** Return random ordering of components of a vector, using Fisher-Yates shuffle */
+    std::vector<int>::iterator random_unique(std::vector<int>::iterator begin, std::vector<int>::iterator end, size_t num_random);
+    
+    /** Return random var according to normal distribution */
+    double randomNormal(double mean, double sigma, double min, double max);
+    
+    /** Return random var according to normal distribution, 4-tuple input */
+    double randomNormal(double *vars);
+    
+    /** Return random var according to uniform distribution */
+    double randomUniform();
+    
+    /** Return random var according to uniform distribution scaled by range (min, max) */
+    double randomUniform(double min, double max);
+    
+    /** Find power factor given amplitudes of V and I */
+    double calcPowerFactor(double phaseV, double phaseI);
+
+// Please leave the below comment for doxygen documentation
+/** @} End of Utility group */
+
+}
 
 #endif	/* UTILITY_H */
 

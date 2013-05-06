@@ -44,15 +44,22 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../gridmodel/GridModel.h"
 #include "../simulator/Config.h"
 
+
+/** Base class for EV charging algorithms.  Any electric vehicle charging
+  * algorithm in the directory /src/charging may be chosen via the simulator
+  * configuration.  To allow charging algorithm to exist as objects within the
+  * code, polymorphism is used.  This is the base class that any charging
+  * algorithm must inherit. */
 class ChargingBaseClass {
 
-protected:
-    double baseChargeRate;
-    
 public:
+    /** Constructor */
     ChargingBaseClass(Config* config, GridModel gridModel);
+    
+    /** Destructor */
     ~ChargingBaseClass();
     
+    /** Set charge rates of all vehicles in model at current date and time. */
     virtual void setChargeRates(DateTime datetime, GridModel &gridModel) = 0;
 };
 

@@ -92,6 +92,7 @@ TrafficModel::TrafficModel(Config* config) {
 TrafficModel::~TrafficModel() {
 }
 
+// Assign a random vehicle record to each vehicle
 void TrafficModel::assignVehicleRecords(DateTime datetime, std::map<int,Vehicle> &vehicles) {
     int randomIndex;
     
@@ -114,6 +115,9 @@ void TrafficModel::assignVehicleRecords(DateTime datetime, std::map<int,Vehicle>
     std::cout.flush();
 }
 
+// Assign vehicle records, and set each vehicle to its initial state.  If a
+// simulation starts at a non-midnight time, this means that earlier entries
+// need to be cycled through until correct state at correct time is found.
 void TrafficModel::initialise(DateTime datetime, std::map<int,Vehicle> &vehicles) {
     travelPair_t nextTravelPair;
     bool endOfTravelPairs;
@@ -151,6 +155,8 @@ void TrafficModel::initialise(DateTime datetime, std::map<int,Vehicle> &vehicles
     }
 }
 
+// For all vehicles, check if there has been a change to their status over the
+// past interval.  If yes, update.   At midnight, generate new profiles.
 void TrafficModel::update(DateTime datetime, std::map<int,Vehicle> &vehicles) {
     home2away = 0;
     away2home = 0;

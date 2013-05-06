@@ -55,7 +55,7 @@ Vehicle::Vehicle(Config* config, int nmi, std::string name) :
 Vehicle::~Vehicle() {
 }
 
-std::string Vehicle::getName() {
+std::string Vehicle::getComponentRef() {
     return componentRef;
 }
 

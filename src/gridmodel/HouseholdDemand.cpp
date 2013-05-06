@@ -44,7 +44,7 @@ HouseholdDemand::HouseholdDemand(Config* config) {
     modelType = config->getConfigVar("demandmodel");
     demandDataFile = config->getConfigVar("demanddata");
     phaseAllocFile = config->getConfigVar("phaseallocation");
-    randomnessVars = config->getRandomArray("demandrandom_int");
+    randomnessVars = config->getRandomParams("demandrandom_int");
     
     // Use generic profile
     if(modelType == "genericprofile") {

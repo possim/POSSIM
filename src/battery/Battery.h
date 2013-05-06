@@ -45,53 +45,97 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 
-
+/** Implements a battery model that takes into account the number of individual
+  * cells in the vehicle battery, and provides a black box model for each.  The
+  * black box model itself accounts for internal resistance and dynamic voltage
+  * SOC profile. Battery discharge, however, is modelled in a much simpler way:
+  * For a given vehicle trip, that trip's percentage of total vehicle range is
+  * assumed to map linearly to change in SOC.  This could certainly be improved
+  * in the future, although battery discharge does depend on difficult factors
+  * such as driving style. */
 class Battery {
 private:
-    std::string batteryFile;  // file containing specs of EV battery
+    /** Path to file containing battery specification. */
+    std::string batteryFile;
+    
+    /** Local copy of simulation interval size (required to update SOC). */
     int    simInterval;
     
+    /** Maximum range that can be driven with this battery.  (e.g. 160km for Nissan Leaf)*/
     double range;
     
+    /** Discount factor taking into account losses in charge process as well as
+      * losses due to peripheral demand (lights, heating, cooling, etc.) */
     double chargingEfficiency;
     
+    /** Number of parallel cells per block */
     int    numParallelCells;
+    
+    /** Number of blocks in series (each block can contain more than one cell in parallel)*/
     int    numSeriesBlocks;
     
-    double C_Cell_Max;
-    double C_Total_Max;
-    double C_SafeUpper;
-    double C_SafeLower;
+    /** Maximum cell capacity */
+    double C_Cell_Max;          
     
-    double V_Cell;   
-    double R_Cell;
+    /** Maximum battery capacity (all cells) */
+    double C_Total_Max;         
     
-    double V_Max;
+    /** Safe upper capacity limit, full battery */
+    double C_SafeUpper;         
     
-    std::map<double,double> SOC_V_Pairs;
+    /** Safe lower capacity limit, full battery */
+    double C_SafeLower;         
+    
+    /** Individual cell voltage */
+    double V_Cell;              
+    
+    /** Individual cell internal resistance */
+    double R_Cell;              
+    
+    /** Upper voltage limit, cell */
+    double V_Max;               
+    
+    /** SOC-Voltage profile */
+    std::map<double,double> SOC_V_Pairs;        
 
 public:
     
-    double capacity;
-    double SOC;
-    double SOC_last;
+    /** Capacity of whole battery, Ah */
+    double capacity;            
+    
+    /** SOC of whole battery, % */
+    double SOC;                 
+    
+    /** SOC of whole battery at last interval */
+    double SOC_last;            
     
     
 public:
+    /** Constructor */
     Battery(Config* config);
+    
+    /** Destructor */
     virtual ~Battery();
 
+    /** Recharge battery for one simulation interval at given charge rate. */
     void recharge(double chargeRate);
+    
+    /** Discharge battery given distance driven. */
     void discharge(double distance);
     
+    /** Display battery details. */
     void displayCharacteristics();
 
 private:
+    /** Upload key battery specification to populate model. */
     void uploadCharacteristics(std::string filename);
+    
+    /** Find open circuit voltage given current SOC. */
     double find_V_OpenCircuit();
+    
+    /** Calculate current through each cell, given power being drawn and SOC-dependent voltage. */
     double calculate_I_Cell(double powerCell, double presentVoltage);
-    
-    
+
 };
 
 #endif	/* BATTERY_H */

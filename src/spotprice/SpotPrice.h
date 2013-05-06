@@ -45,22 +45,31 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../simulator/Config.h"
 #include "../utility/DateTime.h"
 
+/** Keeps track of the instantaneous price of electricity (wholesale) using past records */
 class SpotPrice {
 private:
-    int simInterval;
+    /** Directory where past spot price records are located. */
     std::string dataDir;
     
 public:
+    /** The spot price. */
     double price;
     
+public:
+    /** Constructor */
     SpotPrice(Config* config);
-    SpotPrice(std::string fileName);
+ 
+    /** Destructor */
     virtual ~SpotPrice();
     
+    /** Return price at given date and time */
     double findPriceAt(DateTime datetime);
+    
+    /** Update price to give date and time */
     void update(DateTime datetime);
+    
+    /** Display */
     void display();
-private:
 
 };
 

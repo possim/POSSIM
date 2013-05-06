@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingEqualShares::ChargingEqualShares(Config* config, GridModel gridModel) :
 ChargingBaseClass(config, gridModel){
+    maxChargeRate = config->getDouble("maxchargerate");
 }
 
 ChargingEqualShares::~ChargingEqualShares() {
@@ -57,12 +58,12 @@ void ChargingEqualShares::setChargeRates(DateTime datetime, GridModel &gridModel
         rate = gridModel.getAvailableCapacity()/(double(numConnected));
     
     // Check max
-    if(rate > baseChargeRate)
-        rate = baseChargeRate;
+    if(rate > maxChargeRate)
+        rate = maxChargeRate;
     
     // Set chargeRates
     for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
-        if(it->second.getSOC() < 100  &&  it->second.isConnected)
+        if(it->second.getSOC() < 98  &&  it->second.isConnected)
             it->second.chargeRate = rate;
         else
             it->second.chargeRate = 0;

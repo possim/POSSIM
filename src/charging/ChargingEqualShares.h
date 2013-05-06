@@ -44,13 +44,27 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChargingBaseClass.h"
 
-
+/** Uses a centralised charging algorithm that determines how much spare capacity
+  * is available at the distribution transformer, and distributes this equally
+  * between all connected and charging vehicles.
+  * This algorithm is described in more detail in:
+  * J. de Hoog, D. A. Thomas, V. Muenzel, D. C. Jayasuriya, T. Alpcan, M. Brazil, and I. Mareels,
+  * "Electric Vehicle Charging and Grid Constraints: Comparing Distributed and Centralized Approaches",
+  * In Proceedings of the IEEE Power and Energy Society General Meeting. Vancouver, Canada, July 2013. */
 class ChargingEqualShares : public ChargingBaseClass  {
 
+private:
+    /** Maximum possible charging rate */
+    double maxChargeRate;
+    
 public:   
+    /** Constructor */
     ChargingEqualShares(Config* config, GridModel gridModel);
+    
+    /** Destructor */
     ~ChargingEqualShares();
     
+    /** Set charge rates for all vehicles at this date and time. */
     void setChargeRates(DateTime datetime, GridModel &gridModel);
 };
 

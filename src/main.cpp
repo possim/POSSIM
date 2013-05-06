@@ -34,13 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 
-//! main.cpp
-/*!
- *  This is the main file run on startup.  It takes care of console interaction
- * such as input arguments and their flags.  Run ./possim -h from console to 
- * find out more about available flags (or check the possim_config.xml file).
- */
-
 
 #include <stdio.h>
 
@@ -48,7 +41,16 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "simulator/Config.h"
 #include "../cmake/POSSIMConfig.h"
 
-//! Print usage of possim command in console, including available flags and their defaults
+// Please leave the below comment for doxygen documentation
+/** \addtogroup main 
+ *  This is the main file run on startup.  It takes care of console interaction
+ * such as input arguments and their flags.  Run ./possim -h from console to 
+ * find out more about available flags (or check the possim_config.xml file).
+ *  @{ 
+ */
+
+
+/** Print usage of possim command in console, including available flags and their defaults */
 void print_usage(Config* config, char** argv)
 {
     std::cout << std::endl << "USAGE:  " << *argv << " [options]" << std::endl << std::endl
@@ -58,7 +60,7 @@ void print_usage(Config* config, char** argv)
     exit(-1);
 } 
 
-//! Parse arguments provided at command line
+/** Parse arguments provided at command line */
 void parse_args(Config* config, int argc, char** argv)
 {
     for (int i=1; i<argc; i+=2)
@@ -69,7 +71,7 @@ void parse_args(Config* config, int argc, char** argv)
 }
 
 
-//! main.cpp:  Show version, start simulator
+/** main.cpp:  Show version, start simulator */
 int main(int argc, char ** argv) 
 {
     Config *config = new Config();
@@ -90,3 +92,6 @@ int main(int argc, char ** argv)
     
     return 0;
 }
+
+// Please leave the below comment for doxygen documentation
+/** @} End of main group */

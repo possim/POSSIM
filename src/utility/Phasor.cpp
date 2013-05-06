@@ -32,44 +32,56 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "Household.h"
+#include "Phasor.h"
 
-Household::Household(int nmi, std::string name, double dP) {
-    NMI = nmi;
-    componentRef = name;
-    demandProfile = dP;
-    activePower = 0;
-    inductivePower = 0;
-    capacitivePower = 0;
-    V_RMS = 0;
-    V_Mag = 0;
-    V_Pha = 0;
-    V_valley = 0;
+
+
+Phasor::Phasor() {
+    amplitude = 0;
+    phase = 0;
 }
 
+Phasor::Phasor(double a, double p) {
+    amplitude = a;
+    phase = p*M_PI/180;
+}
+    
+Phasor::~Phasor() {
+}
+    
+double Phasor::real() {return amplitude*cos(phase);}
+double Phasor::imag() {return amplitude*sin(phase);}
+double Phasor::toRMS() {return amplitude/sqrt(double(2));}
 
-Household::~Household() {
+Phasor Phasor::plus(Phasor other) {
+    Phasor sum;
+    double sumReal, sumImag;
+
+    sumReal = real() + other.real();
+    sumImag = imag() + other.imag();
+    sum.phase = atan2(sumImag,sumReal);
+    sum.amplitude = sqrt((double)(pow(sumReal,2)+pow(sumImag,2)));
+
+    return sum;
 }
 
-std::string Household::getComponentRef() {
-    return componentRef;
+Phasor Phasor::times(Phasor other) {
+    Phasor product;
+
+    product.amplitude = amplitude * other.amplitude;
+    product.phase = phase + other.phase;
+
+    return product;
 }
 
-int Household::getNMI() {
-    return NMI;
-}
+Phasor Phasor::squared() {return times(*this);}
 
-double Household::getDemandProfile() {
-    return demandProfile;
-}
+Phasor Phasor::divideByConst(double n) {amplitude /= n; return *this;}
 
-void Household::setPowerDemand(double active, double inductive, double capacitive) {
-    activePower = active;
-    inductivePower = inductive;
-    capacitivePower = capacitive;
-}
+Phasor Phasor::timesConst(double n) {amplitude *= n; return *this;}
 
-double Household::getPowerFactor() {
-    if(activePower == 0) return 0;
-    return activePower/sqrt(pow(activePower, 2) + pow(inductivePower-capacitivePower,2));
+std::string Phasor::toString() {
+    std::stringstream ss;
+    ss << "RMS " << toRMS() << ", Amp " << amplitude << ", Pha " << phase;
+    return ss.str();
 }

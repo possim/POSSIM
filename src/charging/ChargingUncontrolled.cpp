@@ -36,6 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingUncontrolled::ChargingUncontrolled(Config* config, GridModel gridModel) :
 ChargingBaseClass(config, gridModel){
+        maxChargeRate = config->getDouble("maxchargerate");
 }
 
 ChargingUncontrolled::~ChargingUncontrolled() {
@@ -45,8 +46,8 @@ ChargingUncontrolled::~ChargingUncontrolled() {
 void ChargingUncontrolled::setChargeRates(DateTime datetime, GridModel &gridModel) {
     // Set chargeRates
     for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
-        if(it->second.getSOC() < 100  &&  it->second.isConnected) {
-            it->second.chargeRate = baseChargeRate;
+        if(it->second.getSOC() < 98  &&  it->second.isConnected) {
+            it->second.chargeRate = maxChargeRate;
             it->second.isCharging = true;
         }
         else {

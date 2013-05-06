@@ -36,7 +36,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 ChargingBaseClass::ChargingBaseClass(Config* config, GridModel gridModel) {
-    baseChargeRate = config->getDouble("chargingrate");
     std::cout << " - Using " << config->getString("chargingalgorithm") << " charging algorithm" << std::endl;
 }
 

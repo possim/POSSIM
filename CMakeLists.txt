@@ -37,8 +37,8 @@ project (POSSIM)
 
 # Set versions, include in config that can be called from POSSIM
 
-set (POSSIM_VERSION_MAJOR 0)
-set (POSSIM_VERSION_MINOR 1)
+set (POSSIM_VERSION_MAJOR 1)
+set (POSSIM_VERSION_MINOR 01)
 configure_file(
     ${CMAKE_SOURCE_DIR}/cmake/POSSIMConfig.h.in
     ${CMAKE_SOURCE_DIR}/cmake/POSSIMConfig.h

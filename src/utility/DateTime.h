@@ -46,7 +46,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Utility.h"
 
-
+/** A simple date and time class to keep track of simulation intervals, ensure
+  * simulation start / end, etc.*/
 class DateTime {
 
 public:
@@ -57,34 +58,69 @@ public:
     int year;           // 1990, 1991, ...
     int weekday;        // which day of week 1=Monday, 7=Sunday
     
+    /** Constructor, without arguments is set to 00:00:00 on 1 January 2012. */
     DateTime();
+    
+    /** Constructor with string-based argument */
     DateTime(const char* time);
+    
+    /** Destructor*/
     virtual ~DateTime();
     
-    void tokenize(const char* datetime);
+    /** Reset date time using arguments */
     void set(int newHour, int newMinute, int newDay, int newMonth, int newYear);
+
+    /** Reset date time using string */
     void set(std::string newDateTime);
+    
+    /** Reset time only using total mins elapsed of full day */
     void setTime(int mins);
 
+    /** True if this DateTime is earlier than other */
     bool isEarlierThan(DateTime other);
+    
+    /** True if this DateTime equals other (date and time) */
     bool equals(DateTime other);
+    
+    /** True if this DateTime is later than other */
     bool isLaterThan(DateTime other);
     
-    bool isEarlierInDayThan(DateTime other);    // ignores day, month, year
-    bool isLaterInDayThan(DateTime other);    // ignores day, month, year
+    /** True if time only is earlier than other */
+    bool isEarlierInDayThan(DateTime other);
     
+    /** True if time only is later than other*/
+    bool isLaterInDayThan(DateTime other);
+    
+    /** True if not Saturday or Sunday */
     bool isWeekday();
+    
+    /** True if midnight */
     bool isMidnight();
     
+    /** Increments time by specified number of minutes */
     void increment(int minutes);
     
+    /** Returns total minutes passed in this day since midnight */
     int  totalMinutes();
-    int  diffInMinutes(DateTime other);     // ignores day, month, year
-    long minus(DateTime other, int numMins); // returns num intervals difference to other
     
+    /** Returns difference to other in minutes only (only time, ignores date) */
+    int  diffInMinutes(DateTime other);
+    
+    /** Returns number of intervals difference to other, using specified interval size */
+    long minus(DateTime other, int numMins);
+    
+    /** Displays full date and time */
     void display();
+    
+    /** Returns string value of full date and time */
     std::string toString();
+    
+    /** Returns formatted string of full date and time*/
     std::string formattedString();
+
+private:
+    /** Turn string-based time into DateTime object */
+    void tokenize(const char* datetime);
 };
 
 #endif	/* DATETIME_H */

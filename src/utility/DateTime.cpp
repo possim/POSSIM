@@ -71,6 +71,7 @@ void DateTime::setTime(int mins) {
     minute = mins%60;
 }
 
+// Turn string input into full date time object
 void DateTime::tokenize(const char* dateTime) {
     std::vector<std::string> tokens;
     utility::tokenize(dateTime,tokens,".");
@@ -220,6 +221,8 @@ int daysInMonth(int month, int year) {
     }
 }
 
+// Finds which day of week a given date is.  Uses 1 Jan 1990 as a reference.
+// Takes leap years into account.
 int findDayOfWeek(int date, int month, int year) {
     int refYear = 1990;
     int refWeekDay = 1; // Jan 1, 1990 was a Monday

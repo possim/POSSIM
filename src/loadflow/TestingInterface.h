@@ -46,6 +46,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../utility/Utility.h"
 
  
+/** A load flow interface purely designed for testing of *other* aspects of 
+  * POSSIM.  This interface does not conduct any useful load flow calculations.
+  * It merely allows debugging without having to load MATLAB (or another
+  * package) for each testing run. */
 class TestingInterface : public LoadFlowInterface {
     
 private:

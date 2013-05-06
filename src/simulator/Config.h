@@ -44,40 +44,76 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../utility/DateTime.h"
 #include "../utility/Utility.h"
 
-
+/** Name-flag-value triple for command-line parameters. */
 struct configvar_t {
     std::string name;
     std::string flag;
     std::string value;
 };
 
+/** Global simulation configuration parameters.  These are set in the file 
+  * possim_config.xml, but may also be changed via command-line flags. */
 class Config {
-public:
+    
+private:
+    /** Vector of command line options (each has name, flag, value)*/
     std::vector<configvar_t> configVars;
     
 public:
+    /** Constructor.  Open simulator config file (located at 
+      * /POSSIM_home/possim_config.xml), and read all simulation parameters
+      * into a globally accessible config object. */
     Config();
+    
+    /** Destructor */
     virtual ~Config();
 
+    /** Returns string equivalent of a config variable's value. */
     std::string getConfigVar(std::string name);
+    
+    /** Returns boolean value directly of a boolean config variable. */
     bool        getBool(std::string name);
+    
+    /** Returns int value directly of an integer config variable. */
     int         getInt(std::string name);
+    
+    /** Returns double value directly of a double config variable. */
     double      getDouble(std::string name);
+    
+    /** Returns string value directly of a string config variable. */
     std::string getString(std::string name);
     
+    /** There are multiple load flow simulator options; this returns the int
+      * value associated with a given load flow simulation option. */
     int         getLoadFlowSim();
-    int         getChargingAlg();
-    double*     getRandomArray(std::string name);
     
+    /** There are multiple charging algorithms available; this returns the int
+      * value associated with a given charging algorithm. */
+    int         getChargingAlg();
+    
+    /** Randomness (noise) can be added to various simulation parameters via
+      * probability distributions defined by "randomness 4-tuples" of 
+      * (mean, std_deviation, max_value, min_value).  This returns a randomness
+      * 4-tuple config variable. */
+    double*     getRandomParams(std::string name);
+    
+    /** Set a config variable by name. */
     void        setConfigVar(std::string name, std::string value);
+    
+    /** Set a config variable by flag (e.g. from command line). */
     void        setConfigVarByFlag(std::string flag, std::string value);
     
+    /** Display all config variables, their flags and defaults. */
     void printOptions();
+    
+    /** Display all config variables and their current values. */
     void printAll();
     
+    /** Return config variable list as a string. */
     std::string toString();
     
 private:
+    /** Some simple input error checking for load flow, charge algorithm inputs. */
     void correctValues();
 };
 

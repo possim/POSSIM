@@ -17,6 +17,9 @@
 <vehicleassignment  flag="f_ve" value="random" />
 <vehiclechargedata  flag="f_vc" value="" />
 
+<batterystart       flag="S"    value="60" />
+<batteryrandom      flag="S_r"  value="0,7,-12,12" />
+<batterycapacity    flag="b"    value="80" />
 <batterydata        flag="f_ba" value="data/battery/batterydata.txt" />
 
 <spotpricedata      flag="f_sp" value="data/spotprice/AEMO/" />
@@ -30,8 +33,8 @@
 <minvoltage         flag="v"    value="218" />
 <loadscheduleperiod flag="L"    value="30" />
 
-<chargingrate       flag="r"    value="3450" />
+<maxchargerate      flag="r"    value="3450" />
 <chargingalgorithm  flag="c"    value="uncontrolled" />
 
-<batterycapacity    flag="b"    value="80" />
+
 

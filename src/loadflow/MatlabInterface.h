@@ -51,34 +51,69 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #define BUFSIZE 256
 
-//const std::string matlabBinary = "/Applications/MATLAB_R2012a.app/bin";
-    
+/** The interface to MATLAB SimPowerSystems.  The network model is built within
+  * MATLAB, then imported into POSSIM here.  Vehicles are added to the MATLAB
+  * model as required on the fly.  MATLAB takes care of all load flow
+  * calculations. */
 class MatlabInterface : public LoadFlowInterface {
     
 private:
+    /** The MATLAB Engine */
     Engine *eng;
+    
+    /** Necessary to retrieve outputs from MATLAB */
     mxArray *result;
 
+    /** Path to directory containing network model. */
     std::string modelDir;
+    
+    /** Name of network model. */
     std::string modelName;
         
+    /** For convenience of string interaction between POSSIM and MATLAB. */
     std::stringstream ss;
     
 public:
+    /** Constructor */
     MatlabInterface(std::string modelname);
+    
+    /** Destructor */
     ~MatlabInterface();
 
+    /** Set directory in MATLAB where model sits. */
     void setDir(std::string dir);
+    
+    /** Load model that was built in MATLAB. */
     void loadModel(std::string model);
+    
+    /** Run MATLAB load flow calculation. */
     void runSim();
+    
+    /** Get value of given variable in MATLAB */
     double getVar(std::string var);
+    
+    /** Set value of given component in MATLAB */
     void setVar(std::string component, double value, std::string var);
+    
+    /** Get number of houses */
     int getNumHouses();
+    
+    /** Get house names */
     std::vector <std::string> getHouseNames();
+    
+    /** Add vehicle to MATLAB model. */
     void addVehicle(Vehicle vehicle);
+    
+    /** Set demand of given component. */
     void setDemand(std::string component, double a, double i, double c);
+    
+    /** Print network model (ideally to PDF in simulation log directory) */
     void printModel(std::string targetDir);
+    
+    /** Generate report. */
     void generateReport(std::string dir, int month, bool isWeekday, int simInterval);
+    
+    /** Get MATLAB load flow output following load flow calculation. */
     void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households);
 };
 

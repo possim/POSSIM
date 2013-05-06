@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Config.h"
 
 
-
+// Constructor:  open config file, read all values.
 Config::Config() {
     int start, end;
     std::string line;
@@ -72,18 +72,14 @@ Config::Config() {
     
     // Ensure right values for particular variables
     correctValues();
-    
-    /*std::cout << globalVars.size() << " global vars" << std::endl;
-    for(int i=0; i<globalVars.size(); i++)
-        std::cout << globalVars.at(i).name << " "
-                  << globalVars.at(i).flag << " "
-                  << globalVars.at(i).value << std::endl;*/
 }
 
-
+// Destructor
 Config::~Config() {
 }
 
+// Some simple input error checking.  Allows config to have e.g. any of the 
+// following with same result:  MATLAB, Matlab, matlab, 1.
 void Config::correctValues() {
     std::string value = getConfigVar("loadflowsimulator");
     if(value.compare("Testing") == 0 ||
@@ -116,6 +112,7 @@ void Config::correctValues() {
                setConfigVar("chargingalgorithm", "distributed");
 }
 
+// Return string value of a given config variable.
 std::string Config::getConfigVar(std::string name) {
     for(size_t i=0; i<configVars.size(); i++)
         if(configVars.at(i).name == name)
@@ -125,6 +122,7 @@ std::string Config::getConfigVar(std::string name) {
     return NULL;
 }
 
+// If config variable is boolean, get bool value directly
 bool Config::getBool(std::string name) {
     std::string value = getConfigVar(name);
     if(value.compare("Yes") == 0  ||
@@ -136,20 +134,24 @@ bool Config::getBool(std::string name) {
     return false;
 }
 
+// If config variable is int, get int value directly
 int Config::getInt(std::string name) {
     std::string value = getConfigVar(name);
     return utility::string2int(value);
 }
 
+// If config variable is double, get double value directly
 double Config::getDouble(std::string name) {
     std::string value = getConfigVar(name);
     return utility::string2double(value);
 }
 
+// If config variable is string, get string value directly
 std::string Config::getString(std::string name) {
     return getConfigVar(name);
 }
 
+// Return int value of load flow simulation tool
 int Config::getLoadFlowSim() {
     std::string value = getConfigVar("loadflowsimulator");
     if(value.compare("testing") == 0)
@@ -162,6 +164,7 @@ int Config::getLoadFlowSim() {
     return 1;
 }
 
+// Return int value of charging algorithm
 int Config::getChargingAlg() {
     std::string value = getConfigVar("chargingalgorithm");
     if(value.compare("uncontrolled") == 0)
@@ -178,23 +181,26 @@ int Config::getChargingAlg() {
     return 0;
 }
 
-double* Config::getRandomArray(std::string name) {
-    std::string value = getConfigVar("demandrandom_int");
+// Return 4-tuple specifying probability distribution to add noise to a given
+// parameter.  4-tuple is (mean, std_deviation, max_value, min_value).
+double* Config::getRandomParams(std::string name) {
+    std::string value = getConfigVar(name);
     std::vector<std::string> tokens;
     utility::tokenize(value, tokens, ",");
     double *vars = new double[4];
     for(int i=0; i<4; i++)
-        *vars++ = utility::string2double(tokens.at(i));
+        vars[i] = utility::string2double(tokens.at(i));
     return vars;
 }
 
-
+// Set a given config variable by name
 void Config::setConfigVar(std::string name, std::string value) {
     for(size_t i=0; i<configVars.size(); i++)
         if(configVars.at(i).name == name)
             configVars.at(i).value = value;
 }
 
+// Set a given config variable by flag (e.g. from command line)
 void Config::setConfigVarByFlag(std::string flagIn, std::string value) {
     std::string flag = flagIn.substr(1,flagIn.size());
     for(size_t i=0; i<configVars.size(); i++)
@@ -204,6 +210,7 @@ void Config::setConfigVarByFlag(std::string flagIn, std::string value) {
     correctValues();
 }
 
+// Print all options, flags, defaults
 void Config::printOptions() {
     for(size_t i=0; i<configVars.size(); i++)
         std::cout << " -" << std::setw(5) << std::left << std::setiosflags(std::ios::fixed) << configVars.at(i).flag
@@ -212,12 +219,14 @@ void Config::printOptions() {
                   << std::endl;
 }
 
+// Print all config variables and their current values
 void Config::printAll() {
     for(size_t i=0; i<configVars.size(); i++)
         std::cout << " "  << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << configVars.at(i).name
                   << ": " << configVars.at(i).value << std::endl;
 }
 
+// Return string of all config variables and their current values
 std::string Config::toString() {
     std::stringstream ss;
     for(size_t i=0; i<configVars.size(); i++)

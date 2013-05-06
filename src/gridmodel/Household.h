@@ -41,38 +41,71 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "../utility/Utility.h"
 
-
+/** Represents a household in the grid.  Includes ID (national meter identifier),
+  * demand profile, and local voltage measurements.*/
 class Household {
 
 private:
-    int NMI;                    // national meter identifier
-    std::string componentRef;   // name of component of this household in loadflow model
-    double demandProfile;       // adds randomness according to normal distribution (1,0.2)
+    /** ID (equivalent to NMI, national meter identifier)*/
+    int NMI;                    
+    
+    /** Name of equivalent component of this household in loadflow model */
+    std::string componentRef;
+    
+    /** Demand profile */
+    double demandProfile;
+    
+    /** 4-tuple to add random effects on household demand */
+    double demandRandomness[4];
     
 public:
-    bool hasCar;                // EV associated with this house?
-    double V_RMS;               // RMS Voltage
-    double V_Mag;               // Voltage Magnitude
-    double V_Pha;               // Voltage Phase
-    double activePower;         // current demand of this household
+    /** True if there is an EV associated with this house. */
+    bool hasCar;
+    
+    /** Voltage, current interval, RMS */
+    double V_RMS;
+    
+    /** Voltage, current interval, magnitude */
+    double V_Mag;
+    
+    /** Voltage, current interval, phase */
+    double V_Pha;
+    
+    /** Power demand, active */
+    double activePower;
+    
+    /** Power demand, inductive */
     double inductivePower;
+    
+    /** Power demand, capacitive */
     double capacitivePower;
     
-    double V_valley;            // Voltage at this house during valley load (for e.g. distributed charging alg)
-
+    /** Voltage at this house during valley load (for e.g. distributed charging alg) */
+    double V_valley;
+    
 public:
+    /** Constructor */
     Household(int nmi, std::string name, double dP);
+    
+    /** Destructor */
     virtual ~Household();
     
-    std::string getName();
+    /** Returns name of component this Household is tied to in loadflow */
+    std::string getComponentRef();
+    
+    /** Returns NMI */
     int getNMI();
+    
+    /** Returns demand profile */
     double getDemandProfile();
 
+    /** Sets power demand */
     void setPowerDemand(double active, double inductive, double capacitive);
+
+    /** Gets power factor of this household */
     double getPowerFactor();
 
-private:
-
+    
 };
 
 #endif	/* HOUSEHOLD_H */

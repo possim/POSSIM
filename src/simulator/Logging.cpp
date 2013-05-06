@@ -35,9 +35,12 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Logging.h"
 
 Logging::Logging() {
-    
 }
 
+Logging::~Logging() {
+}
+
+// Initialise.  Create directory for this simulation run, create all log files.
 void Logging::initialise(Config* config, GridModel gridmodel) {
     std::ofstream outfile;
     
@@ -58,7 +61,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile.open(file_demandHH.c_str());
     outfile << "Time, ";
     for(std::map<int,Household>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
-        outfile << it->second.getName() << ", ";
+        outfile << it->second.getComponentRef() << ", ";
     outfile << std::endl;
     outfile.close();
 
@@ -67,7 +70,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile.open(file_demandEV.c_str());
     outfile << "Time, ";
     for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << it->second.getName() << " (" << it->second.getNMI() << ") " << it->second.getProfileRef() << ", ";
+        outfile << it->second.getComponentRef() << " (" << it->second.getNMI() << ") " << it->second.getProfileRef() << ", ";
     outfile << std::endl;
     outfile.close();
     
@@ -82,7 +85,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile.open(file_locationEV.c_str());
     outfile << "Time, ";
     for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << it->second.getName() << " (" << it->second.getNMI() << "), ";
+        outfile << it->second.getComponentRef() << " (" << it->second.getNMI() << "), ";
     outfile << std::endl;
     outfile.close();
     
@@ -136,7 +139,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile.open(file_householdV.c_str());
     outfile << "Time, ";
     for(std::map<int,Household>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
-        outfile << it->second.getName() << " (House " << it->second.getNMI() << "), "
+        outfile << it->second.getComponentRef() << " (House " << it->second.getNMI() << "), "
                 << "House " << it->second.getNMI() << " Magnitude, "
                 << "House " << it->second.getNMI() << " Phase, ";
     outfile << std::endl;
@@ -151,12 +154,12 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile << std::endl;
     outfile.close();
     
-    // Create battery SOC file
+    // Create charging probabilities file
     file_probchargeEV = directory + "data_probChargeEV.csv";
     outfile.open(file_probchargeEV.c_str());
     outfile << "Time, ";
     for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << gridmodel.households.at(it->second.getNMI()).getName() << " (" << it->second.getNMI() << "), , , , , , , ";
+        outfile << gridmodel.households.at(it->second.getNMI()).getComponentRef() << " (" << it->second.getNMI() << "), , , , , , , ";
     outfile << std::endl;
     outfile << "Time, ";
     for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
@@ -168,13 +171,12 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     std::cout << "....................................... OK" << std::endl;
 }
 
-Logging::~Logging() {
-}
-
 std::string Logging::getDir() {
     return directory;
 }
 
+// Create a directory for all logging output of this simulation
+// Format:  /POSSIM_home/yyyy_mm_dd/hh_mm_ss
 void Logging::createDir() {
     time_t rawtime;
     struct tm *t;
@@ -227,7 +229,7 @@ void Logging::createDir() {
     }
 }
 
-
+// Update log files with output of current sim interval
 void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *charger, SpotPrice spotPrice) {
     std::map<int,Household> households = gridModel.households;
     std::map<int,Vehicle> vehicles = gridModel.vehicles;

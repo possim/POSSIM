@@ -39,7 +39,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include <sys/stat.h>
 #include <sys/types.h>
-//#include <time.h>
 #include <fstream>
 #include <sstream>
 #include <boost/filesystem.hpp>
@@ -53,18 +52,17 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../charging/ChargingBaseClass.h"
 #include "../spotprice/SpotPrice.h"
 
+/** Takes care of all logging.
+ * This class ensures that all relevant system parameters and simulation outputs
+ * are logged.
+ */
 class Logging {
-public:
-    Logging();
-    void initialise(Config* config, GridModel gridmodel);
-    virtual ~Logging();
     
-    void createDir();
-    std::string getDir();
-    void update(DateTime currtime, GridModel gridmodel, ChargingBaseClass *charger, SpotPrice spotPrice);
-
 private:
+    /** Directory containing all log output for this simulation run */
     std::string directory;
+    
+    /* Individual log file names below */
     std::string file_parameters;
     std::string file_demandHH;
     std::string file_demandEV;
@@ -78,6 +76,26 @@ private:
     std::string file_householdV;
     std::string file_batterySOC;
     std::string file_probchargeEV;
+
+public:
+    /** Constructor */
+    Logging();
+    
+    /** Initialise.  Create all logging output files. */
+    void initialise(Config* config, GridModel gridmodel);
+    
+    /** Destructor */
+    virtual ~Logging();
+    
+    /** Retrieve name of directory containing log files for this run. */
+    std::string getDir();
+
+    /** Update all log files with current sim interval's output. */
+    void update(DateTime currtime, GridModel gridmodel, ChargingBaseClass *charger, SpotPrice spotPrice);
+
+private:
+    /** Create a directory for current simulation run. */
+    void createDir();
 };
 
 #endif	/* LOGGING_H */

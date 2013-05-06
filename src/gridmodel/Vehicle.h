@@ -44,7 +44,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../battery/Battery.h"
 #include "../utility/DateTime.h"
 
-
+// No need to include helper struct in documentation
+/** \cond HIDDEN SYMBOLS */
 enum VehicleLocation {
     Away = 0,
     Home = 1
@@ -59,55 +60,103 @@ struct vehicleRecord_t {
     std::string name;
     std::list<travelPair_t> travelPairs;
 };
+/** \endcond */
 
+
+/** Represents a household in the grid.  Includes ID (national meter identifier),
+  * demand profile, and vehicle battery.*/
 class Vehicle {
    
 private:
 
-    int NMI;                    // National Meter Identifier.  Must be linked 
-                                // to household with same NMI
-    std::string componentRef;   // Name of representative entity in load flow model
-    Battery battery;            // Maintains battery model (level of charge)
+    /** ID (equivalent to NMI, national meter identifier) - linked to household
+      * where this vehicle connects */
+    int NMI;                    
+    
+    /** Name of equivalent component of this vehicle in loadflow model */
+    std::string componentRef;
+    
+    /** The vehicle battery. */
+    Battery battery;
 
     
 public:
+    /** Vehicle location: Home / Away / Other? */
     VehicleLocation location;
 
-    vehicleRecord_t travelProfile; // Travel profile for 24-hour period
-
-    bool        isConnected;      // Whether connected to charger or not
-    DateTime    timeConnected;    // Time at which last connected to charger
+    /** Travel profile of this vehicle.  Renewed / regenerated every 24 hours. */
+    vehicleRecord_t travelProfile;
     
-    bool        isCharging;       // Whether vehicle is charging
-    double      chargeRate;       // Rate at which vehicle should charge
+    /** True if vehicle is connected to charger. */
+    bool        isConnected;
     
-    double activePower;           // current demand of this vehicle
+    /** Datetime at which vehicle connected to charger. */
+    DateTime    timeConnected;
+    
+    /** True if vehicle is charging. */
+    bool        isCharging;
+    
+    /** Vehicle's charge rate (in kW), as assigned by charging algorithm. */
+    double      chargeRate;
+    
+   
+    /** Active power demand */
+    double activePower;
+    
+    /** Inductive power demand */
     double inductivePower;
+    
+    /** Capacitive power demand */
     double capacitivePower;
     
-    double distanceDriven;       // Used by traffic model to set amount driven in last sim step
+    /** If vehicle arrived home at last time step, this variable stores
+      * distance driven (for battery SOC update) */
+    double distanceDriven;
     
-    double L, N, P;             // Temp for dist charging testing
+    /** Temporary variable, to be removed soon. */
+    double L, N, P;
+    
+    /** Logging, debug purposes: check if vehicle state changed since last step. */
     bool switchon;
     
 public:
+    /** Constructor */
     Vehicle(Config* config, int nmi, std::string name);
+    
+    /** Destructor */
     virtual ~Vehicle();
     
+    /** Set start of charging */
     void setChargeStart(DateTime datetime);
+    
+    /** Set vehicle's power demand */
     void setPowerDemand(double active, double inductive, double capacitive);
 
-    std::string getName();
+    /** Get name of component this vehicle is tied to in load flow model. */
+    std::string getComponentRef();
+    
+    /** Get vehicle ID (NMI, tied to house this vehicle is connected to).*/
     int getNMI();
+    
+    /** Get ID of travel profile this vehicle is currently using. */
     std::string getProfileRef();
+    
+    /** Set vehicle power factor. */
     double getPowerFactor();
     
+    /** Get vehicle state of charge. */
     double getSOC();
+    
+    /** Get change in state of charge since last simulation interval. */
     double getSOCchange();
     
+    /** Assign a new travel profile to this vehicle. */
     void setTravelProfile(vehicleRecord_t vr);
     
+    /** Recharge vehicle battery. */
     void rechargeBattery();
+    
+    /** Discharge vehicle battery. */
     void dischargeBattery();
 };
 

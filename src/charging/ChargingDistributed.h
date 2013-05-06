@@ -47,20 +47,41 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../gridmodel/GridModel.h"
 #include "../utility/Utility.h"
 
-
+/** Uses a distributed charging algorithm in which each vehicle (or rather, 
+  * each EV charger) makes individual decisions on whether to schedule the
+  * vehicle load or not, based on only local voltage measurements and the 
+  * vehicle's state of charge.  This algorithm is described in more detail in:
+  * J. de Hoog, D. A. Thomas, V. Muenzel, D. C. Jayasuriya, T. Alpcan, M. Brazil, and I. Mareels,
+  * "Electric Vehicle Charging and Grid Constraints: Comparing Distributed and Centralized Approaches",
+  * In Proceedings of the IEEE Power and Energy Society General Meeting. Vancouver, Canada, July 2013. */
 class ChargingDistributed : public ChargingBaseClass  {
     
 private:
+    /** Maximum possible charging rate */
+    double maxChargeRate;
+    
+    /** Minimum allowed voltage */
     int minVoltage;
+    
+    /** Local copy of simulation interval length */
     int simInterval;
+    
+    /** We don't necessarily want to change the charge rate at each interval, but we do
+      * want to have a probability of the vehicle starting to charge over a 
+      * given future interval.  This is that interval time, in minutes. */
     int periodOfLoadSchedule;
     
 public:
+    /** Constructor */
     ChargingDistributed(Config* config, GridModel gridModel);
+    
+    /** Destructor */
     ~ChargingDistributed();
     
+    /** Alternate constructor, which includes datetime and household demand. */
     ChargingDistributed(Config* config, GridModel &gridmodel, DateTime datetime, HouseholdDemand hhDemand);
 
+    /** Set charge rates of all vehicles at this date and time. */
     void setChargeRates(DateTime datetime, GridModel &gridModel);
     
 };

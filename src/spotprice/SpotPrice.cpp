@@ -38,16 +38,11 @@ SpotPrice::SpotPrice(Config* config) {
     std::cout << "Loading spot price data... ";
     std::cout.flush();
     
-    simInterval = config->getInt("simulationinterval");
     dataDir = config->getString("spotpricedata");
     price = 0;
         
     std::cout << "OK" << std::endl;
     std::cout.flush();
-}
-
-SpotPrice::SpotPrice(std::string dirName) {
-    dataDir = dirName;
 }
 
 SpotPrice::~SpotPrice() {

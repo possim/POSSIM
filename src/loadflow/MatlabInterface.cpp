@@ -150,7 +150,7 @@ std::vector <std::string> MatlabInterface::getHouseNames() {
 }
 
 void MatlabInterface::addVehicle(Vehicle vehicle) {
-     std::string vehicleName = vehicle.getName();
+     std::string vehicleName = vehicle.getComponentRef();
      
      ss.str("");
      int lastindex = vehicleName.find_last_of("/");
@@ -263,7 +263,7 @@ void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eo
 
     // Get Individual Household data
     for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
-        houseName = it->second.getName();
+        houseName = it->second.getComponentRef();
 
         tokens.clear();
         utility::tokenize(houseName, tokens, "/");

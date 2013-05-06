@@ -52,7 +52,7 @@ void GridModel::initialise(Config* config, LoadFlowInterface* loadflow) {
     powerFactor = config->getDouble("powerfactor");
     evPenetration = config->getInt("evpenetration");
     minVoltage = config->getInt("minvoltage");
-    availableCapacity = 0;
+    sumHouseholdLoads = 0;
     
     loadGridModel(loadflow);
     addVehicles(config);
@@ -61,7 +61,6 @@ void GridModel::initialise(Config* config, LoadFlowInterface* loadflow) {
 void GridModel::loadGridModel(LoadFlowInterface* lf) {
     Household* newHouse;
     std::vector <std::string> houseNames;
-    std::vector<std::string> tokens;
     std::string name;
     int nmi;          
     double demandProfile;
@@ -149,7 +148,7 @@ void GridModel::addVehicles(Config* config) {
     for(int i=0; i<numEVs; i++) {
         nmi = indexVector[i];
         // WARNING SHOULD HAVE BETTER ERROR CHECKING HERE
-        houseName = households.at(nmi).getName();
+        houseName = households.at(nmi).getComponentRef();
         households.at(nmi).hasCar = true;
 
         int lastindex = houseName.find_last_of("/"); 
@@ -175,7 +174,7 @@ void GridModel::updateVehicleBatteries() {
 void GridModel::generateLoads(DateTime currTime, HouseholdDemand householdDemand) {
     double activePower, inductivePower;
     double randomFactor;
-    double sumLoads = 0;
+    sumHouseholdLoads = 0;
 
     for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
         activePower = it->second.getDemandProfile() * householdDemand.getDemandAt(currTime, it->second.getNMI());
@@ -184,10 +183,9 @@ void GridModel::generateLoads(DateTime currTime, HouseholdDemand householdDemand
         
         inductivePower = getQfromPF(activePower, powerFactor + randomFactor);
         it->second.setPowerDemand(activePower, inductivePower, 0);
-        sumLoads += activePower;
+        sumHouseholdLoads += activePower;
     }
-    availableCapacity = distTransCapacity - sumLoads;
-
+    
     for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
         it->second.setPowerDemand(it->second.chargeRate, 0, 0); 
 }
@@ -331,10 +329,10 @@ void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDe
     for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
         activePower = householdDemand.getDemandAt(valleytime, it->second.getNMI()) * 1000;
         inductivePower = getQfromPF(activePower, powerFactor);
-        loadflow->setDemand(it->second.getName(), activePower, inductivePower, 0);
+        loadflow->setDemand(it->second.getComponentRef(), activePower, inductivePower, 0);
     }
     for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second.getName(), 0, 0, 0);
+        loadflow->setDemand(it->second.getComponentRef(), 0, 0, 0);
     
     loadflow->runSim();
     
@@ -342,32 +340,30 @@ void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDe
     for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it)
         it->second.V_valley = it->second.V_RMS;
 
-    std::cout << "complete, took: " << utility::timeDisplay(utility::timeElapsed(time_startLoadFlow)) << std::endl;
+    std::cout << "complete, took: " << utility::timeDisplay(utility::timeSince(time_startLoadFlow)) << std::endl;
 }
 
 
 void GridModel::runLoadFlow(DateTime currTime) {
     boost::posix_time::ptime time_startLoadFlow = boost::posix_time::microsec_clock::local_time();
-    boost::posix_time::time_duration length_loadFlow;
 
     std::cout << "Running load flow analysis ... ";
     std::cout.flush();
 
     for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it)
-        loadflow->setDemand(it->second.getName(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
+        loadflow->setDemand(it->second.getComponentRef(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
 
     for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second.getName(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
+        loadflow->setDemand(it->second.getComponentRef(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
     
     loadflow->runSim();
     
     loadflow->getOutputs(phaseV, phaseI, eolV, households);
 
-    length_loadFlow = boost::posix_time::microsec_clock::local_time() - time_startLoadFlow;
-    std::cout << "complete, took: " << utility::timeDisplay((long)(length_loadFlow.total_milliseconds())) << std::endl;
+    std::cout << "complete, took: " << utility::timeDisplay(utility::timeSince(time_startLoadFlow)) << std::endl;
 }
 
 
 double GridModel::getAvailableCapacity() {
-    return availableCapacity;
+    return distTransCapacity - sumHouseholdLoads;
 }

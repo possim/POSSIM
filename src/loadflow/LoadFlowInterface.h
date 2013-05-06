@@ -45,19 +45,45 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../gridmodel/Vehicle.h"
 #include "../gridmodel/Household.h"
 
+/** Base class for interaction with third party load flow / network modelling
+  * software.  One goal of POSSIM is to allow a variety of load flow packages
+  * to be plugged in and out as desired.  Each load flow package is accessed
+  * via a "LoadFlowInterface" specific to that package.  Each such interface
+  * must inherit this base class. */
 class LoadFlowInterface {
 
 public:
+    /** Load network model. */
     virtual void loadModel(std::string model) = 0;
+    
+    /** Run a load flow simulation. */
     virtual void runSim() = 0;
+    
+    /** Get value of variable having this name. */
     virtual double getVar(std::string var) = 0;
+    
+    /** Set value of variable having this name. */
     virtual void setVar(std::string component, double value, std::string var) = 0;
+    
+    /** Get number of houses in the model. */
     virtual int getNumHouses() = 0;
+    
+    /** Get names of houses in the model. */
     virtual std::vector <std::string> getHouseNames() = 0;
+    
+    /** Add a vehicle to the model. */
     virtual void addVehicle(Vehicle vehicle) = 0;
+    
+    /** Set demand of the given component. */
     virtual void setDemand(std::string component, double a, double i, double c) = 0;
+    
+    /** Print the model (to pdf in this run's logging directory, ideally). */
     virtual void printModel(std::string targetDir) = 0;
+    
+    /** Generate a report. */
     virtual void generateReport(std::string dir, int month, bool isWeekday, int simInterval) = 0;
+    
+    /** Get load flow simulator's outputs, after load flow conducted. */
     virtual void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households) = 0;
 };
 

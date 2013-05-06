@@ -44,15 +44,31 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChargingBaseClass.h"
 
-
+/** Apply a Time-Of-Use (TOU) policy to vehicle charging:  vehicles charge only
+  * between 11pm and 6am (or whatever the set limits are). */
 class ChargingTOU : public ChargingBaseClass  {
 
-public:
+private:
+    /** Maximum possible charging rate */
+    double maxChargeRate;
+    
+    /** Allowed charge start, in hours (e.g. 23 = 11pm) */
+    int chargeStart;
+    
+    /** Allowed charge end, in hours (e.g. 6 = 6am) */
+    int chargeEnd;
+    
+public:   
+    /** Constructor */
     ChargingTOU(Config* config, GridModel gridModel);
+    
+    /** Destructor */
     ~ChargingTOU();
     
-    void setChargeRates(DateTime datetime, GridModel &gridmodel);
+    /** Set charge rates for all vehicles at this date and time. */
+    void setChargeRates(DateTime datetime, GridModel &gridModel);
 };
+
 
 #endif	/* CHARGING_TOU_H */
 

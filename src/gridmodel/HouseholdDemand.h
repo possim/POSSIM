@@ -38,7 +38,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-//#include <time.h>
 #include <vector>
 #include <map>
 
@@ -46,35 +45,54 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../utility/DateTime.h"
 #include "../utility/Utility.h"
 
+
+// No need to include helper struct in documentation
+/** \cond HIDDEN SYMBOLS */
 struct Z_Triple {
     double Z[3];
 };
+/** \endcond */
 
+
+/** A simple household demand profile class, that can either read in an average
+  * profile from file, or specific demand at specific dates from actual data. */
 class HouseholdDemand {
 private:
+    
+    /** Local copy of sim interval length */
     int simInterval;
+    
+    /** Determines whether to use average profile or specific data points */
     std::string modelType;
+    
+    /** Path to demand data */
     std::string demandDataFile;
+    
+    /** Path to file indicating phase allocation (which houses are on which phase) */
     std::string phaseAllocFile;
+    
+    /** Add randomness to demand */
     double *randomnessVars;
     
 public:
-    
+    /** Constructor */
     HouseholdDemand(Config* config);
+    
+    /** Destructor */
     virtual ~HouseholdDemand();
     
+    /** Find demand at given time for given house */
     double getDemandAt(DateTime datetime, int nmi);
     
 private:
-    // For profile-based demand
+    /** Average demand profiles */
     std::vector<double> genericDemand[12][2]; // 12 months, weekday vs weekend, vector for intervals of day
 
-    // For data-based demand
+    /** Data read in for specific demand profiles */
     int numHouses[3];   
     int totalHouses;
     std::map<int,int> housePhase;
     std::map<std::string,Z_Triple> exactDemand;
-
 
     void inputData(std::string filename, int month, int weekday);
     void inputWeekdayData(int month);

@@ -34,7 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "Battery.h"
 
-
+// Upload battery specs, set initial values, randomness to initial SOC if
+// specified by config
 Battery::Battery(Config* config) {
     batteryFile = config->getString("batterydata");
     simInterval = config->getInt("simulationinterval");
@@ -42,13 +43,12 @@ Battery::Battery(Config* config) {
     uploadCharacteristics(batteryFile);
     
     // Random initial capacity of battery
-    capacity = 60 + rand()%11;
-    if(capacity > config->getDouble("batterycapacity"))
-        capacity = 80;
+    double randCapacity = utility::randomNormal(config->getRandomParams("batteryrandom"));
+    capacity = config->getDouble("batterystart") + randCapacity;
+    if(capacity > C_SafeUpper)
+        capacity = C_SafeUpper;
     SOC = (capacity - C_SafeLower) / (C_SafeUpper - C_SafeLower) * 100;
     SOC_last = SOC;
-    
-    //displayCharacteristics();
 }
 
 Battery::~Battery() {
@@ -222,8 +222,9 @@ void Battery::discharge(double distance) {
     
     SOC_last = SOC;
 
+    // Could use some better error checking here?
     if(socDecrease > SOC) {
-        std::cout << "  WARNING: CAR WOULD HAVE RUN OUT OF POWER" << std::endl;
+        std::cout << "  WARNING: CAR WOULD HAVE RUN OUT OF POWER.  Setting SOC to 0." << std::endl;
         SOC = 0;
         capacity = 0;
     }

@@ -32,44 +32,56 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "Household.h"
+#ifndef PHASOR_H
+#define	PHASOR_H
 
-Household::Household(int nmi, std::string name, double dP) {
-    NMI = nmi;
-    componentRef = name;
-    demandProfile = dP;
-    activePower = 0;
-    inductivePower = 0;
-    capacitivePower = 0;
-    V_RMS = 0;
-    V_Mag = 0;
-    V_Pha = 0;
-    V_valley = 0;
-}
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif /*M_PI*/
 
+#include <cstdlib>
+#include <iostream>
+#include <cmath>
+#include <sstream>
 
-Household::~Household() {
-}
+/** A simple Phasor class for straightforward manipulation of phasor quantities. */
+class Phasor {
 
-std::string Household::getComponentRef() {
-    return componentRef;
-}
+private:
+    double amplitude;           // amplitude
+    double phase;               // phase in radians
+    
+public:
+    /** Constructor - zero phasor. */
+    Phasor();
+    
+    /** Constructor - non-zero phasor. */
+    Phasor(double a, double p);
+    
+    /** Destructor */
+    virtual ~Phasor();
+    
+    /** Return real part of phasor */
+    double real();
+    
+    /** Return imaginary part of phasor */
+    double imag();
+    
+    /** Return root mean square of phasor */
+    double toRMS();
+    
+    Phasor plus(Phasor other);
+    
+    Phasor times(Phasor other);
+    
+    Phasor squared();
+    
+    Phasor divideByConst(double n);
+    
+    Phasor timesConst(double n);
+    
+    std::string toString();
+};
+    
+#endif	/* PHASOR_H */
 
-int Household::getNMI() {
-    return NMI;
-}
-
-double Household::getDemandProfile() {
-    return demandProfile;
-}
-
-void Household::setPowerDemand(double active, double inductive, double capacitive) {
-    activePower = active;
-    inductivePower = inductive;
-    capacitivePower = capacitive;
-}
-
-double Household::getPowerFactor() {
-    if(activePower == 0) return 0;
-    return activePower/sqrt(pow(activePower, 2) + pow(inductivePower-capacitivePower,2));
-}
