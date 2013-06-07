@@ -35,13 +35,13 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "SpotPrice.h"
 
 SpotPrice::SpotPrice(Config* config) {
-    std::cout << "Loading spot price data... ";
+    std::cout << "Loading spot price data ...";
     std::cout.flush();
     
     dataDir = config->getString("spotpricedata");
     price = 0;
         
-    std::cout << "OK" << std::endl;
+    std::cout << " OK" << std::endl;
     std::cout.flush();
 }
 

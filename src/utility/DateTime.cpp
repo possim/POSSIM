@@ -66,6 +66,13 @@ void DateTime::set(std::string newDateTime) {
     tokenize(newDateTime.c_str());
 }
 
+void DateTime::set(int numMins) {
+    year = 2000;
+    month = 1;
+    day = 1;
+    setTime(numMins);
+}
+
 void DateTime::setTime(int mins) {
     hour = mins/60;
     minute = mins%60;

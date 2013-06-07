@@ -44,6 +44,25 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <cmath>
 #include <sstream>
 
+/** A single constant impedance load having active and reactive components.  */
+struct S_Load {
+    /** Demand - Active */
+    double P;
+    
+    /** Demand - Reactive*/
+    double Q;
+};
+
+
+/** An impedance, having resistance and reactance */
+struct Impedance {
+    /** Resistance */
+    double resistance;
+    
+    /** Reactance */
+    double reactance;
+};
+
 /** A simple Phasor class for straightforward manipulation of phasor quantities. */
 class Phasor {
 

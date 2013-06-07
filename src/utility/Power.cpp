@@ -32,43 +32,56 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#ifndef CHARGINGTOU_H
-#define	CHARGINGTOU_H
+#include "Power.h"
 
-#include <stdlib.h>
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <cmath>
-#include <iomanip>
 
-#include "ChargingBaseClass.h"
 
-/** Apply a Time-Of-Use (TOU) policy to vehicle charging:  vehicles charge only
-  * between 11pm and 6am (or whatever the set limits are). */
-class ChargingTOU : public ChargingBaseClass  {
+Phasor::Phasor() {
+    amplitude = 0;
+    phase = 0;
+}
 
-private:
-    /** Maximum possible charging rate */
-    double maxChargeRate;
+Phasor::Phasor(double a, double p) {
+    amplitude = a;
+    phase = p*M_PI/180;
+}
     
-    /** Allowed charge start, in hours (e.g. 23 = 11pm) */
-    int chargeStart;
+Phasor::~Phasor() {
+}
     
-    /** Allowed charge end, in hours (e.g. 6 = 6am) */
-    int chargeEnd;
-    
-public:   
-    /** Constructor */
-    ChargingTOU(Config* config, GridModel gridModel);
-    
-    /** Destructor */
-    ~ChargingTOU();
-    
-    /** Set charge rates for all vehicles at this date and time. */
-    void setChargeRates(DateTime datetime, GridModel &gridModel);
-};
+double Phasor::real() {return amplitude*cos(phase);}
+double Phasor::imag() {return amplitude*sin(phase);}
+double Phasor::toRMS() {return amplitude/sqrt(double(2));}
 
+Phasor Phasor::plus(Phasor other) {
+    Phasor sum;
+    double sumReal, sumImag;
 
-#endif	/* CHARGING_TOU_H */
+    sumReal = real() + other.real();
+    sumImag = imag() + other.imag();
+    sum.phase = atan2(sumImag,sumReal);
+    sum.amplitude = sqrt((double)(pow(sumReal,2)+pow(sumImag,2)));
 
+    return sum;
+}
+
+Phasor Phasor::times(Phasor other) {
+    Phasor product;
+
+    product.amplitude = amplitude * other.amplitude;
+    product.phase = phase + other.phase;
+
+    return product;
+}
+
+Phasor Phasor::squared() {return times(*this);}
+
+Phasor Phasor::divideByConst(double n) {amplitude /= n; return *this;}
+
+Phasor Phasor::timesConst(double n) {amplitude *= n; return *this;}
+
+std::string Phasor::toString() {
+    std::stringstream ss;
+    ss << "RMS " << toRMS() << ", Amp " << amplitude << ", Pha " << phase;
+    return ss.str();
+}

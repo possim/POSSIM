@@ -35,36 +35,44 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Simulator.h"
 
 Simulator::Simulator(Config* configIn):
+        householdDemandModel(configIn),
         trafficModel(configIn),
-        householdDemand(configIn),
         spotPrice(configIn)
 {
-    std::cout << "Loading Simulator..." << std::endl;
+    std::cout << "Loading Simulator ..." << std::endl;
     
     // Store local pointer to config object
     config = configIn;
 
-    // Set parameters
+    // Set some global parameters locally for convenience
     startTime.set(config->getConfigVar("starttime"));
     currTime = startTime;
     finishTime.set(config->getConfigVar("finishtime"));
     
     // Create interface to load flow simulator
-    std::string modelname = config->getString("modelname");
     switch(config->getLoadFlowSim()) {
-        case 0:         loadflow = new TestingInterface(modelname);
+        case 0:         loadflow = new TestingInterface(config);
                         break;
-        case 1:         loadflow = new MatlabInterface(modelname);
+        case 1:         loadflow = new MatlabInterface(config);
                         break;
-        default:        loadflow = new MatlabInterface(modelname);
+        default:        loadflow = new MatlabInterface(config);
                         break;
     }
     
     // Load model, set initial values
     gridModel.initialise(config, loadflow);
     
+    // Assign demand profiles to houses
+    householdDemandModel.assignProfiles(gridModel.households);
+    
+    // Add vehicles to gridmodel
+    gridModel.addVehicles(config);
+    
     // Assign first vehicle profiles
     trafficModel.initialise(startTime, gridModel.vehicles);
+
+    // Initialise log
+    log.initialise(config, gridModel);
 
     // Create charging algorithm
     switch(config->getChargingAlg()) {
@@ -72,19 +80,18 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 1:         charger = new ChargingEqualShares(config, gridModel);
                         break;
-        case 2:         charger = new ChargingDistributed(config, gridModel, startTime, householdDemand);
+        case 2:         charger = new ChargingDistributed(config, gridModel, startTime, householdDemandModel);
                         break;
-        case 3:         charger = new ChargingTOU(config, gridModel);
+        case 4:         charger = new ChargingTOU(config, gridModel);
+                        break;
+        case 5:         charger = new ChargingOptimal1(config, gridModel, loadflow, log.getDir());
                         break;
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
     }
     
-    // Initialise log
-    log.initialise(config, gridModel);
-    
     // Optional: print load flow model to log directory
-    //loadflow->printModel(log->getDir());
+    //loadflow->printModel(log.getDir());
     
     std::cout << " - Simulator loaded OK" << std::endl << std::endl;
 }
@@ -109,22 +116,21 @@ void Simulator::timingUpdate(boost::posix_time::time_duration lastCycleLength) {
 // Run simulation
 void Simulator::run() {
     // Several variables to keep track of how long cycle / full simulation took
-    boost::posix_time::ptime time_runStart, time_cycleStart;
-    time_runStart = boost::posix_time::microsec_clock::local_time();
+    boost::posix_time::ptime timerRun, timerCycle;
     boost::posix_time::time_duration lastCycleLength;
+    utility::startTimer(timerRun);
+    utility::startTimer(timerCycle);
+        
+    std::cout << "Starting Simulation ... " << std::endl;
     
     // Outer simulation loop
     while(!currTime.isLaterThan(finishTime)) {
-        
-        // For timing purposes, keep track of time cycle started
-        time_cycleStart = boost::posix_time::microsec_clock::local_time();
-        
         std::cout << "-------------------------------------------" << std::endl;        
         currTime.display();
         std::cout << std::endl;
 
         // Update electricity spot price
-        //spotPrice.update(currTime);
+        // spotPrice.update(currTime);
         
         // Update traffic model
         trafficModel.update(currTime, gridModel.vehicles);
@@ -136,14 +142,14 @@ void Simulator::run() {
         charger->setChargeRates(currTime, gridModel);
 
         // Update grid model - generate household loads & apply charge rates
-        gridModel.generateLoads(currTime, householdDemand);
+        gridModel.generateLoads(currTime, householdDemandModel);
 
         // If desired, show some results
         if(config->getBool("showdebug")) {
             spotPrice.display();
             trafficModel.displaySummary(gridModel.vehicles);
             gridModel.displayVehicleSummary();
-            gridModel.displayLoadSummary();
+            gridModel.displayLoadSummary(currTime);
         }
 
         // Provide quick update on timing to output
@@ -159,8 +165,8 @@ void Simulator::run() {
         // while(utility::timediff(boost::posix_time::microsec_clock::local_time(), time_cycleStart) < config->getInt("intervaldelay"));
         
         // Estimate timing
-        lastCycleLength = boost::posix_time::microsec_clock::local_time() - time_cycleStart;
-        std::cout << "Cycle complete, took: " << utility::timeDisplay(utility::timeSince(time_cycleStart)) << std::endl;
+        lastCycleLength = boost::posix_time::microsec_clock::local_time() - timerCycle;
+        std::cout << "Cycle complete, took: " << utility::updateTimer(timerCycle) << std::endl;
 
         currTime.increment(config->getInt("simulationinterval"));
         
@@ -168,7 +174,7 @@ void Simulator::run() {
     
     // Simulation complete, provide some output, generate report.
     std::cout << "-------------------------------------------" << std::endl
-              << "Simulation complete, took " << utility::timeDisplay(utility::timeSince(time_runStart)) << std::endl;
+              << "Simulation complete, took " << utility::endTimer(timerRun) << std::endl;
     if(config->getBool("generatereport")) {
         std::cout << "Generating report ..." << std::endl; 
         loadflow->generateReport(log.getDir(), currTime.month, currTime.isWeekday(), config->getInt("simulationinterval"));

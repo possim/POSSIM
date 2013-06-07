@@ -32,56 +32,25 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "Phasor.h"
+#ifndef NETWORKDATA_H
+#define	NETWORKDATA_H
 
-
-
-Phasor::Phasor() {
-    amplitude = 0;
-    phase = 0;
-}
-
-Phasor::Phasor(double a, double p) {
-    amplitude = a;
-    phase = p*M_PI/180;
-}
+/** Maintains all relevant network data:  phase and neutral currents and
+  * voltages;  individual household voltages. */
+struct NetworkData {
+        
+    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
+    double phaseV[12];
     
-Phasor::~Phasor() {
-}
+    /** Current RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
+    double phaseI[12];
     
-double Phasor::real() {return amplitude*cos(phase);}
-double Phasor::imag() {return amplitude*sin(phase);}
-double Phasor::toRMS() {return amplitude/sqrt(double(2));}
+    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at end-of-line. */
+    double eolV[12];
+    
+    /** Voltage at all individual households, mapped to households' ID (NMI)*/
+    std::map<int,double> householdV;
+};
 
-Phasor Phasor::plus(Phasor other) {
-    Phasor sum;
-    double sumReal, sumImag;
+#endif	/* NETWORKDATA_H */
 
-    sumReal = real() + other.real();
-    sumImag = imag() + other.imag();
-    sum.phase = atan2(sumImag,sumReal);
-    sum.amplitude = sqrt((double)(pow(sumReal,2)+pow(sumImag,2)));
-
-    return sum;
-}
-
-Phasor Phasor::times(Phasor other) {
-    Phasor product;
-
-    product.amplitude = amplitude * other.amplitude;
-    product.phase = phase + other.phase;
-
-    return product;
-}
-
-Phasor Phasor::squared() {return times(*this);}
-
-Phasor Phasor::divideByConst(double n) {amplitude /= n; return *this;}
-
-Phasor Phasor::timesConst(double n) {amplitude *= n; return *this;}
-
-std::string Phasor::toString() {
-    std::stringstream ss;
-    ss << "RMS " << toRMS() << ", Amp " << amplitude << ", Pha " << phase;
-    return ss.str();
-}

@@ -56,21 +56,29 @@ private:
 
     
 public:
-    TestingInterface(std::string modelname);
+    TestingInterface(Config* config);
     ~TestingInterface();
 
     void setDir(std::string dir);
-    void loadModel(std::string model);
+    void loadModel(Config* config);
+    void extractModel(FeederPole* &root, 
+                      DistributionTransformer* &transformer,
+                      std::map<std::string,FeederPole*> &poles, 
+                      std::map<std::string,FeederLineSegment*> &lineSegments, 
+                      std::map<std::string,Household*> &households);
     void runSim();
     double getVar(std::string var);
     void setVar(std::string component, double value, std::string var);
+    void setVar(std::string component, std::string value, std::string var);
+    void setTxCapacity(std::string component, double value);
     int getNumHouses();
     std::vector <std::string> getHouseNames();
     void addVehicle(Vehicle vehicle);
     void setDemand(std::string component, double a, double i, double c);
+    void setDemand(std::string filename);
     void printModel(std::string targetDir);
     void generateReport(std::string dir, int month, bool isWeekday, int simInterval);
-    void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households);
+    void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households);
 };
 #endif	/* TESTINGINTERFACE_H */
 

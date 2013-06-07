@@ -233,4 +233,3 @@ void Battery::discharge(double distance) {
         capacity = C_SafeLower + SOC/100 * (C_SafeUpper - C_SafeLower);
     }
 }
-

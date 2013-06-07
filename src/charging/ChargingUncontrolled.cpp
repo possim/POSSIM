@@ -45,13 +45,13 @@ ChargingUncontrolled::~ChargingUncontrolled() {
 
 void ChargingUncontrolled::setChargeRates(DateTime datetime, GridModel &gridModel) {
     // Set chargeRates
-    for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
-        if(it->second.getSOC() < 98  &&  it->second.isConnected) {
-            it->second.chargeRate = maxChargeRate;
-            it->second.isCharging = true;
+    for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
+        if(it->second->getSOC() < 98  &&  it->second->isConnected) {
+            it->second->chargeRate = maxChargeRate;
+            it->second->isCharging = true;
         }
         else {
-            it->second.chargeRate = 0;
-            it->second.isCharging = false;
+            it->second->chargeRate = 0;
+            it->second->isCharging = false;
         }
 }

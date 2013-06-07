@@ -37,6 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <fstream>
+#include <exception>
 #include <stdlib.h>
 #include <vector>
 #include <map>
@@ -44,61 +45,63 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../simulator/Config.h"
 #include "../utility/DateTime.h"
 #include "../utility/Utility.h"
+#include "../utility/Power.h"
 
 
-// No need to include helper struct in documentation
-/** \cond HIDDEN SYMBOLS */
-struct Z_Triple {
-    double Z[3];
+/** A full household demand profile for a 24-hour period.  Stores all 
+  * time - load pairs for this profile, plus the date it represents and a
+  * unique name for it.  */
+struct HouseholdDemandProfile {
+    std::string name;
+    std::map<int, S_Load> demand;
 };
-/** \endcond */
 
+#include "Household.h"
 
 /** A simple household demand profile class, that can either read in an average
   * profile from file, or specific demand at specific dates from actual data. */
-class HouseholdDemand {
+class HouseholdDemandModel {
 private:
     
     /** Local copy of sim interval length */
     int simInterval;
     
-    /** Determines whether to use average profile or specific data points */
+    /** Determines whether to use:
+      * (i)   randomly assigned profiles ("random") 
+      * (ii)  phase-specific profiles, ("phasespecific"), or
+      * (iii) house-specific profiles ("housespecific") */
     std::string modelType;
     
-    /** Path to demand data */
-    std::string demandDataFile;
+    /** Path to demand data directory */
+    std::string demandDataDir;
+    
+    /** Map of profile names to full demand profiles */
+    std::map<std::string, HouseholdDemandProfile> demandProfiles;
     
     /** Path to file indicating phase allocation (which houses are on which phase) */
-    std::string phaseAllocFile;
+    std::string houseProfileAllocFile;
+    
+    /** Mapping of house names to demand profile names*/
+    std::map<std::string,std::string> allocationMap;
     
     /** Add randomness to demand */
-    double *randomnessVars;
+    double* randomDistribution;
     
 public:
     /** Constructor */
-    HouseholdDemand(Config* config);
+    HouseholdDemandModel(Config* config);
     
     /** Destructor */
-    virtual ~HouseholdDemand();
+    virtual ~HouseholdDemandModel();
     
     /** Find demand at given time for given house */
-    double getDemandAt(DateTime datetime, int nmi);
+    void assignProfiles(std::map<std::string, Household*> &households);
     
 private:
-    /** Average demand profiles */
-    std::vector<double> genericDemand[12][2]; // 12 months, weekday vs weekend, vector for intervals of day
-
-    /** Data read in for specific demand profiles */
-    int numHouses[3];   
-    int totalHouses;
-    std::map<int,int> housePhase;
-    std::map<std::string,Z_Triple> exactDemand;
-
-    void inputData(std::string filename, int month, int weekday);
-    void inputWeekdayData(int month);
-    void inputWeekendData(int month);
-
-    void inputPhaseAllocation();
+    HouseholdDemandProfile getRandomProfile();
+    void inputAllProfiles();
+    HouseholdDemandProfile inputProfileFromFile(std::string filename);
+    void inputProfileAllocationFromFile();
 };
 
 #endif	/* HOUSEHOLDDEMAND_H */

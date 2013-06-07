@@ -42,8 +42,10 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <map>
 
-#include "../gridmodel/Vehicle.h"
-#include "../gridmodel/Household.h"
+#include "../vehicle/Vehicle.h"
+#include "../household/Household.h"
+#include "../gridmodel/Feeder.h"
+#include "../gridmodel/DistributionTransformer.h"
 
 /** Base class for interaction with third party load flow / network modelling
   * software.  One goal of POSSIM is to allow a variety of load flow packages
@@ -54,7 +56,15 @@ class LoadFlowInterface {
 
 public:
     /** Load network model. */
-    virtual void loadModel(std::string model) = 0;
+    virtual void loadModel(Config* config) = 0;
+    
+    /** Parse the model, read network structure and components and store in
+      * by-reference arguments */
+    virtual void extractModel(FeederPole* &root, 
+                              DistributionTransformer* &transformer,
+                              std::map<std::string,FeederPole*> &poles, 
+                              std::map<std::string,FeederLineSegment*> &lineSegments, 
+                              std::map<std::string,Household*> &households) = 0;
     
     /** Run a load flow simulation. */
     virtual void runSim() = 0;
@@ -64,6 +74,12 @@ public:
     
     /** Set value of variable having this name. */
     virtual void setVar(std::string component, double value, std::string var) = 0;
+    
+    /** Set value of variable having this name. */
+    virtual void setVar(std::string component, std::string value, std::string var) = 0;
+    
+    /** Set transformer capacity. */
+    virtual void setTxCapacity(std::string component, double value) = 0;
     
     /** Get number of houses in the model. */
     virtual int getNumHouses() = 0;
@@ -77,6 +93,9 @@ public:
     /** Set demand of the given component. */
     virtual void setDemand(std::string component, double a, double i, double c) = 0;
     
+    /** Set demand of all components specified in given filename. */
+    virtual void setDemand(std::string filename) = 0;
+    
     /** Print the model (to pdf in this run's logging directory, ideally). */
     virtual void printModel(std::string targetDir) = 0;
     
@@ -84,7 +103,8 @@ public:
     virtual void generateReport(std::string dir, int month, bool isWeekday, int simInterval) = 0;
     
     /** Get load flow simulator's outputs, after load flow conducted. */
-    virtual void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households) = 0;
+    virtual void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) = 0;
+    
 };
 
 #endif	/* LOADFLOWINTERFACE_H */

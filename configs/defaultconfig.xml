@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<configfile         flag="C"    value="configs/defaultconfig.xml" />
+
+<simulationinterval flag="i"    value="15" />
+<starttime          flag="s"    value="12.00.22.08.2012" />           
+<finishtime         flag="f"    value="00.00.24.08.2012" />    
+
+<intervaldelay      flag="d"    value="0" />           
+<showdebug          flag="D"    value="yes" />   
+<generatereport     flag="g"    value="yes" />   
+
+<demanddatadir      flag="f_de" value="data/demand/examples" />
+<demandmodel        flag="M"    value="phasespecific" />
+<housedemandalloc   flag="hda"  value="data/demand/houseallocation.csv" />
+<demandrandom_int   flag="dri"  value="0,0,0,0" />
+
+<evpenetration      flag="p"    value="80" />
+<trafficdata        flag="f_td" value="data/traffic/united/vehicleProfiles_Whitehorse_wk.csv" />
+<vehicleassignment  flag="f_ve" value="random" />
+<vehiclechargedata  flag="f_vc" value="" />
+
+<batterystart       flag="S"    value="40" />
+<batteryrandom      flag="S_r"  value="0,7,-12,12" />
+<batterycapacity    flag="b"    value="80" />
+<batterydata        flag="f_ba" value="data/battery/batterydata.txt" />
+
+<spotpricedata      flag="f_sp" value="data/spotprice/AEMO/" />
+
+<loadflowsimulator  flag="l"    value="matlab" />
+<modelpath          flag="m"    value="matlab/UnitedModel1.mdl" />
+<modellibpath       flag="ml"   value="matlab/UnitedModel_lib.mdl" />
+
+<frequency          flag="f"    value="50" />
+<txcapacity         flag="t"    value="300000" />
+<powerfactor        flag="P"    value="0.95" />
+<txvoltage          flag="V_tx" value="250" />
+<basevoltage        flag="V_b"  value="230" />
+<minvoltage         flag="V_mn" value="218" />
+<loadscheduleperiod flag="L"    value="30" />
+
+<chargingalgorithm  flag="c"    value="optimal1" />
+<maxchargerate      flag="c_mx" value="3450" />
+<minchargerate      flag="c_mn" value="0" />
+<charginghorizon    flag="c_h"  value="8" />
+<servicelinemax     flag="c_s"  value="100" />
+<backbonemax        flag="c_b"  value="400" />
+<matlaboptalg       flag="moa"  value="interior-point" />
+
+

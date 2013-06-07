@@ -47,8 +47,8 @@ void ChargingEqualShares::setChargeRates(DateTime datetime, GridModel &gridModel
     double rate;
     
     // Count num vehicles that are charging
-    for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
-        if(it->second.getSOC() < 100  &&  it->second.isConnected)
+    for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
+        if(it->second->getSOC() < 100  &&  it->second->isConnected)
             numConnected++;
 
     // Calculate evenly applied rate
@@ -62,9 +62,9 @@ void ChargingEqualShares::setChargeRates(DateTime datetime, GridModel &gridModel
         rate = maxChargeRate;
     
     // Set chargeRates
-    for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
-        if(it->second.getSOC() < 98  &&  it->second.isConnected)
-            it->second.chargeRate = rate;
+    for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
+        if(it->second->getSOC() < 98  &&  it->second->isConnected)
+            it->second->chargeRate = rate;
         else
-            it->second.chargeRate = 0;
+            it->second->chargeRate = 0;
 }

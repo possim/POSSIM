@@ -44,12 +44,13 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../utility/Utility.h"
 #include "../utility/DateTime.h"
 #include "../gridmodel/GridModel.h"
-#include "../trafficmodel/TrafficModel.h"
+#include "../vehicle/TrafficModel.h"
 #include "../spotprice/SpotPrice.h"
 #include "../charging/ChargingUncontrolled.h"
 #include "../charging/ChargingEqualShares.h"
 #include "../charging/ChargingDistributed.h"
 #include "../charging/ChargingTOU.h"
+#include "../charging/ChargingOptimal1.h"
 
 
 /** The outer Simulator loop.
@@ -76,7 +77,7 @@ private:
     GridModel gridModel;
     
     /** This will be moved to Household soon. */
-    HouseholdDemand householdDemand;
+    HouseholdDemandModel householdDemandModel;
     
     /** This will be moved to Vehicle soon */
     TrafficModel trafficModel;

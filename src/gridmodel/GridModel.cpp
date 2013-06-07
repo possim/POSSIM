@@ -34,11 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "GridModel.h"
 
-/* Determines what the inductivePower has to be to achieve given powerFactor for given activePower */
-double getQfromPF(double activePower, double powerFactor) {
-    if(activePower == 0) return 0;
-    return tan(acos(powerFactor))*activePower;
-}
+
 
 
 GridModel::GridModel() {
@@ -47,30 +43,49 @@ GridModel::GridModel() {
 GridModel::~GridModel() {
 }
 
-void GridModel::initialise(Config* config, LoadFlowInterface* loadflow) {
-    distTransCapacity = config->getInt("disttranscapacity");
-    powerFactor = config->getDouble("powerfactor");
+void GridModel::initialise(Config* config, LoadFlowInterface* lf) {
+    // Save some global parameters locally for convenience
+    baseVoltage = config->getDouble("basevoltage");
+    averagePowerFactor = config->getDouble("powerfactor");
     evPenetration = config->getInt("evpenetration");
     minVoltage = config->getInt("minvoltage");
     sumHouseholdLoads = 0;
     
-    loadGridModel(loadflow);
-    addVehicles(config);
+    // set handle to loadflow
+    loadflow = lf;
+    
+    // Create transformer
+    transformer = new DistributionTransformer();
+    
+    // Extract structure, parameters, numHouses, etc from model file
+    loadflow->extractModel(root, transformer, poles, lineSegments, households);
+    
+    // Households should now be mapped to their name (string), also create
+    // map to NMI for convenience (sometimes houses need to be searched by NMI)
+    buildHouseholdNMImap();
+    
+    // Determine total impedance from transformer to every house
+    calculateHouseholdZ(root, 0, 0);
+    
+    // Update transformer capacity if config is different from value
+    // extracted from model
+    if(transformer->capacity != config->getDouble("transformercapacity"))
+        loadflow->setTxCapacity(transformer->name, config->getDouble("transformercapacity"));
 }
 
-void GridModel::loadGridModel(LoadFlowInterface* lf) {
+void GridModel::loadGridModel() {
     Household* newHouse;
     std::vector <std::string> houseNames;
     std::string name;
     int nmi;          
     double demandProfile;
     
-    // set handle to loadflow
-    loadflow = lf;
+
+    //loadflow->parseModel(root, poles, lineSegments, households);
     
     // get house names
     houseNames = loadflow->getHouseNames();
-    std::cout << " - MATLAB model contains " << houseNames.size() << " houses" << std::endl;
+    std::cout << " - MATLAB model contains " << houseNames.size() << " houses";
 
     // create each house (find name, parent transformer)
     for(size_t i=0; i<houseNames.size(); i++) {
@@ -79,7 +94,7 @@ void GridModel::loadGridModel(LoadFlowInterface* lf) {
         try {
             name = houseNames.at(i);
             nmi = i+1;
-            std::cout << nmi << " " << name << std::endl;
+            //std::cout << nmi << " " << name << std::endl;
         }
         catch(const std::out_of_range& e) {
             std::cout << "Error: household has invalid component name syntax (name)" << std::endl;
@@ -87,15 +102,16 @@ void GridModel::loadGridModel(LoadFlowInterface* lf) {
             nmi = 999;
         }                 
         
-        // Assign this house a demand profile (according to normal distribution)
-        // demandProfile = utility::randomNormal(1, 0.25, 0.5, 1.5);
-        demandProfile = 1;
-        
         // Add house
-        newHouse = new Household(nmi, name, demandProfile);
-        households.insert(std::pair<int, Household>(nmi,*newHouse));
+        newHouse = new Household();
+        newHouse->NMI = nmi;
+        newHouse->name = name;
+        newHouse->baseVoltage = baseVoltage;
+        households.insert(std::pair<std::string, Household*>(name,newHouse));
         //std::cout << "   - House " << nmi << " has demand profile " << demandProfile << std::endl;
     }
+    
+    std::cout << ", added OK" << std::endl;
 }
 
 void GridModel::addVehicles(Config* config) {
@@ -106,6 +122,7 @@ void GridModel::addVehicles(Config* config) {
     Vehicle *newVehicle;
     std::vector<int> indexVector;
     bool generateRandom = false;
+    Household *currHousehold;
     
     // Check if vehicle file exists
     std::string inputFile = config->getString("vehicleassignment");
@@ -147,134 +164,139 @@ void GridModel::addVehicles(Config* config) {
     // Create vector of EVs and add to grid model
     for(int i=0; i<numEVs; i++) {
         nmi = indexVector[i];
-        // WARNING SHOULD HAVE BETTER ERROR CHECKING HERE
-        houseName = households.at(nmi).getComponentRef();
-        households.at(nmi).hasCar = true;
+        currHousehold = findHousehold(nmi);
+        //std::cout << "Want to add vehicle to: " << currHousehold->name << std::endl;
+        currHousehold->hasCar = true;
+        vehicleName = currHousehold->name;
+        vehicleName.append("_EV");
 
-        int lastindex = houseName.find_last_of("/"); 
-        vehicleName = houseName.substr(0, lastindex).append("/Vehicle");
-
-        newVehicle = new Vehicle(config, nmi, vehicleName);
-        vehicles.insert(std::pair<int,Vehicle>(nmi,*newVehicle));
+        newVehicle = new Vehicle(config, nmi, vehicleName, currHousehold->name);
+        newVehicle->componentName = currHousehold->componentName.substr(0, currHousehold->componentName.find_last_of('/')+1);
+        newVehicle->componentName.append("Vehicle");
+        //std::cout << "Vehicle " << newVehicle->name << " will have component name " << newVehicle->componentName << std::endl;
+        vehicles[vehicleName] = newVehicle;
         loadflow->addVehicle(*newVehicle);
     } 
     
-    std::cout<<"......................... OK"<<std::endl;
+    buildVehicleNMImap();
+    
+    std::cout<<" OK"<<std::endl;
 }
 
 void GridModel::updateVehicleBatteries() {
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        if(it->second.distanceDriven > 0)
-            it->second.dischargeBattery();
-        else if(it->second.isConnected)
-            it->second.rechargeBattery();
+    std::cout << " - Updating vehicle batteries ...";
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        if(it->second->distanceDriven > 0)
+            it->second->dischargeBattery();
+        else if(it->second->isConnected)
+            it->second->rechargeBattery();
     }
+    std::cout << " OK" << std::endl;
 }
 
-void GridModel::generateLoads(DateTime currTime, HouseholdDemand householdDemand) {
-    double activePower, inductivePower;
-    double randomFactor;
+void GridModel::generateLoads(DateTime currTime, HouseholdDemandModel householdDemand) {
+    std::cout << " - Generating household loads ...";
+    double activePower, reactivePower;
     sumHouseholdLoads = 0;
 
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
-        activePower = it->second.getDemandProfile() * householdDemand.getDemandAt(currTime, it->second.getNMI());
-        //randomFactor = utility::randomNormal(0, 0.1, -0.3, 1-powerFactor);
-        randomFactor = 0;
-        
-        inductivePower = getQfromPF(activePower, powerFactor + randomFactor);
-        it->second.setPowerDemand(activePower, inductivePower, 0);
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) {
+        activePower = it->second->demandProfileFactor * it->second->getDemandAt(currTime).P;
+        reactivePower = it->second->demandProfileFactor * it->second->getDemandAt(currTime).Q;
+
         sumHouseholdLoads += activePower;
     }
     
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
-        it->second.setPowerDemand(it->second.chargeRate, 0, 0); 
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
+        it->second->setPowerDemand(it->second->chargeRate, 0, 0); 
+    
+    std::cout << " OK" << std::endl;
 }
 
 void GridModel::displayVehicleSummary() {
     std::cout << "Vehicle Summary" << std::endl;
-    std::cout << "  NMI Status      Con Cha dSOC  ChRa  L    N    P      SOC" << std::endl
-              << "  ---------------------------------------------------------" << std::endl;
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+    std::cout << "  Name   Status      Con Cha dSOC  ChRa    SOC" << std::endl
+              << "  -----------------------------------------------------------" << std::endl;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
 
         // Vehicle NMI (3 chars)
-        std::cout << "  " << std::setw(3) << std::right << it->second.getNMI() << " ";
+        std::cout << "  " << std::setw(6) << std::right << it->second->name << " ";
  
         // Vehicle status - home, returned, away (11 char)
-        if(it->second.location != Home)
+        if(it->second->location != Home)
             std::cout << "Away        ";
 
-        else if(it->second.distanceDriven > 0)
-            std::cout << "Drove " << std::setw(3) << std::right << it->second.distanceDriven << "km ";
+        else if(it->second->distanceDriven > 0)
+            std::cout << "Drove " << std::setw(3) << std::right << it->second->distanceDriven << "km ";
 
         else 
             std::cout << "Home        ";
         
         // Vehicle connected
-        if(it->second.isConnected)
+        if(it->second->isConnected)
             std::cout << "Yes ";
         else
             std::cout << "No  ";
 
         // Vehicle charging
-        if(it->second.isCharging)
+        if(it->second->isCharging)
             std::cout << "Yes ";
         else
             std::cout << "No  ";
         
         // Last SOC inc
-        std::cout << std::setw(5) << std::right << std::setprecision(2) << it->second.getSOCchange() << " ";
+        std::cout << std::setw(5) << std::right << std::setprecision(2) << it->second->getSOCchange() << " ";
 
         // Charge rate
-        std::cout << std::setw(4) << std::right << std::setprecision(0) << it->second.chargeRate << " ";
+        std::cout << std::setw(4) << std::right << std::setprecision(0) << it->second->chargeRate << " ";
      
         // L
-        std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second.L << " ";
+        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->L << " ";
         // N
-        std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second.N << " ";
+        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->N << " ";
         // P
-        std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second.P << " ";
+        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->P << " ";
         
         // Switch on?
-        if(it->second.switchon)
+        if(it->second->switchon)
             std::cout << "* ";
         else
             std::cout << "  ";
         
         // SOC
-        std::cout << std::setw(5) << std::right << std::setprecision(1) << it->second.getSOC() << std::endl;
+        std::cout << std::setw(5) << std::right << std::setprecision(1) << it->second->getSOC() << std::endl;
     }
 }
 
-void GridModel::displayFullSummary() {
+void GridModel::displayFullSummary(DateTime currTime) {
     std::cout << "Household demand:" << std::endl;
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it)
-        std::cout<< "   House " << std::setw(2) << std::right << it->second.getNMI() << ": " 
-                 << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << it->second.activePower << " W, PF: " 
-                 << std::setw(4) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << it->second.getPowerFactor() << std::endl;
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+        std::cout<< "   House " << std::setw(2) << std::right << it->second->NMI << ": " 
+                 << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) 
+                 << it->second->demandProfile.demand[currTime.totalMinutes()].P << " W" << std::endl;
 
     std::cout << "Vehicle demand:" << std::endl;
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        std::cout<< " Vehicle " << std::setw(2) << std::right << it->second.getNMI() << ": " 
-                 << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << it->second.activePower << " W, PF: " 
-                 << std::setw(4) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << it->second.getPowerFactor() << std::endl;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
+        std::cout<< " Vehicle " << std::setw(2) << std::right << it->second->NMI << ": " 
+                 << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) 
+                 << it->second->activePower << " W" << std::endl;
 }
 
-void GridModel::displayLoadSummary() {
+void GridModel::displayLoadSummary(DateTime currTime) {
     double hhSum=0, hhPF=0, hhMin=100000, hhMax=0;
     double evSum=0, evPF=0, evMin=100000, evMax=0;
     int evHome=0, evCharging=0;
     double currPower;
     
 
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        if(it->second.location == Home) {
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        if(it->second->location == Home) {
             evHome++;
-            if(it->second.isCharging) 
+            if(it->second->isCharging) 
                 evCharging++;
             
-            currPower = it->second.activePower;
+            currPower = it->second->activePower;
 
-            evPF += it->second.getPowerFactor();
+            evPF += it->second->getPowerFactor();
             evSum += currPower;
             if(currPower < evMin)
                 evMin = currPower;
@@ -282,10 +304,10 @@ void GridModel::displayLoadSummary() {
                 evMax = currPower;
         }
     }
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
-        currPower = it->second.activePower;
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) {
+        currPower = it->second->demandProfile.demand[currTime.totalMinutes()].P;
         
-        hhPF += it->second.getPowerFactor();
+        hhPF += it->second->getPowerFactor(currTime);
         hhSum += currPower;
         if(currPower < hhMin)
             hhMin = currPower;
@@ -313,8 +335,10 @@ void GridModel::displayLoadSummary() {
 }
 
 
-void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDemand) {
-    boost::posix_time::ptime time_startLoadFlow(boost::posix_time::microsec_clock::local_time());
+void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand) {
+    boost::posix_time::ptime timer;
+    
+    utility::startTimer(timer);
     std::cout << " - Running valley load flow analysis ... ";
     std::cout.flush();
     
@@ -324,46 +348,107 @@ void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDe
     valleytime.minute = 0;
 
     // Set all household loads to valley load, vehicle loads to zero
-    double activePower, inductivePower;
-    
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
-        activePower = householdDemand.getDemandAt(valleytime, it->second.getNMI()) * 1000;
-        inductivePower = getQfromPF(activePower, powerFactor);
-        loadflow->setDemand(it->second.getComponentRef(), activePower, inductivePower, 0);
-    }
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second.getComponentRef(), 0, 0, 0);
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+        loadflow->setDemand(it->second->componentName, it->second->getActivePower(valleytime), it->second->getInductivePower(valleytime), it->second->getCapacitivePower(valleytime));
+
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
+        loadflow->setDemand(it->second->componentName, 0, 0, 0);
     
     loadflow->runSim();
     
-    loadflow->getOutputs(phaseV, phaseI, eolV, households);
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it)
-        it->second.V_valley = it->second.V_RMS;
+    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+        it->second->V_valley = it->second->V_RMS;
 
-    std::cout << "complete, took: " << utility::timeDisplay(utility::timeSince(time_startLoadFlow)) << std::endl;
+    std::cout << "complete, took: " << utility::endTimer(timer) << std::endl;
 }
 
 
 void GridModel::runLoadFlow(DateTime currTime) {
-    boost::posix_time::ptime time_startLoadFlow = boost::posix_time::microsec_clock::local_time();
-
-    std::cout << "Running load flow analysis ... ";
+    boost::posix_time::ptime timerFull, timer;
+    
+    utility::startTimer(timerFull);
+    utility::startTimer(timer);
+    
+    std::cout << "Running load flow analysis ... " << std::endl;
+    
+    std::cout << " - setting household loads ...";
+    std::ofstream outfile("tempHHloads.txt");
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+        outfile << it->second->componentName << ", "
+                << it->second->getActivePower(currTime)+0.001 << ", "
+                << it->second->getInductivePower(currTime) << ", "
+                << it->second->getCapacitivePower(currTime) << std::endl;
+    outfile.close();
+    loadflow->setDemand("tempHHloads.txt");
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
+    
+    std::cout << " - setting vehicle loads ...";
+    outfile.open("tempVHloads.txt");
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
+        outfile << it->second->componentName << ", "
+                << it->second->activePower+0.001 << ", "
+                << it->second->inductivePower << ", "
+                << it->second->capacitivePower << std::endl;
+    outfile.close();
+    loadflow->setDemand("tempVHloads.txt");
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
+    
+    std::cout << " - running load flow calculation ...";
     std::cout.flush();
-
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it)
-        loadflow->setDemand(it->second.getComponentRef(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
-
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second.getComponentRef(), it->second.activePower, it->second.inductivePower, it->second.capacitivePower);
-    
     loadflow->runSim();
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
-    loadflow->getOutputs(phaseV, phaseI, eolV, households);
+    std::cout << " - getting output ...";
+    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
-    std::cout << "complete, took: " << utility::timeDisplay(utility::timeSince(time_startLoadFlow)) << std::endl;
+    std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
 }
 
 
 double GridModel::getAvailableCapacity() {
-    return distTransCapacity - sumHouseholdLoads;
+    return transformer->capacity - sumHouseholdLoads;
 }
+
+Household* GridModel::findHousehold(int NMI) {
+    return householdNMImap[NMI];
+}
+
+Vehicle* GridModel::findVehicle(int NMI) {
+    return vehicleNMImap[NMI];
+}
+
+// Recursive DFS traversal of network tree, keeping track of impedance for each house
+void GridModel::calculateHouseholdZ(FeederPole* pole, double r, double x) {
+    // First, update all households connected to this pole (Note: ignore service line impedance)
+    for(std::vector<Household*>::iterator it=pole->households.begin(); it!=pole->households.end(); ++it) {
+        (*it)->totalImpedanceToTX.resistance = r + 2* (*it)->serviceLine.length * (*it)->serviceLine.resistance;
+        (*it)->totalImpedanceToTX.reactance = x + 2* (*it)->serviceLine.length * ((*it)->serviceLine.inductance - (*it)->serviceLine.capacitance);
+    }
+    
+    double tempR, tempX;
+    // Second, for every child pole of this pole, do the same
+    for(std::vector<FeederLineSegment*>::iterator it=pole->childLineSegments.begin(); it!=pole->childLineSegments.end(); ++it) {
+        tempR = r + (*it)->line.length * (*it)->line.resistance;
+        tempX = x + (*it)->line.length * ((*it)->line.inductance - (*it)->line.capacitance);
+        if((*it)->childPole != NULL)
+            calculateHouseholdZ((*it)->childPole, tempR, tempX);
+    }
+}
+
+// Create mapping from households to NMIs (not names)
+void GridModel::buildHouseholdNMImap() {
+    householdNMImap.clear();
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it!=households.end(); ++it)
+        householdNMImap[it->second->NMI] = it->second;
+}
+
+// Create mapping from vehicles to NMIs (not names)
+void GridModel::buildVehicleNMImap() {
+    vehicleNMImap.clear();
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it!=vehicles.end(); ++it)
+        vehicleNMImap[it->second->NMI] = it->second;
+}
+
+

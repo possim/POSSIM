@@ -32,44 +32,37 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "Household.h"
+#ifndef DISTRIBUTIONTRANSFORMER_H
+#define	DISTRIBUTIONTRANSFORMER_H
 
-Household::Household(int nmi, std::string name, double dP) {
-    NMI = nmi;
-    componentRef = name;
-    demandProfile = dP;
-    activePower = 0;
-    inductivePower = 0;
-    capacitivePower = 0;
-    V_RMS = 0;
-    V_Mag = 0;
-    V_Pha = 0;
-    V_valley = 0;
-}
+#include <string>
+#include <vector>
+#include <iostream>
 
+#include "../household/Household.h"
+#include "Feeder.h"
 
-Household::~Household() {
-}
+/** The distribution transformer.  Maintains link to component in model and 
+  * transformer capacity. */
+class DistributionTransformer {
 
-std::string Household::getComponentRef() {
-    return componentRef;
-}
+public:
+    /** The name of this transformer. Usually the same as its equivalent
+      * component in the network model of the load flow simulator. */
+    std::string name;
+    
+    /** Nominal capacity of transformer in kVA*/
+    double capacity;
 
-int Household::getNMI() {
-    return NMI;
-}
+public:
+    DistributionTransformer() {
+        name = "Noname";
+        capacity = 200000;
+    }
 
-double Household::getDemandProfile() {
-    return demandProfile;
-}
+    virtual ~DistributionTransformer() {   
+    }
+};
 
-void Household::setPowerDemand(double active, double inductive, double capacitive) {
-    activePower = active;
-    inductivePower = inductive;
-    capacitivePower = capacitive;
-}
+#endif	/* DISTRIBUTIONTRANSFORMER_H */
 
-double Household::getPowerFactor() {
-    if(activePower == 0) return 0;
-    return activePower/sqrt(pow(activePower, 2) + pow(inductivePower-capacitivePower,2));
-}

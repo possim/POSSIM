@@ -1,0 +1,2713 @@
+Model {
+  Name			  "ExampleModel"
+  Version		  7.8
+  MdlSubVersion		  0
+  GraphicalInterface {
+    NumRootInports	    0
+    NumRootOutports	    0
+    ParameterArgumentNames  ""
+    ComputedModelVersion    "1.281"
+    NumModelReferences	    0
+    NumTestPointedSignals   66
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Neutral/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Neutral/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Neutral/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase A/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase A/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase A/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase B/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase B/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase B/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase C/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase C/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Current Phase C/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/1/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/1/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/1/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/10/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/10/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/10/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/2/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/2/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/2/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/3/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/3/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/3/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/4/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/4/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/4/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/5/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/5/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/5/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/6/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/6/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/6/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/7/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/7/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/7/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/8/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/8/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/8/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/9/Voltage Measurement/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/9/Voltage Measurement/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/9/Voltage Measurement/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Neutral/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Neutral/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Neutral/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase A/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase A/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase A/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase B/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase B/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase B/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase C/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase C/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Distribution Network/Voltage Phase C/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Neutral/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Neutral/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Neutral/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase A/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase A/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase A/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase B/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase B/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase B/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase C/Discrete Fourier"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase C/Discrete Fourier"
+      PortIndex		      2
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+    TestPointedSignal {
+      SignalName	      ""
+      FullBlockPath	      "ExampleModel/Voltage Phase C/RMS (discrete)"
+      LogSignal		      1
+      LimitDataPoints	      1
+      MaxPoints		      5000
+      Decimation	      2
+    }
+  }
+  SavedCharacterEncoding  "ISO-8859-1"
+  SaveDefaultBlockParams  on
+  ScopeRefreshTime	  0.035000
+  OverrideScopeRefreshTime on
+  DisableAllScopes	  off
+  DataTypeOverride	  "UseLocalSettings"
+  DataTypeOverrideAppliesTo "AllNumericTypes"
+  MinMaxOverflowLogging	  "UseLocalSettings"
+  MinMaxOverflowArchiveMode "Overwrite"
+  FPTRunName		  "Run 1"
+  MaxMDLFileLineLength	  120
+  UserBdParams		  "PhysicalModelingChecksum;PhysicalModelingParameterChecksum;PhysicalModelingProducts"
+  PhysicalModelingChecksum "3020839801"
+  PhysicalModelingParameterChecksum "3245848786"
+  PhysicalModelingProducts "Power_System_Blocks"
+  Created		  "Mon May 14 13:41:13 2012"
+  Creator		  "jde1"
+  UpdateHistory		  "UpdateHistoryNever"
+  ModifiedByFormat	  "%<Auto>"
+  LastModifiedBy	  "jde1"
+  ModifiedDateFormat	  "%<Auto>"
+  LastModifiedDate	  "Tue May 28 12:15:29 2013"
+  RTWModifiedTimeStamp	  291644124
+  ModelVersionFormat	  "1.%<AutoIncrement:281>"
+  ConfigurationManager	  "None"
+  SampleTimeColors	  off
+  SampleTimeAnnotations	  off
+  LibraryLinkDisplay	  "disabled"
+  WideLines		  off
+  ShowLineDimensions	  off
+  ShowPortDataTypes	  off
+  ShowDesignRanges	  off
+  ShowLoopsOnError	  on
+  IgnoreBidirectionalLines off
+  ShowStorageClass	  off
+  ShowTestPointIcons	  on
+  ShowSignalResolutionIcons on
+  ShowViewerIcons	  on
+  SortedOrder		  off
+  ExecutionContextIcon	  off
+  ShowLinearizationAnnotations on
+  BlockNameDataTip	  off
+  BlockParametersDataTip  off
+  BlockDescriptionStringDataTip	off
+  ToolBar		  on
+  StatusBar		  on
+  BrowserShowLibraryLinks off
+  BrowserLookUnderMasks	  off
+  SimulationMode	  "normal"
+  LinearizationMsg	  "none"
+  Profile		  off
+  ParamWorkspaceSource	  "MATLABWorkspace"
+  AccelSystemTargetFile	  "accel.tlc"
+  AccelTemplateMakefile	  "accel_default_tmf"
+  AccelMakeCommand	  "make_rtw"
+  TryForcingSFcnDF	  off
+  Object {
+    $PropName		    "DataLoggingOverride"
+    $ObjectID		    1
+    $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
+    model_		    "ExampleModel"
+    overrideMode_	    [0.0]
+    Array {
+      Type		      "Cell"
+      Dimension		      1
+      Cell		      "ExampleModel"
+      PropName		      "logAsSpecifiedByModels_"
+    }
+    Array {
+      Type		      "Cell"
+      Dimension		      1
+      Cell		      []
+      PropName		      "logAsSpecifiedByModelsSSIDs_"
+    }
+  }
+  RecordCoverage	  off
+  CovPath		  "/"
+  CovSaveName		  "covdata"
+  CovMetricSettings	  "dw"
+  CovNameIncrementing	  off
+  CovHtmlReporting	  on
+  CovForceBlockReductionOff on
+  covSaveCumulativeToWorkspaceVar on
+  CovSaveSingleToWorkspaceVar on
+  CovCumulativeVarName	  "covCumulativeData"
+  CovCumulativeReport	  off
+  CovReportOnPause	  on
+  CovModelRefEnable	  "Off"
+  CovExternalEMLEnable	  off
+  ExtModeBatchMode	  off
+  ExtModeEnableFloating	  on
+  ExtModeTrigType	  "manual"
+  ExtModeTrigMode	  "normal"
+  ExtModeTrigPort	  "1"
+  ExtModeTrigElement	  "any"
+  ExtModeTrigDuration	  1000
+  ExtModeTrigDurationFloating "auto"
+  ExtModeTrigHoldOff	  0
+  ExtModeTrigDelay	  0
+  ExtModeTrigDirection	  "rising"
+  ExtModeTrigLevel	  0
+  ExtModeArchiveMode	  "off"
+  ExtModeAutoIncOneShot	  off
+  ExtModeIncDirWhenArm	  off
+  ExtModeAddSuffixToVar	  off
+  ExtModeWriteAllDataToWs off
+  ExtModeArmWhenConnect	  on
+  ExtModeSkipDownloadWhenConnect off
+  ExtModeLogAll		  on
+  ExtModeAutoUpdateStatusClock on
+  BufferReuse		  off
+  ShowModelReferenceBlockVersion off
+  ShowModelReferenceBlockIO off
+  Array {
+    Type		    "Handle"
+    Dimension		    1
+    Simulink.ConfigSet {
+      $ObjectID		      2
+      Version		      "1.11.1"
+      Array {
+	Type			"Handle"
+	Dimension		9
+	Simulink.SolverCC {
+	  $ObjectID		  3
+	  Version		  "1.11.1"
+	  StartTime		  "0.0"
+	  StopTime		  "0.02"
+	  AbsTol		  "auto"
+	  FixedStep		  "0.001"
+	  InitialStep		  "auto"
+	  MaxNumMinSteps	  "-1"
+	  MaxOrder		  5
+	  ZcThreshold		  "auto"
+	  ConsecutiveZCsStepRelTol "10*128*eps"
+	  MaxConsecutiveZCs	  "1000"
+	  ExtrapolationOrder	  4
+	  NumberNewtonIterations  1
+	  MaxStep		  "auto"
+	  MinStep		  "auto"
+	  MaxConsecutiveMinStep	  "1"
+	  RelTol		  "1e-3"
+	  SolverMode		  "Auto"
+	  ConcurrentTasks	  off
+	  Solver		  "FixedStepDiscrete"
+	  SolverName		  "FixedStepDiscrete"
+	  SolverJacobianMethodControl "auto"
+	  ShapePreserveControl	  "DisableAll"
+	  ZeroCrossControl	  "UseLocalSettings"
+	  ZeroCrossAlgorithm	  "Nonadaptive"
+	  AlgebraicLoopSolver	  "TrustRegion"
+	  SolverResetMethod	  "Fast"
+	  PositivePriorityOrder	  off
+	  AutoInsertRateTranBlk	  off
+	  SampleTimeConstraint	  "Unconstrained"
+	  InsertRTBMode		  "Whenever possible"
+	}
+	Simulink.DataIOCC {
+	  $ObjectID		  4
+	  Version		  "1.11.1"
+	  Decimation		  "1"
+	  ExternalInput		  "[t, u]"
+	  FinalStateName	  "xFinal"
+	  InitialState		  "xInitial"
+	  LimitDataPoints	  off
+	  MaxDataPoints		  "1"
+	  LoadExternalInput	  off
+	  LoadInitialState	  off
+	  SaveFinalState	  off
+	  SaveCompleteFinalSimState off
+	  SaveFormat		  "Array"
+	  SignalLoggingSaveFormat "ModelDataLogs"
+	  SaveOutput		  off
+	  SaveState		  off
+	  SignalLogging		  on
+	  DSMLogging		  off
+	  InspectSignalLogs	  off
+	  SaveTime		  off
+	  ReturnWorkspaceOutputs  off
+	  StateSaveName		  "Display"
+	  TimeSaveName		  "tout"
+	  OutputSaveName	  ""
+	  SignalLoggingName	  "logsout"
+	  DSMLoggingName	  "dsmout"
+	  OutputOption		  "RefineOutputTimes"
+	  OutputTimes		  "[]"
+	  ReturnWorkspaceOutputsName "out"
+	  Refine		  "1"
+	}
+	Simulink.OptimizationCC {
+	  $ObjectID		  5
+	  Version		  "1.11.1"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    8
+	    Cell		    "BooleansAsBitfields"
+	    Cell		    "PassReuseOutputArgsAs"
+	    Cell		    "PassReuseOutputArgsThreshold"
+	    Cell		    "ZeroExternalMemoryAtStartup"
+	    Cell		    "ZeroInternalMemoryAtStartup"
+	    Cell		    "OptimizeModelRefInitCode"
+	    Cell		    "NoFixptDivByZeroProtection"
+	    Cell		    "UseSpecifiedMinMax"
+	    PropName		    "DisabledProps"
+	  }
+	  BlockReduction	  on
+	  BooleanDataType	  on
+	  ConditionallyExecuteInputs on
+	  InlineParams		  off
+	  UseIntDivNetSlope	  off
+	  UseFloatMulNetSlope	  off
+	  UseSpecifiedMinMax	  off
+	  InlineInvariantSignals  off
+	  OptimizeBlockIOStorage  off
+	  BufferReuse		  off
+	  EnhancedBackFolding	  off
+	  StrengthReduction	  off
+	  ExpressionFolding	  off
+	  BooleansAsBitfields	  off
+	  BitfieldContainerType	  "uint_T"
+	  EnableMemcpy		  on
+	  MemcpyThreshold	  64
+	  PassReuseOutputArgsAs	  "Structure reference"
+	  ExpressionDepthLimit	  2147483647
+	  FoldNonRolledExpr	  on
+	  LocalBlockOutputs	  off
+	  RollThreshold		  5
+	  SystemCodeInlineAuto	  off
+	  StateBitsets		  off
+	  DataBitsets		  off
+	  UseTempVars		  off
+	  ZeroExternalMemoryAtStartup on
+	  ZeroInternalMemoryAtStartup on
+	  InitFltsAndDblsToZero	  off
+	  NoFixptDivByZeroProtection off
+	  EfficientFloat2IntCast  off
+	  EfficientMapNaN2IntZero on
+	  OptimizeModelRefInitCode off
+	  LifeSpan		  "inf"
+	  MaxStackSize		  "Inherit from target"
+	  BufferReusableBoundary  on
+	  SimCompilerOptimization "Off"
+	  AccelVerboseBuild	  off
+	  AccelParallelForEachSubsystem	on
+	}
+	Simulink.DebuggingCC {
+	  $ObjectID		  6
+	  Version		  "1.11.1"
+	  RTPrefix		  "error"
+	  ConsistencyChecking	  "none"
+	  ArrayBoundsChecking	  "none"
+	  SignalInfNanChecking	  "none"
+	  SignalRangeChecking	  "none"
+	  ReadBeforeWriteMsg	  "UseLocalSettings"
+	  WriteAfterWriteMsg	  "UseLocalSettings"
+	  WriteAfterReadMsg	  "UseLocalSettings"
+	  AlgebraicLoopMsg	  "warning"
+	  ArtificialAlgebraicLoopMsg "warning"
+	  SaveWithDisabledLinksMsg "warning"
+	  SaveWithParameterizedLinksMsg	"warning"
+	  CheckSSInitialOutputMsg on
+	  UnderspecifiedInitializationDetection	"Classic"
+	  MergeDetectMultiDrivingBlocksExec "none"
+	  CheckExecutionContextPreStartOutputMsg off
+	  CheckExecutionContextRuntimeOutputMsg	off
+	  SignalResolutionControl "UseLocalSettings"
+	  BlockPriorityViolationMsg "warning"
+	  MinStepSizeMsg	  "warning"
+	  TimeAdjustmentMsg	  "none"
+	  MaxConsecutiveZCsMsg	  "error"
+	  MaskedZcDiagnostic	  "warning"
+	  IgnoredZcDiagnostic	  "warning"
+	  SolverPrmCheckMsg	  "warning"
+	  InheritedTsInSrcMsg	  "warning"
+	  DiscreteInheritContinuousMsg "warning"
+	  MultiTaskDSMMsg	  "error"
+	  MultiTaskCondExecSysMsg "error"
+	  MultiTaskRateTransMsg	  "error"
+	  SingleTaskRateTransMsg  "none"
+	  TasksWithSamePriorityMsg "warning"
+	  SigSpecEnsureSampleTimeMsg "warning"
+	  CheckMatrixSingularityMsg "none"
+	  IntegerOverflowMsg	  "warning"
+	  Int32ToFloatConvMsg	  "warning"
+	  ParameterDowncastMsg	  "error"
+	  ParameterOverflowMsg	  "error"
+	  ParameterUnderflowMsg	  "none"
+	  ParameterPrecisionLossMsg "warning"
+	  ParameterTunabilityLossMsg "warning"
+	  FixptConstUnderflowMsg  "none"
+	  FixptConstOverflowMsg	  "none"
+	  FixptConstPrecisionLossMsg "none"
+	  UnderSpecifiedDataTypeMsg "none"
+	  UnnecessaryDatatypeConvMsg "none"
+	  VectorMatrixConversionMsg "none"
+	  InvalidFcnCallConnMsg	  "error"
+	  FcnCallInpInsideContextMsg "Enable All"
+	  SignalLabelMismatchMsg  "none"
+	  UnconnectedInputMsg	  "warning"
+	  UnconnectedOutputMsg	  "warning"
+	  UnconnectedLineMsg	  "warning"
+	  SFcnCompatibilityMsg	  "none"
+	  FrameProcessingCompatibilityMsg "warning"
+	  UniqueDataStoreMsg	  "none"
+	  BusObjectLabelMismatch  "warning"
+	  RootOutportRequireBusObject "warning"
+	  AssertControl		  "UseLocalSettings"
+	  EnableOverflowDetection off
+	  ModelReferenceIOMsg	  "none"
+	  ModelReferenceMultiInstanceNormalModeStructChecksumCheck "error"
+	  ModelReferenceVersionMismatchMessage "none"
+	  ModelReferenceIOMismatchMessage "none"
+	  ModelReferenceCSMismatchMessage "none"
+	  UnknownTsInhSupMsg	  "warning"
+	  ModelReferenceDataLoggingMessage "warning"
+	  ModelReferenceSymbolNameMessage "warning"
+	  ModelReferenceExtraNoncontSigs "error"
+	  StateNameClashWarn	  "warning"
+	  SimStateInterfaceChecksumMismatchMsg "warning"
+	  SimStateOlderReleaseMsg "error"
+	  InitInArrayFormatMsg	  "warning"
+	  StrictBusMsg		  "ErrorLevel1"
+	  BusNameAdapt		  "WarnAndRepair"
+	  NonBusSignalsTreatedAsBus "none"
+	  LoggingUnavailableSignals "error"
+	  BlockIODiagnostic	  "none"
+	  SFUnusedDataAndEventsDiag "warning"
+	  SFUnexpectedBacktrackingDiag "warning"
+	  SFInvalidInputDataAccessInChartInitDiag "warning"
+	  SFNoUnconditionalDefaultTransitionDiag "warning"
+	  SFTransitionOutsideNaturalParentDiag "warning"
+	  SFUnconditionalTransitionShadowingDiag "warning"
+	}
+	Simulink.HardwareCC {
+	  $ObjectID		  7
+	  Version		  "1.11.1"
+	  ProdBitPerChar	  8
+	  ProdBitPerShort	  16
+	  ProdBitPerInt		  32
+	  ProdBitPerLong	  32
+	  ProdBitPerFloat	  32
+	  ProdBitPerDouble	  64
+	  ProdBitPerPointer	  32
+	  ProdLargestAtomicInteger "Char"
+	  ProdLargestAtomicFloat  "None"
+	  ProdIntDivRoundTo	  "Undefined"
+	  ProdEndianess		  "Unspecified"
+	  ProdWordSize		  32
+	  ProdShiftRightIntArith  on
+	  ProdHWDeviceType	  "32-bit Generic"
+	  TargetBitPerChar	  8
+	  TargetBitPerShort	  16
+	  TargetBitPerInt	  32
+	  TargetBitPerLong	  32
+	  TargetBitPerFloat	  32
+	  TargetBitPerDouble	  64
+	  TargetBitPerPointer	  32
+	  TargetLargestAtomicInteger "Char"
+	  TargetLargestAtomicFloat "None"
+	  TargetShiftRightIntArith on
+	  TargetIntDivRoundTo	  "Undefined"
+	  TargetEndianess	  "Unspecified"
+	  TargetWordSize	  32
+	  TargetTypeEmulationWarnSuppressLevel 0
+	  TargetPreprocMaxBitsSint 32
+	  TargetPreprocMaxBitsUint 32
+	  TargetHWDeviceType	  "Specified"
+	  TargetUnknown		  off
+	  ProdEqTarget		  on
+	}
+	Simulink.ModelReferenceCC {
+	  $ObjectID		  8
+	  Version		  "1.11.1"
+	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
+	  CheckModelReferenceTargetMessage "error"
+	  EnableParallelModelReferenceBuilds off
+	  ParallelModelReferenceErrorOnInvalidPool on
+	  ParallelModelReferenceMATLABWorkerInit "None"
+	  ModelReferenceNumInstancesAllowed "Multi"
+	  PropagateVarSize	  "Infer from blocks in model"
+	  ModelReferencePassRootInputsByReference on
+	  ModelReferenceMinAlgLoopOccurrences off
+	  PropagateSignalLabelsOutOfModel off
+	  SupportModelReferenceSimTargetCustomCode off
+	}
+	Simulink.SFSimCC {
+	  $ObjectID		  9
+	  Version		  "1.11.1"
+	  SFSimEnableDebug	  on
+	  SFSimOverflowDetection  on
+	  SFSimEcho		  on
+	  SimBlas		  on
+	  SimCtrlC		  on
+	  SimExtrinsic		  on
+	  SimIntegrity		  on
+	  SimUseLocalCustomCode	  off
+	  SimParseCustomCode	  on
+	  SimBuildMode		  "sf_incremental_build"
+	}
+	Simulink.RTWCC {
+	  $BackupClass		  "Simulink.RTWCC"
+	  $ObjectID		  10
+	  Version		  "1.11.1"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    9
+	    Cell		    "IncludeHyperlinkInReport"
+	    Cell		    "GenerateTraceInfo"
+	    Cell		    "GenerateTraceReport"
+	    Cell		    "GenerateTraceReportSl"
+	    Cell		    "GenerateTraceReportSf"
+	    Cell		    "GenerateTraceReportEml"
+	    Cell		    "GenerateWebview"
+	    Cell		    "GenerateCodeMetricsReport"
+	    Cell		    "GenerateCodeReplacementReport"
+	    PropName		    "DisabledProps"
+	  }
+	  SystemTargetFile	  "grt.tlc"
+	  GenCodeOnly		  off
+	  MakeCommand		  "make_rtw"
+	  GenerateMakefile	  on
+	  TemplateMakefile	  "grt_default_tmf"
+	  GenerateReport	  off
+	  SaveLog		  off
+	  RTWVerbose		  on
+	  RetainRTWFile		  off
+	  ProfileTLC		  off
+	  TLCDebug		  off
+	  TLCCoverage		  off
+	  TLCAssert		  off
+	  ProcessScriptMode	  "Default"
+	  ConfigurationMode	  "Optimized"
+	  ConfigAtBuild		  off
+	  RTWUseLocalCustomCode	  off
+	  RTWUseSimCustomCode	  off
+	  IncludeHyperlinkInReport off
+	  LaunchReport		  off
+	  TargetLang		  "C"
+	  IncludeBusHierarchyInRTWFileBlockHierarchyMap	off
+	  IncludeERTFirstTime	  off
+	  GenerateTraceInfo	  off
+	  GenerateTraceReport	  off
+	  GenerateTraceReportSl	  off
+	  GenerateTraceReportSf	  off
+	  GenerateTraceReportEml  off
+	  GenerateCodeInfo	  off
+	  GenerateSLWebview	  off
+	  GenerateCodeMetricsReport off
+	  RTWCompilerOptimization "Off"
+	  CheckMdlBeforeBuild	  "Off"
+	  CustomRebuildMode	  "OnUpdate"
+	  Array {
+	    Type		    "Handle"
+	    Dimension		    2
+	    Simulink.CodeAppCC {
+	      $ObjectID		      11
+	      Version		      "1.11.1"
+	      Array {
+		Type			"Cell"
+		Dimension		21
+		Cell			"IgnoreCustomStorageClasses"
+		Cell			"IgnoreTestpoints"
+		Cell			"InsertBlockDesc"
+		Cell			"InsertPolySpaceComments"
+		Cell			"SFDataObjDesc"
+		Cell			"MATLABFcnDesc"
+		Cell			"SimulinkDataObjDesc"
+		Cell			"DefineNamingRule"
+		Cell			"SignalNamingRule"
+		Cell			"ParamNamingRule"
+		Cell			"InlinedPrmAccess"
+		Cell			"CustomSymbolStr"
+		Cell			"CustomSymbolStrGlobalVar"
+		Cell			"CustomSymbolStrType"
+		Cell			"CustomSymbolStrField"
+		Cell			"CustomSymbolStrFcn"
+		Cell			"CustomSymbolStrFcnArg"
+		Cell			"CustomSymbolStrBlkIO"
+		Cell			"CustomSymbolStrTmpVar"
+		Cell			"CustomSymbolStrMacro"
+		Cell			"ReqsInCode"
+		PropName		"DisabledProps"
+	      }
+	      ForceParamTrailComments off
+	      GenerateComments	      on
+	      IgnoreCustomStorageClasses on
+	      IgnoreTestpoints	      off
+	      IncHierarchyInIds	      off
+	      MaxIdLength	      31
+	      PreserveName	      off
+	      PreserveNameWithParent  off
+	      ShowEliminatedStatement off
+	      IncAutoGenComments      off
+	      SimulinkDataObjDesc     off
+	      SFDataObjDesc	      off
+	      MATLABFcnDesc	      off
+	      IncDataTypeInIds	      off
+	      MangleLength	      1
+	      CustomSymbolStrGlobalVar "$R$N$M"
+	      CustomSymbolStrType     "$N$R$M"
+	      CustomSymbolStrField    "$N$M"
+	      CustomSymbolStrFcn      "$R$N$M$F"
+	      CustomSymbolStrFcnArg   "rt$I$N$M"
+	      CustomSymbolStrBlkIO    "rtb_$N$M"
+	      CustomSymbolStrTmpVar   "$N$M"
+	      CustomSymbolStrMacro    "$R$N$M"
+	      DefineNamingRule	      "None"
+	      ParamNamingRule	      "None"
+	      SignalNamingRule	      "None"
+	      InsertBlockDesc	      off
+	      InsertPolySpaceComments off
+	      SimulinkBlockComments   on
+	      MATLABSourceComments    off
+	      EnableCustomComments    off
+	      InlinedPrmAccess	      "Literals"
+	      ReqsInCode	      off
+	      UseSimReservedNames     off
+	    }
+	    Simulink.GRTTargetCC {
+	      $BackupClass	      "Simulink.TargetCC"
+	      $ObjectID		      12
+	      Version		      "1.11.1"
+	      Array {
+		Type			"Cell"
+		Dimension		16
+		Cell			"GeneratePreprocessorConditionals"
+		Cell			"IncludeMdlTerminateFcn"
+		Cell			"CombineOutputUpdateFcns"
+		Cell			"SuppressErrorStatus"
+		Cell			"ERTCustomFileBanners"
+		Cell			"GenerateExampleERTMain"
+		Cell			"GenerateTestInterfaces"
+		Cell			"ModelStepFunctionPrototypeControlCompliant"
+		Cell			"CPPClassGenCompliant"
+		Cell			"MultiInstanceERTCode"
+		Cell			"PurelyIntegerCode"
+		Cell			"SupportComplex"
+		Cell			"SupportAbsoluteTime"
+		Cell			"SupportContinuousTime"
+		Cell			"SupportNonInlinedSFcns"
+		Cell			"PortableWordSizes"
+		PropName		"DisabledProps"
+	      }
+	      TargetFcnLib	      "ansi_tfl_table_tmw.mat"
+	      TargetLibSuffix	      ""
+	      TargetPreCompLibLocation ""
+	      TargetFunctionLibrary   "ANSI_C"
+	      UtilityFuncGeneration   "Auto"
+	      ERTMultiwordTypeDef     "System defined"
+	      CodeExecutionProfiling  off
+	      ERTMultiwordLength      256
+	      MultiwordLength	      2048
+	      GenerateFullHeader      on
+	      GenerateSampleERTMain   off
+	      GenerateTestInterfaces  off
+	      IsPILTarget	      off
+	      ModelReferenceCompliant on
+	      ParMdlRefBuildCompliant on
+	      CompOptLevelCompliant   on
+	      ConcurrentExecutionCompliant on
+	      IncludeMdlTerminateFcn  on
+	      GeneratePreprocessorConditionals "Disable all"
+	      CombineOutputUpdateFcns off
+	      CombineSignalStateStructs	off
+	      SuppressErrorStatus     off
+	      ERTFirstTimeCompliant   off
+	      IncludeFileDelimiter    "Auto"
+	      ERTCustomFileBanners    off
+	      SupportAbsoluteTime     on
+	      LogVarNameModifier      "rt_"
+	      MatFileLogging	      on
+	      MultiInstanceERTCode    off
+	      SupportNonFinite	      on
+	      SupportComplex	      on
+	      PurelyIntegerCode	      off
+	      SupportContinuousTime   on
+	      SupportNonInlinedSFcns  on
+	      SupportVariableSizeSignals off
+	      EnableShiftOperators    on
+	      ParenthesesLevel	      "Nominal"
+	      PortableWordSizes	      off
+	      ModelStepFunctionPrototypeControlCompliant off
+	      CPPClassGenCompliant    off
+	      AutosarCompliant	      off
+	      UseMalloc		      off
+	      ExtMode		      off
+	      ExtModeStaticAlloc      off
+	      ExtModeTesting	      off
+	      ExtModeStaticAllocSize  1000000
+	      ExtModeTransport	      0
+	      ExtModeMexFile	      "ext_comm"
+	      ExtModeIntrfLevel	      "Level1"
+	      RTWCAPISignals	      off
+	      RTWCAPIParams	      off
+	      RTWCAPIStates	      off
+	      RTWCAPIRootIO	      off
+	      GenerateASAP2	      off
+	    }
+	    PropName		    "Components"
+	  }
+	}
+	SSC.SimscapeCC {
+	  $ObjectID		  13
+	  Version		  "1.0"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    1
+	    Cell		    "Name"
+	    PropName		    "DisabledProps"
+	  }
+	  Name			  "Simscape"
+	  EditingMode		  "Full"
+	  ExplicitSolverDiagnosticOptions "warning"
+	  InputDerivativeDiagnosticOptions "warning"
+	  GlobalZcOffDiagnosticOptions "warning"
+	  SimscapeLogType	  "none"
+	  SimscapeLogName	  "simlog"
+	  SimscapeLogDecimation	  1
+	  SimscapeLogLimitData	  on
+	  SimscapeLogDataHistory  5000
+	}
+	PropName		"Components"
+      }
+      Name		      "Configuration"
+      CurrentDlgPage	      "Data Import//Export"
+      ConfigPrmDlgPosition     [ 381, 112, 1280, 834 ] 
+    }
+    PropName		    "ConfigurationSets"
+  }
+  Simulink.ConfigSet {
+    $PropName		    "ActiveConfigurationSet"
+    $ObjectID		    2
+  }
+  BlockDefaults {
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    NamePlacement	    "normal"
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+    ShowName		    on
+    BlockRotation	    0
+    BlockMirror		    off
+  }
+  AnnotationDefaults {
+    HorizontalAlignment	    "center"
+    VerticalAlignment	    "middle"
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+    UseDisplayTextAsClickCallback off
+  }
+  LineDefaults {
+    FontName		    "Helvetica"
+    FontSize		    9
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+  }
+  BlockParameterDefaults {
+    Block {
+      BlockType		      PMIOPort
+    }
+    Block {
+      BlockType		      Scope
+      ModelBased	      off
+      TickLabels	      "OneTimeTick"
+      ZoomMode		      "on"
+      Grid		      "on"
+      TimeRange		      "auto"
+      YMin		      "-5"
+      YMax		      "5"
+      SaveToWorkspace	      off
+      SaveName		      "ScopeData"
+      LimitDataPoints	      on
+      MaxDataPoints	      "5000"
+      Decimation	      "1"
+      SampleInput	      off
+      SampleTime	      "-1"
+    }
+    Block {
+      BlockType		      SubSystem
+      ShowPortLabels	      "FromPortIcon"
+      Permissions	      "ReadWrite"
+      PermitHierarchicalResolution "All"
+      TreatAsAtomicUnit	      off
+      CheckFcnCallInpInsideContextMsg off
+      SystemSampleTime	      "-1"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      SimViewingDevice	      off
+      DataTypeOverride	      "UseLocalSettings"
+      DataTypeOverrideAppliesTo	"AllNumericTypes"
+      MinMaxOverflowLogging   "UseLocalSettings"
+      SFBlockType	      "NONE"
+      Variant		      off
+      GeneratePreprocessorConditionals off
+    }
+  }
+  System {
+    Name		    "ExampleModel"
+    Location		    [1466, 290, 2204, 758]
+    Open		    on
+    ModelBrowserVisibility  off
+    ModelBrowserWidth	    200
+    ScreenColor		    "white"
+    PaperOrientation	    "landscape"
+    PaperPositionMode	    "auto"
+    PaperType		    "usletter"
+    PaperUnits		    "inches"
+    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+    TiledPageScale	    1
+    ShowPageBoundaries	    off
+    ZoomFactor		    "100"
+    ReportName		    "simulink-default.rpt"
+    SIDHighWatermark	    "2567"
+    Block {
+      BlockType		      Reference
+      Name		      "Current Neutral"
+      SID		      "1215"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 141, 455, 159]
+      ZOrder		      -19
+      BlockMirror	      on
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Current Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Current Phase A"
+      SID		      "1212"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 36, 455, 54]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Current Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Current Phase B"
+      SID		      "1213"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 71, 455, 89]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Current Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Current Phase C"
+      SID		      "1214"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 106, 455, 124]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Current Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Scope
+      Name		      "Currents"
+      SID		      "1172"
+      Ports		      []
+      Position		      [215, 374, 245, 406]
+      ZOrder		      -3
+      Floating		      on
+      Location		      [-870, 52, -258, 399]
+      Open		      off
+      NumInputPorts	      "1"
+      List {
+	ListType		AxesTitles
+	axes1			"%<SignalLabel>"
+      }
+      List {
+	ListType		ScopeGraphics
+	FigureColor		"[0.5 0.5 0.5]"
+	AxesColor		"[0 0 0]"
+	AxesTickColor		"[1 1 1]"
+	LineColors		"[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	LineStyles		"-|-|-|-|-|-"
+	LineWidths		"[0.5 0.5 0.5 0.5 0.5 0.5]"
+	MarkerStyles		"none|none|none|none|none|none"
+      }
+      YMin		      "-150"
+      YMax		      "150"
+      DataFormat	      "StructureWithTime"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Distribution\nTransformer"
+      SID		      "60"
+      Ports		      [0, 0, 0, 0, 0, 3, 4]
+      Position		      [175, 28, 230, 167]
+      ZOrder		      -25
+      LibraryVersion	      "1.2088"
+      FontName		      "Verdana"
+      FontSize		      11
+      SourceBlock	      "powerlib/Elements/Three-Phase\nTransformer\n(Two Windings)"
+      SourceType	      "Three-Phase Transformer (Two Windings)"
+      Winding1Connection      "Yg"
+      UNITS		      "SI"
+      NominalPower	      "[ 300000 , 50 ]"
+      Winding1		      "[22000 9.6316 0.30658]"
+      Winding2Connection      "Yn"
+      Winding2		      "[440 0.0037656 0.00011986]"
+      SetSaturation	      off
+      Rm		      "1.21e+06"
+      Lm		      "3851.5"
+      Saturation	      "[0 0;0.030855 39.614;12.857 50.177]"
+      Hysteresis	      off
+      DataFile		      "'hysteresis'"
+      SetInitialFlux	      off
+      InitialFluxes	      "[26.41 -26.41 23.108]"
+      Measurements	      "None"
+      MoreParameters	      off
+      BreakLoop		      off
+      DataType		      on
+      TransfoNumber	      "1"
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Distribution Network"
+      SID		      "1230"
+      Ports		      [0, 0, 0, 0, 0, 4]
+      Position		      [575, 26, 675, 169]
+      ZOrder		      -19
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Distribution Network"
+	Location		[1555, 418, 2525, 944]
+	Open			on
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"88"
+	Block {
+	  BlockType		  Reference
+	  Name			  "1"
+	  SID			  "2523"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [310, 50, 330, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "10"
+	  SID			  "2567"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [515, 385, 535, 405]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "2"
+	  SID			  "2526"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [455, 50, 475, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "3"
+	  SID			  "2535"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [515, 50, 535, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "4"
+	  SID			  "2531"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [305, 385, 325, 405]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "5"
+	  SID			  "2533"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [445, 385, 465, 405]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "6"
+	  SID			  "2538"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [665, 385, 685, 405]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "7"
+	  SID			  "2564"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [630, 50, 650, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "8"
+	  SID			  "2565"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [685, 50, 705, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "9"
+	  SID			  "2566"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [745, 50, 765, 70]
+	  ZOrder		  -19
+	  NamePlacement		  "alternate"
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Individual House"
+	  SourceType		  ""
+	  length		  "0.025"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Ground"
+	  SID			  "2559"
+	  Ports			  [0, 0, 0, 0, 0, 1]
+	  Position		  [978, 430, 992, 445]
+	  ZOrder		  -3
+	  BlockRotation		  270
+	  BlockMirror		  on
+	  ShowName		  off
+	  LibraryVersion	  "1.2088"
+	  FontName		  "Verdana"
+	  FontSize		  11
+	  SourceBlock		  "powerlib/Elements/Ground"
+	  SourceType		  "Ground"
+	  LConnTagsString	  "a"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage Neutral"
+	  SID			  "2560"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [865, 401, 950, 419]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage Phase A"
+	  SID			  "2561"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [865, 266, 950, 284]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage Phase B"
+	  SID			  "2562"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [865, 301, 950, 319]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage Phase C"
+	  SID			  "2563"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [865, 336, 950, 354]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_01"
+	  SID			  "2324"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [220, 101, 240, 149]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_04"
+	  SID			  "2527"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [220, 266, 240, 314]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_12"
+	  SID			  "2558"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [390, 101, 410, 149]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_23"
+	  SID			  "2525"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [575, 101, 595, 149]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_3x"
+	  SID			  "2534"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [795, 101, 815, 149]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_45"
+	  SID			  "2528"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [390, 266, 410, 314]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_56"
+	  SID			  "2532"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [575, 266, 595, 314]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "z_6x"
+	  SID			  "2537"
+	  Ports			  [0, 0, 0, 0, 0, 4, 4]
+	  Position		  [755, 266, 775, 314]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.176"
+	  SourceBlock		  "ExampleModel_lib/Backbone"
+	  SourceType		  ""
+	  length		  "0.02"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "PhaseA"
+	  SID			  "1233"
+	  Position		  [35, 133, 65, 147]
+	  Port			  "1"
+	  Side			  "Left"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "PhaseB"
+	  SID			  "1234"
+	  Position		  [35, 173, 65, 187]
+	  Port			  "2"
+	  Side			  "Left"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "PhaseC"
+	  SID			  "1235"
+	  Position		  [35, 213, 65, 227]
+	  Port			  "3"
+	  Side			  "Left"
+	}
+	Block {
+	  BlockType		  PMIOPort
+	  Name			  "Neutral"
+	  SID			  "1236"
+	  Position		  [35, 253, 65, 267]
+	  Port			  "4"
+	  Side			  "Left"
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "PhaseA"
+	  SrcPort		  RConn1
+	  Points		  [60, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, -30]
+	    DstBlock		    "z_01"
+	    DstPort		    LConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 135]
+	    DstBlock		    "z_04"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "PhaseB"
+	  SrcPort		  RConn1
+	  Points		  [70, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, -60]
+	    DstBlock		    "z_01"
+	    DstPort		    LConn2
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 105]
+	    DstBlock		    "z_04"
+	    DstPort		    LConn2
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "PhaseC"
+	  SrcPort		  RConn1
+	  Points		  [80, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, -90]
+	    DstBlock		    "z_01"
+	    DstPort		    LConn3
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 75]
+	    DstBlock		    "z_04"
+	    DstPort		    LConn3
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "Neutral"
+	  SrcPort		  RConn1
+	  Points		  [90, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, -120]
+	    DstBlock		    "z_01"
+	    DstPort		    LConn4
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 45]
+	    DstBlock		    "z_04"
+	    DstPort		    LConn4
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  Points		  [285, 110; 90, 0]
+	  DstBlock		  "z_12"
+	  DstPort		  LConn1
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "z_01"
+	    SrcPort		    RConn1
+	    Points		    [30, 0]
+	  }
+	  Branch {
+	    ConnectType		    "SRC_SRC"
+	    Points		    [0, -50]
+	    DstBlock		    "1"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_01"
+	  SrcPort		  RConn2
+	  DstBlock		  "z_12"
+	  DstPort		  LConn2
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_01"
+	  SrcPort		  RConn3
+	  DstBlock		  "z_12"
+	  DstPort		  LConn3
+	}
+	Line {
+	  LineType		  "Connection"
+	  Points		  [355, 140; 20, 0]
+	  DstBlock		  "z_12"
+	  DstPort		  LConn4
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    Labels		    [0, 0]
+	    SrcBlock		    "z_01"
+	    SrcPort		    RConn4
+	    Points		    [100, 0]
+	  }
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "1"
+	    SrcPort		    RConn1
+	    Points		    [10, 0; 0, 80]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_12"
+	  SrcPort		  RConn1
+	  DstBlock		  "z_23"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_23"
+	  SrcPort		  LConn2
+	  Points		  [-120, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_12"
+	    DstPort		    RConn2
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "2"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_23"
+	  SrcPort		  LConn3
+	  Points		  [-60, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_12"
+	    DstPort		    RConn3
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "3"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_23"
+	  SrcPort		  LConn4
+	  Points		  [-10, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [-65, 0]
+	    Branch {
+	      ConnectType	      "DEST_SRC"
+	      DstBlock		      "z_12"
+	      DstPort		      RConn4
+	    }
+	    Branch {
+	      ConnectType	      "DEST_DEST"
+	      SrcBlock		      "2"
+	      SrcPort		      RConn1
+	      Points		      [0, 80; -5, 0]
+	    }
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "3"
+	    SrcPort		    RConn1
+	    Points		    [0, 80]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_45"
+	  SrcPort		  LConn1
+	  Points		  [-95, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_04"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 120]
+	    DstBlock		    "4"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_45"
+	  SrcPort		  LConn2
+	  DstBlock		  "z_04"
+	  DstPort		  RConn2
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_45"
+	  SrcPort		  LConn3
+	  DstBlock		  "z_04"
+	  DstPort		  RConn3
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_45"
+	  SrcPort		  LConn4
+	  Points		  [-25, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_04"
+	    DstPort		    RConn4
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "4"
+	    SrcPort		    RConn1
+	    Points		    [10, 0; 0, -90]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_56"
+	  SrcPort		  LConn1
+	  Points		  [-60, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_45"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "10"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_56"
+	  SrcPort		  LConn2
+	  DstBlock		  "z_45"
+	  DstPort		  RConn2
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_56"
+	  SrcPort		  LConn3
+	  Points		  [-130, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_45"
+	    DstPort		    RConn3
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "5"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  Points		  [480, 305; 70, 0]
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "z_45"
+	    SrcPort		    RConn4
+	    Points		    [55, 0]
+	  }
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "5"
+	    SrcPort		    RConn1
+	    Points		    [0, -90]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_56"
+	    DstPort		    LConn4
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "10"
+	    SrcPort		    RConn1
+	    Points		    [0, -90]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_23"
+	  SrcPort		  RConn2
+	  Points		  [60, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_3x"
+	    DstPort		    LConn2
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "8"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_3x"
+	  SrcPort		  LConn4
+	  Points		  [-15, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [-45, 0]
+	    Branch {
+	      ConnectType	      "DEST_SRC"
+	      Points		      [-55, 0]
+	      Branch {
+		ConnectType		"DEST_SRC"
+		DstBlock		"z_23"
+		DstPort			RConn4
+	      }
+	      Branch {
+		ConnectType		"DEST_DEST"
+		SrcBlock		"7"
+		SrcPort			RConn1
+		Points			[0, 80]
+	      }
+	    }
+	    Branch {
+	      ConnectType	      "DEST_DEST"
+	      SrcBlock		      "8"
+	      SrcPort		      RConn1
+	      Points		      [0, 80]
+	    }
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "9"
+	    SrcPort		    RConn1
+	    Points		    [0, 40; -15, 0; 0, 40]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_23"
+	  SrcPort		  RConn3
+	  DstBlock		  "z_3x"
+	  DstPort		  LConn3
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_3x"
+	  SrcPort		  LConn1
+	  Points		  [-50, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [-115, 0]
+	    Branch {
+	      ConnectType	      "DEST_SRC"
+	      DstBlock		      "z_23"
+	      DstPort		      RConn1
+	    }
+	    Branch {
+	      ConnectType	      "DEST_SRC"
+	      DstBlock		      "7"
+	      DstPort		      LConn1
+	    }
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "9"
+	    DstPort		    LConn1
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_56"
+	  SrcPort		  RConn3
+	  Points		  [25, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 100]
+	    DstBlock		    "6"
+	    DstPort		    LConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "z_6x"
+	    DstPort		    LConn3
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  Points		  [715, 305; -105, 0]
+	  DstBlock		  "z_56"
+	  DstPort		  RConn4
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "6"
+	    SrcPort		    RConn1
+	    Points		    [15, 0; 0, -90]
+	  }
+	  Branch {
+	    ConnectType		    "SRC_DEST"
+	    SrcBlock		    "z_6x"
+	    SrcPort		    LConn4
+	    Points		    [-25, 0]
+	  }
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  LConn2
+	  DstBlock		  "z_56"
+	  DstPort		  RConn2
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  LConn1
+	  DstBlock		  "z_56"
+	  DstPort		  RConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "Voltage Neutral"
+	  SrcPort		  RConn1
+	  Points		  [20, 0]
+	  DstBlock		  "Ground"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  RConn1
+	  DstBlock		  "Voltage Phase A"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  RConn2
+	  Points		  [30, 0; 0, 25]
+	  DstBlock		  "Voltage Phase B"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  RConn3
+	  Points		  [20, 0; 0, 50]
+	  DstBlock		  "Voltage Phase C"
+	  DstPort		  LConn1
+	}
+	Line {
+	  LineType		  "Connection"
+	  SrcBlock		  "z_6x"
+	  SrcPort		  RConn4
+	  Points		  [10, 0; 0, 70]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 35]
+	    DstBlock		    "Voltage Neutral"
+	    DstPort		    LConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [185, 0; 0, -30]
+	    Branch {
+	      ConnectType	      "DEST_DEST"
+	      SrcBlock		      "Voltage Phase C"
+	      SrcPort		      RConn1
+	      Points		      [20, 0]
+	    }
+	    Branch {
+	      ConnectType	      "DEST_SRC"
+	      Points		      [0, -35]
+	      Branch {
+		ConnectType		"DEST_DEST"
+		SrcBlock		"Voltage Phase B"
+		SrcPort			RConn1
+		Points			[20, 0]
+	      }
+	      Branch {
+		ConnectType		"DEST_SRC"
+		Points			[0, -35]
+		DstBlock		"Voltage Phase A"
+		DstPort			RConn1
+	      }
+	    }
+	  }
+	}
+	Annotation {
+	  Name			  "IN From\nDistribution\nTransformer"
+	  Position		  [52, 104]
+	}
+      }
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Ground"
+      SID		      "2518"
+      Ports		      [0, 0, 0, 0, 0, 1]
+      Position		      [483, 340, 497, 355]
+      ZOrder		      -3
+      BlockRotation	      270
+      BlockMirror	      on
+      ShowName		      off
+      LibraryVersion	      "1.2088"
+      FontName		      "Verdana"
+      FontSize		      11
+      SourceBlock	      "powerlib/Elements/Ground"
+      SourceType	      "Ground"
+      LConnTagsString	      "a"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Three-Phase Source"
+      SID		      "11"
+      Ports		      [0, 0, 0, 0, 0, 0, 3]
+      Position		      [40, 76, 105, 124]
+      ZOrder		      -8
+      LibraryVersion	      "1.2088"
+      FontName		      "Verdana"
+      FontSize		      11
+      SourceBlock	      "powerlib/Electrical\nSources/Three-Phase Source"
+      SourceType	      "Three-Phase Source"
+      Voltage		      "22000"
+      PhaseAngle	      "0"
+      Frequency		      "50"
+      InternalConnection      "Yg"
+      SpecifyImpedance	      off
+      Resistance	      "0.0001"
+      Inductance	      "0.0001"
+      ShortCircuitLevel	      "100e6"
+      BaseVoltage	      "22000"
+      XRratio		      "7"
+      BusType		      "swing"
+      Pref		      "0"
+      Qref		      "0"
+      Qmin		      "-inf"
+      Qmax		      "inf"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Voltage Neutral"
+      SID		      "1219"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 306, 455, 324]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Voltage Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Voltage Phase A"
+      SID		      "1216"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 201, 455, 219]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Voltage Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Voltage Phase B"
+      SID		      "1217"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 236, 455, 254]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Voltage Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Voltage Phase C"
+      SID		      "1218"
+      Ports		      [0, 0, 0, 0, 0, 1, 1]
+      Position		      [370, 271, 455, 289]
+      ZOrder		      -19
+      LibraryVersion	      "1.176"
+      SourceBlock	      "ExampleModel_lib/Voltage Measurement"
+      SourceType	      ""
+      ShowPortLabels	      "FromPortIcon"
+      SystemSampleTime	      "-1"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      GeneratePreprocessorConditionals off
+    }
+    Block {
+      BlockType		      Scope
+      Name		      "Voltages"
+      SID		      "1173"
+      Ports		      []
+      Position		      [305, 374, 335, 406]
+      ZOrder		      -3
+      Floating		      on
+      Location		      [-1083, 602, -343, 1031]
+      Open		      off
+      NumInputPorts	      "1"
+      List {
+	ListType		AxesTitles
+	axes1			"%<SignalLabel>"
+      }
+      List {
+	ListType		ScopeGraphics
+	FigureColor		"[0.5 0.5 0.5]"
+	AxesColor		"[0 0 0]"
+	AxesTickColor		"[1 1 1]"
+	LineColors		"[1 1 0;1 0 1;0 1 1;1 0 0;0 1 0;0 0 1]"
+	LineStyles		"-|-|-|-|-|-"
+	LineWidths		"[0.5 0.5 0.5 0.5 0.5 0.5]"
+	MarkerStyles		"none|none|none|none|none|none"
+      }
+      YMin		      "-350"
+      YMax		      "350"
+      SaveName		      "ScopeData1"
+      DataFormat	      "StructureWithTime"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "powergui"
+      SID		      "30"
+      Ports		      []
+      Position		      [40, 370, 145, 409]
+      ZOrder		      -8
+      Priority		      "1"
+      LibraryVersion	      "1.2088"
+      UserDataPersistent      on
+      UserData		      "DataTag0"
+      FontName		      "Verdana"
+      SourceBlock	      "powerlib/powergui"
+      SourceType	      "PSB option menu block"
+      SimulationMode	      "Discrete"
+      SolverType	      "Backward Euler"
+      SampleTime	      "0.001"
+      frequency		      "60"
+      SPID		      off
+      DisableSnubberDevices   off
+      DisableRonSwitches      off
+      DisableVfSwitches	      off
+      SwTol		      "0"
+      Interpol		      off
+      DisplayEquations	      off
+      FunctionMessages	      off
+      frequencyindice	      "50"
+      Pbase		      "1e6"
+      ErrMax		      "1e-4"
+      Iterations	      "10"
+      UnitsV		      "V"
+      UnitsW		      "W"
+      echomessages	      on
+      HookPort		      off
+      EnableUseOfTLC	      off
+      x0status		      "steady"
+      RestoreLinks	      "warning"
+      ResistiveCurrentMeasurement off
+      Ylog		      off
+      Xlog		      on
+      ShowGrid		      off
+      save		      off
+      variable		      "ZData"
+      ZoomFFT		      off
+      StartTime		      "0.0"
+      cycles		      "1"
+      DisplayStyle	      "1"
+      FreqAxis		      off
+      MaxFrequency	      "1000"
+      frequencyindicesteady   "1"
+      RmsSteady		      "1"
+      display		      off
+      methode		      off
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Current Phase A"
+      SrcPort		      LConn1
+      Points		      [-15, 0]
+      Branch {
+	ConnectType		"DEST_SRC"
+	DstBlock		"Distribution\nTransformer"
+	DstPort			RConn1
+      }
+      Branch {
+	ConnectType		"DEST_SRC"
+	Points			[0, 165]
+	DstBlock		"Voltage Phase A"
+	DstPort			LConn1
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Distribution\nTransformer"
+      SrcPort		      RConn2
+      Points		      [90, 0]
+      Branch {
+	ConnectType		"DEST_SRC"
+	DstBlock		"Current Phase B"
+	DstPort			LConn1
+      }
+      Branch {
+	ConnectType		"DEST_SRC"
+	Points			[0, 165]
+	DstBlock		"Voltage Phase B"
+	DstPort			LConn1
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Distribution\nTransformer"
+      SrcPort		      RConn3
+      Points		      [85, 0]
+      Branch {
+	ConnectType		"DEST_SRC"
+	DstBlock		"Current Phase C"
+	DstPort			LConn1
+      }
+      Branch {
+	ConnectType		"DEST_SRC"
+	Points			[0, 165]
+	DstBlock		"Voltage Phase C"
+	DstPort			LConn1
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Distribution\nTransformer"
+      SrcPort		      RConn4
+      Points		      [80, 0]
+      Branch {
+	ConnectType		"DEST_SRC"
+	DstBlock		"Current Neutral"
+	DstPort			RConn1
+      }
+      Branch {
+	ConnectType		"DEST_SRC"
+	Points			[0, 165]
+	DstBlock		"Voltage Neutral"
+	DstPort			LConn1
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Current Phase A"
+      SrcPort		      RConn1
+      DstBlock		      "Distribution Network"
+      DstPort		      LConn1
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Distribution Network"
+      SrcPort		      LConn2
+      DstBlock		      "Current Phase B"
+      DstPort		      RConn1
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Voltage Phase B"
+      SrcPort		      RConn1
+      Points		      [20, 0]
+      Branch {
+	ConnectType		"DEST_SRC"
+	Points			[0, -35]
+	Branch {
+	  ConnectType		  "DEST_DEST"
+	  SrcBlock		  "Voltage Phase A"
+	  SrcPort		  RConn1
+	  Points		  [20, 0]
+	}
+	Branch {
+	  ConnectType		  "DEST_SRC"
+	  Points		  [0, -60]
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "Distribution Network"
+	    SrcPort		    LConn4
+	    Points		    [-70, 0]
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "Current Neutral"
+	    DstPort		    LConn1
+	  }
+	}
+      }
+      Branch {
+	ConnectType		"DEST_DEST"
+	SrcBlock		"Voltage Phase C"
+	SrcPort			RConn1
+	Points			[20, 0; 0, -35]
+      }
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Current Phase C"
+      SrcPort		      RConn1
+      DstBlock		      "Distribution Network"
+      DstPort		      LConn3
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Three-Phase Source"
+      SrcPort		      RConn1
+      Points		      [20, 0; 0, -30]
+      DstBlock		      "Distribution\nTransformer"
+      DstPort		      LConn1
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Three-Phase Source"
+      SrcPort		      RConn2
+      DstBlock		      "Distribution\nTransformer"
+      DstPort		      LConn2
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Three-Phase Source"
+      SrcPort		      RConn3
+      Points		      [20, 0; 0, 30]
+      DstBlock		      "Distribution\nTransformer"
+      DstPort		      LConn3
+    }
+    Line {
+      LineType		      "Connection"
+      SrcBlock		      "Voltage Neutral"
+      SrcPort		      RConn1
+      Points		      [20, 0]
+      DstBlock		      "Ground"
+      DstPort		      LConn1
+    }
+  }
+}
+MatData {
+  NumRecords		  1
+  DataRecord {
+    Tag			    DataTag0
+    Data		    "  %)30     .    > 0   8    (     @         %    \"     $    !     0         %  0 $@    $   #J    <&]W97"
+    ")G=6D             <W1E861Y<W1A=&4         :6YI='-T871E<P          ;&]A9&9L;W<             ;&]A9&9L;W=N97<         "
+    ";'1I=FEE=P              >FUE=&5R                9F9T=&]O;               <F5P;W)T                :'ES=&5R97-I<P    "
+    "      ;&EN97!A<F%M            5',                     0FQO8VM);FET:6%L4W1A=&4         #@   #     &    \"     8    "
+    "     !0    @               $         \"0         .    ,     8    (    !@         %    \"                0         "
+    ")          X    P    !@    @    &          4    (               !          D         #@   #     &    \"     8     "
+    "    !0    @               $         \"0         .    ,     8    (    !@         %    \"                0         )"
+    "          X    P    !@    @    &          4    (               !          D         #@   #     &    \"     8      "
+    "   !0    @               $         \"0         .    ,     8    (    !@         %    \"                0         ) "
+    "         X    P    !@    @    &          4    (               !          D         #@   #     &    \"     8       "
+    "  !0    @               $         \"0         .    ,     8    (    !@         %    \"                0         )  "
+    "        X    P    !@    @    &          4    (               !          D         #@   *@    &    \"     (        "
+    " !0    @    !     0    $         !0 $  8    !    #    '-T871E '9A;'5E       .    *     8    (     0         %    \""
+    "                0         .    *     8    (     0         %    \"                0         "
+  }
+}
