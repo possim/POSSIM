@@ -46,7 +46,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 /** Name-flag-value triple for command-line parameters. */
 struct configvar_t {
-    std::string name;
     std::string flag;
     std::string value;
 };
@@ -56,8 +55,8 @@ struct configvar_t {
 class Config {
     
 private:
-    /** Vector of command line options (each has name, flag, value)*/
-    std::vector<configvar_t> configVars;
+    /** Mapping of sim parameter names to their command line flag and value. */
+    std::map<std::string,configvar_t> configVars;
     
 public:
     /** Constructor.  Open simulator config file (located at 
@@ -113,6 +112,9 @@ public:
     std::string toString();
     
 private:
+    /** Input all config variables specified in the given XML file. */
+    void inputXML(std::string filename);
+    
     /** Some simple input error checking for load flow, charge algorithm inputs. */
     void correctValues();
 };

@@ -73,6 +73,9 @@ public:
     /** Reset date time using string */
     void set(std::string newDateTime);
     
+    /** Reset date time using int (ignores year, month, day) */
+    void set(int numMins);
+    
     /** Reset time only using total mins elapsed of full day */
     void setTime(int mins);
 

@@ -32,56 +32,41 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#ifndef PHASOR_H
-#define	PHASOR_H
+#ifndef DISTRIBUTIONTRANSFORMER_H
+#define	DISTRIBUTIONTRANSFORMER_H
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846264338327950288
-#endif /*M_PI*/
-
-#include <cstdlib>
+#include <string>
+#include <vector>
 #include <iostream>
-#include <cmath>
-#include <sstream>
 
-/** A simple Phasor class for straightforward manipulation of phasor quantities. */
-class Phasor {
+#include "../household/Household.h"
+#include "Feeder.h"
 
-private:
-    double amplitude;           // amplitude
-    double phase;               // phase in radians
-    
+/** The distribution transformer.  Maintains link to component in model and 
+  * transformer capacity. */
+class DistributionTransformer {
+
 public:
-    /** Constructor - zero phasor. */
-    Phasor();
+    /** The name of this transformer. Usually the same as its equivalent
+      * component in the network model of the load flow simulator. */
+    std::string name;
     
-    /** Constructor - non-zero phasor. */
-    Phasor(double a, double p);
-    
-    /** Destructor */
-    virtual ~Phasor();
-    
-    /** Return real part of phasor */
-    double real();
-    
-    /** Return imaginary part of phasor */
-    double imag();
-    
-    /** Return root mean square of phasor */
-    double toRMS();
-    
-    Phasor plus(Phasor other);
-    
-    Phasor times(Phasor other);
-    
-    Phasor squared();
-    
-    Phasor divideByConst(double n);
-    
-    Phasor timesConst(double n);
-    
-    std::string toString();
+    /** Nominal capacity of transformer in kVA*/
+    double capacity;
+
+    /** Nominal capacity of transformer in kVA*/
+    double voltageOut;
+
+public:
+    DistributionTransformer() {
+        name = "Noname";
+        capacity = 200000;
+        voltageOut = 250;
+    }
+
+    virtual ~DistributionTransformer() {   
+    }
 };
-    
-#endif	/* PHASOR_H */
+
+#endif	/* DISTRIBUTIONTRANSFORMER_H */
 

@@ -186,6 +186,10 @@ void Battery::recharge(double chargeRate) {
         return;
     }
     
+    // Little check, not sure if this ever happens, it shouldn't.
+    else if(SOC < 0)
+        SOC = 0;
+    
     double P_Charge = chargeRate * chargingEfficiency;
     double P_Cell = P_Charge / double(numParallelCells * numSeriesBlocks);
     double V_OpenCircuit = find_V_OpenCircuit();
@@ -233,4 +237,3 @@ void Battery::discharge(double distance) {
         capacity = C_SafeLower + SOC/100 * (C_SafeUpper - C_SafeLower);
     }
 }
-

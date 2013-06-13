@@ -46,7 +46,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 
 #include "../simulator/Config.h"
-#include "../gridmodel/Vehicle.h"
+#include "../vehicle/Vehicle.h"
 #include "../utility/DateTime.h"
 #include "../utility/Utility.h"
 
@@ -77,21 +77,21 @@ public:
     virtual ~TrafficModel();
     
     /** Initialise: assign all vehicles a travel profile */
-    void initialise(DateTime datetime, std::map<int,Vehicle> &vehicles);
+    void initialise(DateTime datetime, std::map<std::string,Vehicle*> &vehicles);
     
     /** Update status of each vehicle (home, away, plugged in, etc).  If
       * passing midnight, assign a new random record to each vehicle. */
-    void update(DateTime datetime, std::map<int,Vehicle> &vehicles);
+    void update(DateTime datetime, std::map<std::string,Vehicle*> &vehicles);
     
     /** Display summary of all vehicle traffic behaviour */
-    void displaySummary(std::map<int,Vehicle> vehicles);
+    void displaySummary(std::map<std::string,Vehicle*> vehicles);
     
 private:
     /** Input data */
     void inputData(std::string filename);
     
     /** Assign a random vehicle record to each vehicle */
-    void assignVehicleRecords(DateTime datetime, std::map<int,Vehicle> &vehicles);
+    void assignVehicleRecords(DateTime datetime, std::map<std::string,Vehicle*> &vehicles);
 };
 
 #endif	/* TRAFFICMODEL_H */

@@ -56,12 +56,18 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile << config->toString() << std::endl;
     outfile.close();
     
+    // Create file with all households and their phases
+    file_house_phases = directory + "house_phases.csv";
+    outfile.open(file_house_phases.c_str());
+    for(std::map<std::string, Household*>::iterator it=gridmodel.households.begin(); it!= gridmodel.households.end(); ++it)
+        outfile << it->second->name << ", " << it->second->phase << std::endl;
+    outfile.close();
+    
     // Create household demand log file
     file_demandHH = directory + "data_demand_HH.csv";
     outfile.open(file_demandHH.c_str());
     outfile << "Time, ";
-    for(std::map<int,Household>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
-        outfile << it->second.getComponentRef() << ", ";
+    outfile << houseNameList(gridmodel.households);
     outfile << std::endl;
     outfile.close();
 
@@ -69,8 +75,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     file_demandEV = directory + "data_demand_EV.csv";
     outfile.open(file_demandEV.c_str());
     outfile << "Time, ";
-    for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << it->second.getComponentRef() << " (" << it->second.getNMI() << ") " << it->second.getProfileRef() << ", ";
+    outfile << vehicleNameList(gridmodel.vehicles);
     outfile << std::endl;
     outfile.close();
     
@@ -84,8 +89,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     file_locationEV = directory + "data_vehicleLocations.csv";
     outfile.open(file_locationEV.c_str());
     outfile << "Time, ";
-    for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << it->second.getComponentRef() << " (" << it->second.getNMI() << "), ";
+    outfile << vehicleNameList(gridmodel.vehicles);
     outfile << std::endl;
     outfile.close();
     
@@ -138,10 +142,10 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     file_householdV = directory + "data_householdV_RMS.csv";
     outfile.open(file_householdV.c_str());
     outfile << "Time, ";
-    for(std::map<int,Household>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
-        outfile << it->second.getComponentRef() << " (House " << it->second.getNMI() << "), "
-                << "House " << it->second.getNMI() << " Magnitude, "
-                << "House " << it->second.getNMI() << " Phase, ";
+    for(std::map<std::string,Household*>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
+        outfile << it->second->name << " (House " << it->second->NMI << "), "
+                << "House " << it->second->NMI << " Magnitude, "
+                << "House " << it->second->NMI << " Phase, ";
     outfile << std::endl;
     outfile.close();
     
@@ -149,8 +153,7 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     file_batterySOC = directory + "data_batterySOC.csv";
     outfile.open(file_batterySOC.c_str());
     outfile << "Time, ";
-    for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << it->second.getNMI() << " (Vehicle " << it->second.getNMI() << "), ";
+    outfile << vehicleNameList(gridmodel.vehicles);
     outfile << std::endl;
     outfile.close();
     
@@ -158,17 +161,17 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     file_probchargeEV = directory + "data_probChargeEV.csv";
     outfile.open(file_probchargeEV.c_str());
     outfile << "Time, ";
-    for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
-        outfile << gridmodel.households.at(it->second.getNMI()).getComponentRef() << " (" << it->second.getNMI() << "), , , , , , , ";
+    for(std::map<std::string,Vehicle*>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
+        outfile << gridmodel.findHousehold(it->second->getNMI())->name << " (" << it->second->getNMI() << "), , , , , , , ";
     outfile << std::endl;
     outfile << "Time, ";
-    for(std::map<int,Vehicle>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
+    for(std::map<std::string,Vehicle*>::iterator it = gridmodel.vehicles.begin(); it != gridmodel.vehicles.end(); ++it)
         outfile << "V_RMS, V_Valley, L, SOC, N, P, SwitchedOn, ";
     outfile << std::endl;
     outfile.close();
     
 
-    std::cout << "....................................... OK" << std::endl;
+    std::cout << " OK" << std::endl;
 }
 
 std::string Logging::getDir() {
@@ -229,27 +232,43 @@ void Logging::createDir() {
     }
 }
 
+std::string Logging::houseNameList(std::map<std::string,Household*> households) {
+    std::stringstream ss;
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+        ss << it->first << ", ";
+    return ss.str();
+}
+
+std::string Logging::vehicleNameList(std::map<std::string,Vehicle*> vehicles) {
+    std::stringstream ss;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
+        ss << it->first << ", ";
+    return ss.str();
+}
+
 // Update log files with output of current sim interval
 void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *charger, SpotPrice spotPrice) {
-    std::map<int,Household> households = gridModel.households;
-    std::map<int,Vehicle> vehicles = gridModel.vehicles;
+    std::cout << "Updating logs ...";
+    
+    std::map<std::string,Household*> households = gridModel.households;
+    std::map<std::string,Vehicle*> vehicles = gridModel.vehicles;
     std::ofstream outfile;
     double powerEV=0, powerHH=0;
 
     outfile.open(file_demandHH.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) {
-        outfile << it->second.activePower << ", ";
-        powerHH += it->second.activePower;
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) {
+        outfile << it->second->demandProfile.demand[currtime.totalMinutes()].P << ", ";
+        powerHH += it->second->demandProfile.demand[currtime.totalMinutes()].P;
     }
     outfile << std::endl;
     outfile.close();
     
     outfile.open(file_demandEV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        outfile << it->second.activePower << ", ";
-        powerEV += it->second.activePower;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        outfile << it->second->activePower << ", ";
+        powerEV += it->second->activePower;
     }
     outfile << std::endl;
     outfile.close();
@@ -260,8 +279,8 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     
     outfile.open(file_locationEV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        outfile << (int)(it->second.location) << ", ";
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
+        outfile << (int)(it->second->location) << ", ";
     outfile << std::endl;
     outfile.close();
     
@@ -272,58 +291,59 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     outfile.open(file_phaseV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(int i=0; i<12; i++)
-        outfile << gridModel.phaseV[i] << ", ";
+        outfile << gridModel.networkData.phaseV[i] << ", ";
     outfile << std::endl;
     outfile.close();
     
     outfile.open(file_phaseI.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(int i=0; i<12; i++)
-        outfile << gridModel.phaseI[i] << ", ";
+        outfile << gridModel.networkData.phaseI[i] << ", ";
     outfile << std::endl;
     outfile.close();
     
     outfile.open(file_eolV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(int i=0; i<12; i++)
-        outfile << gridModel.eolV[i] << ", ";
+        outfile << gridModel.networkData.eolV[i] << ", ";
     outfile << std::endl;
     outfile.close();
     
     outfile.open(file_powerFactor.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", "
-            << utility::calcPowerFactor(gridModel.phaseV[2], gridModel.phaseI[2]) << ", "
-            << utility::calcPowerFactor(gridModel.phaseV[5], gridModel.phaseI[5]) << ", "
-            << utility::calcPowerFactor(gridModel.phaseV[8], gridModel.phaseI[8]) << ", "
-            << utility::calcPowerFactor(gridModel.phaseV[11], gridModel.phaseI[11])
+            << utility::calcPowerFactor(gridModel.networkData.phaseV[2], gridModel.networkData.phaseI[2]) << ", "
+            << utility::calcPowerFactor(gridModel.networkData.phaseV[5], gridModel.networkData.phaseI[5]) << ", "
+            << utility::calcPowerFactor(gridModel.networkData.phaseV[8], gridModel.networkData.phaseI[8]) << ", "
+            << utility::calcPowerFactor(gridModel.networkData.phaseV[11], gridModel.networkData.phaseI[11])
             << std::endl;
     outfile.close();
 
     outfile.open(file_householdV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Household>::iterator it = households.begin(); it != households.end(); ++it) 
-        outfile << it->second.V_RMS << ", " << it->second.V_Mag << ", " << it->second.V_Pha << ", ";
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) 
+        outfile << it->second->V_RMS << ", " << it->second->V_Mag << ", " << it->second->V_Pha << ", ";
     outfile << std::endl;
     outfile.close();
     
     outfile.open(file_batterySOC.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
-        outfile << it->second.getSOC()  << ", ";
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
+        outfile << it->second->getSOC()  << ", ";
     outfile << std::endl;
     outfile.close();
         
     outfile.open(file_probchargeEV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
-        outfile << gridModel.households.at(it->second.getNMI()).V_RMS << ", "
-                << gridModel.households.at(it->second.getNMI()).V_valley << ", "
-                << it->second.L << ", " 
-                << it->second.getSOC() << ", "
-                << it->second.N << ", "
-                << it->second.P << ", "
-                << it->second.switchon << ", ";
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) 
+        outfile << gridModel.findHousehold(it->second->getNMI())->V_RMS << ", "
+                << gridModel.findHousehold(it->second->getNMI())->V_valley << ", "
+                << it->second->L << ", " 
+                << it->second->getSOC() << ", "
+                << it->second->N << ", "
+                << it->second->P << ", "
+                << it->second->switchon << ", ";
     outfile << std::endl;
     outfile.close();
     
+    std::cout << " OK" << std::endl;
 }

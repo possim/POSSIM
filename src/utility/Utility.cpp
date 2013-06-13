@@ -35,7 +35,21 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Utility.h"
 
 using namespace boost::posix_time;
-    
+
+void utility::startTimer(boost::posix_time::ptime &timer) {
+    timer = boost::posix_time::microsec_clock::local_time();
+}
+
+std::string utility::updateTimer(boost::posix_time::ptime &timer) {
+    std::string td = timeDisplay(timeSince(timer));
+    timer = boost::posix_time::microsec_clock::local_time();
+    return td;
+}
+
+std::string utility::endTimer(boost::posix_time::ptime &timer) {
+    return(timeDisplay(timeSince(timer)));
+}
+
 // Return time difference between two time points, in milliseconds
 long utility::timeDiff(ptime t1, ptime t2){       
     time_duration td = t2 - t1;
@@ -65,12 +79,12 @@ std::string utility::timeDisplay(long time) {
     numSecs  = (time % 60000) / 1000;
     numMsecs = time % 1000;
     
-    if(time > 60000)
+    if(time > 600000)
         ss << numHrs << "h " << numMins << "m";
-    else if(time > 1000)
+    else if(time > 9999)
         ss << numMins << "m " << numSecs << "s";
     else
-        ss << numMsecs << "ms";
+        ss << numSecs << "s " << numMsecs << "ms";
     return ss.str();
 }
 
@@ -87,6 +101,12 @@ int utility::string2int(std::string s) {
         return 0;
     else
         return result;
+}
+
+std::string utility::double2string(double d) {
+    std::stringstream ss;
+    ss << d;
+    return ss.str();
 }
 
 double utility::string2double(std::string s) {
@@ -167,7 +187,32 @@ double utility::randomUniform(double min, double max) {
     return min + f * (max-min);
 }
 
+// Strip quotation marks from around a given string
+std::string utility::stripQuotations(std::string stringIn) {
+    std::string::size_type start = stringIn.find_first_of("\"");
+    std::string::size_type end = stringIn.find_last_of("\"");
+    return(stringIn.substr(start+1, end-start-1));
+}
+
 // Return power factor given scalar V, I
 double utility::calcPowerFactor(double phaseV, double phaseI) {
     return fabs(cos(M_PI/180 * (phaseV-phaseI)));
 }
+
+// Find and return all filenames in the given directory
+std::vector<std::string> utility::getAllFileNames(std::string directory) {
+    std::vector<std::string> fileNameList;
+    boost::filesystem::path dirPath(directory);
+    boost::filesystem::directory_iterator end_iter;
+
+    if(boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath)) {
+        for(boost::filesystem::directory_iterator dir_iter(dirPath); dir_iter != end_iter; ++dir_iter)
+            if(boost::filesystem::is_regular_file(dir_iter->status()))
+                fileNameList.push_back(dir_iter->path().string());
+    }
+    else
+        std::cout << "ERROR: Directory " << directory << " does not exist.  No filenames retrieved." << std::endl;
+        
+    return fileNameList;
+}
+    

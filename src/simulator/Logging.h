@@ -46,8 +46,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Config.h"
 #include "../utility/Utility.h"
 #include "../gridmodel/GridModel.h"
-#include "../gridmodel/Household.h"
-#include "../gridmodel/Vehicle.h"
+#include "../household/Household.h"
+#include "../vehicle/Vehicle.h"
 #include "../utility/DateTime.h"
 #include "../charging/ChargingBaseClass.h"
 #include "../spotprice/SpotPrice.h"
@@ -64,6 +64,7 @@ private:
     
     /* Individual log file names below */
     std::string file_parameters;
+    std::string file_house_phases;
     std::string file_demandHH;
     std::string file_demandEV;
     std::string file_demandTotal;
@@ -96,6 +97,13 @@ public:
 private:
     /** Create a directory for current simulation run. */
     void createDir();
+    
+    /** Create comma separated list of house names. */
+    std::string houseNameList(std::map<std::string,Household*> households);
+    
+    /** Create comma separated list of vehicle names. */
+    std::string vehicleNameList(std::map<std::string,Vehicle*> vehicles);
+    
 };
 
 #endif	/* LOGGING_H */

@@ -41,6 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include <sstream>
 #include <vector>
+#include <string>
 #include <iostream>
 #include <algorithm>
 #include <cstdlib>
@@ -49,10 +50,12 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/filesystem.hpp>
 
 #include "DateTime.h"
-#include "Phasor.h"
+#include "Power.h"
 
+enum Phase{A=0, B=1, C=2, N=3};
 
 namespace utility {
 // Please leave the below comment for doxygen documentation
@@ -60,9 +63,17 @@ namespace utility {
  *  Various generally useful functions accessible throughout POSSIM. 
  *  @{ 
  */
-
-    /** Utility
-      * Calculate difference between two time points (mainly for displaying
+    
+    /** Start profiling timer */
+    void startTimer(boost::posix_time::ptime &timer);
+    
+    /** Reset timer, return displayable time since last update */
+    std::string updateTimer(boost::posix_time::ptime &timer);
+    
+    /** End profiling timer, return displayable time difference */
+    std::string endTimer(boost::posix_time::ptime &timer);
+    
+    /** Calculate difference between two time points (mainly for displaying
       * simulation progress) */
     long timeDiff(boost::posix_time::ptime t1, boost::posix_time::ptime t2);
     
@@ -80,6 +91,9 @@ namespace utility {
     
     /** Convert a string to an integer */
     int string2int(std::string s);
+    
+    /** Convert a double to string */
+    std::string double2string(double d);
     
     /** Convert a string to a double */
     double string2double(std::string s);
@@ -102,8 +116,15 @@ namespace utility {
     /** Return random var according to uniform distribution scaled by range (min, max) */
     double randomUniform(double min, double max);
     
+    /** Strip quotation marks from a given string (i.e. turn "examplestring" into examplestring) */
+    std::string stripQuotations(std::string stringIn);
+    
     /** Find power factor given amplitudes of V and I */
     double calcPowerFactor(double phaseV, double phaseI);
+
+    /** Get all filenames in a given directory (for demand profile input) */
+    std::vector<std::string> getAllFileNames(std::string directory);
+    
 
 // Please leave the below comment for doxygen documentation
 /** @} End of Utility group */

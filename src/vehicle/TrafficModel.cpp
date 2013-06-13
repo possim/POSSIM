@@ -36,7 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 TrafficModel::TrafficModel(Config* config) {
-    std::cout << "Loading traffic model data... ";
+    std::cout << "Loading traffic model data ...";
     std::cout.flush();
     
     std::string inputFile = config->getString("trafficdata");
@@ -74,17 +74,18 @@ TrafficModel::TrafficModel(Config* config) {
     
     infile.close();
     
-    std::cout << " found " << weekendRecords.size()+weekdayRecords.size() 
+    std::cout << std::endl << " - found " << weekendRecords.size()+weekdayRecords.size() 
               << " vehicle records (" 
               << weekdayRecords.size() << " weekday, " 
-              << weekendRecords.size() << " weekend) ... ";
+              << weekendRecords.size() << " weekend) ... "
+              << std::endl;
 
     home2away = 0;
     away2home = 0;
     
     srand((unsigned int)(time(NULL)));
 
-    std::cout << "OK" << std::endl;
+    std::cout << " - Traffic model loaded OK" << std::endl;
     std::cout.flush();
 }
 
@@ -93,62 +94,62 @@ TrafficModel::~TrafficModel() {
 }
 
 // Assign a random vehicle record to each vehicle
-void TrafficModel::assignVehicleRecords(DateTime datetime, std::map<int,Vehicle> &vehicles) {
+void TrafficModel::assignVehicleRecords(DateTime datetime, std::map<std::string,Vehicle*> &vehicles) {
     int randomIndex;
     
-    std::cout << "A new day! Time for new travel profiles...";
+    std::cout << " - A new day: loading new travel profiles ...";
     std::cout.flush();
     
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
         // Pick random record
         if(datetime.isWeekday()) {
             randomIndex = rand()%weekdayRecords.size();
-            it->second.travelProfile = weekdayRecords.at(randomIndex);
+            it->second->travelProfile = weekdayRecords.at(randomIndex);
         }
         else{
             randomIndex = rand()%weekendRecords.size();
-            it->second.travelProfile = weekendRecords.at(randomIndex);
+            it->second->travelProfile = weekendRecords.at(randomIndex);
         }
     }
     
-    std::cout << "OK" << std::endl;
+    std::cout << " OK" << std::endl;
     std::cout.flush();
 }
 
 // Assign vehicle records, and set each vehicle to its initial state.  If a
 // simulation starts at a non-midnight time, this means that earlier entries
 // need to be cycled through until correct state at correct time is found.
-void TrafficModel::initialise(DateTime datetime, std::map<int,Vehicle> &vehicles) {
+void TrafficModel::initialise(DateTime datetime, std::map<std::string,Vehicle*> &vehicles) {
     travelPair_t nextTravelPair;
     bool endOfTravelPairs;
     
     assignVehicleRecords(datetime, vehicles);
     
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        it->second.distanceDriven = 0;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        it->second->distanceDriven = 0;
         
         // Skip if there is no transition
-        if(it->second.travelProfile.travelPairs.size() == 0)
+        if(it->second->travelProfile.travelPairs.size() == 0)
             continue;
         
-        nextTravelPair = it->second.travelProfile.travelPairs.front();
+        nextTravelPair = it->second->travelProfile.travelPairs.front();
         
         endOfTravelPairs = false;
         
         // If vehicle has made transition(s)
         while(datetime.isLaterInDayThan(nextTravelPair.time) && !endOfTravelPairs) {
-            it->second.travelProfile.travelPairs.pop_front();
-            if(it->second.location == Home) {
-                it->second.location = Away;
-                it->second.isConnected = false;
+            it->second->travelProfile.travelPairs.pop_front();
+            if(it->second->location == Home) {
+                it->second->location = Away;
+                it->second->isConnected = false;
             }
             else {
-                it->second.location = Home;
-                it->second.isConnected = true;
+                it->second->location = Home;
+                it->second->isConnected = true;
             }
             
-            if(it->second.travelProfile.travelPairs.size() > 0)
-                nextTravelPair = it->second.travelProfile.travelPairs.front();
+            if(it->second->travelProfile.travelPairs.size() > 0)
+                nextTravelPair = it->second->travelProfile.travelPairs.front();
             else
                 endOfTravelPairs = true;
         }
@@ -157,57 +158,63 @@ void TrafficModel::initialise(DateTime datetime, std::map<int,Vehicle> &vehicles
 
 // For all vehicles, check if there has been a change to their status over the
 // past interval.  If yes, update.   At midnight, generate new profiles.
-void TrafficModel::update(DateTime datetime, std::map<int,Vehicle> &vehicles) {
+void TrafficModel::update(DateTime datetime, std::map<std::string,Vehicle*> &vehicles) {
     home2away = 0;
     away2home = 0;
     travelPair_t nextTravelPair;
+    
+    std::cout << " - Updating traffic model ...\n";
     
     // At midnight, generate new set of random profiles
     if(datetime.isMidnight())
         assignVehicleRecords(datetime, vehicles);
     
     
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        it->second.distanceDriven = 0;
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        it->second->distanceDriven = 0;
         
         // Skip if there is no remaining transition
-        if(it->second.travelProfile.travelPairs.size() == 0)
+        if(it->second->travelProfile.travelPairs.size() == 0)
             continue;
         
-        nextTravelPair = it->second.travelProfile.travelPairs.front();
+        nextTravelPair = it->second->travelProfile.travelPairs.front();
         
         // If vehicle has made transition(s)
         if(datetime.isLaterInDayThan(nextTravelPair.time)) {
-            it->second.travelProfile.travelPairs.pop_front();
-            if(it->second.location == Home) {
+            it->second->travelProfile.travelPairs.pop_front();
+            if(it->second->location == Home) {
                 home2away++;
-                it->second.location = Away;
-                it->second.isConnected = false;
+                it->second->location = Away;
+                it->second->isConnected = false;
+                it->second->isCharging = false;
             }
             else {
                 away2home++;
-                it->second.location = Home;
+                it->second->location = Home;
                 
-                it->second.distanceDriven = nextTravelPair.distance;
+                it->second->distanceDriven = nextTravelPair.distance;
 
                 // Prevent vehicles from plugging in if they are only going to be home for a short time
-                if(it->second.travelProfile.travelPairs.size() > 0 &&
-                (it->second.travelProfile.travelPairs.front().time.diffInMinutes(datetime) < 120))
-                    it->second.isConnected = false;
+                if(it->second->travelProfile.travelPairs.size() > 0 &&
+                (it->second->travelProfile.travelPairs.front().time.diffInMinutes(datetime) < 120)){
+                    it->second->isConnected = false;
+                    it->second->isCharging = false;
+                }
                 else
-                    it->second.isConnected = true;
+                    it->second->isConnected = true;
             }
         }
     }
+    //std::cout << " OK" << std::endl;
 }
 
-void TrafficModel::displaySummary(std::map<int,Vehicle> vehicles) {
+void TrafficModel::displaySummary(std::map<std::string,Vehicle*> vehicles) {
     int numHome=0, numConnected=0;
     
-    for(std::map<int,Vehicle>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        if(it->second.location == Home) {
+    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+        if(it->second->location == Home) {
             numHome++;
-            if(it->second.isConnected)
+            if(it->second->isConnected)
                 numConnected++;
         }
     }

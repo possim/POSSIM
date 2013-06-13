@@ -48,9 +48,11 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../loadflow/LoadFlowInterface.h"
 #include "../loadflow/MatlabInterface.h"
 #include "../utility/Utility.h"
-#include "HouseholdDemand.h"
-#include "Household.h"
-#include "Vehicle.h"
+#include "../household/HouseholdDemandModel.h"
+#include "../household/Household.h"
+#include "../vehicle/Vehicle.h"
+#include "DistributionTransformer.h"
+#include "NetworkData.h"
 
 /** The full grid model.  This class contains all houses, vehicles, and any
   * further components as required, as well as the network structure, network
@@ -60,40 +62,53 @@ class GridModel {
 private:
     
     /** Local copy of pointer to load flow interface. */
-    LoadFlowInterface   *loadflow;
+    LoadFlowInterface *loadflow;
     
     /** Percentage of houses having an EV. */
-    int                 evPenetration;
+    int evPenetration;
     
     /** Average power factor of household loads (local copy of config variable). */
-    double              powerFactor;
-    
-    /** Minimum voltage allowed by distribution code (local copy of config variable). */
-    int                 minVoltage;
-    
-    /** Nominal capacity of distribution transformer, kVA. */
-    double              distTransCapacity;
+    double averagePowerFactor;
     
     /** Total household loads at current point in time. */
-    double              sumHouseholdLoads;
+    double sumHouseholdLoads;
+    
+    /** Mapping of households to their NMI */
+    std::map<int, Household*> householdNMImap;
+    
+    /** Mapping of vehicles to their NMI */
+    std::map<int, Vehicle*> vehicleNMImap;
     
 
 public:
 
-    /** Map of Households to their ID numbers. */
-    std::map<int, Household>    households;
+    /** Base voltage */
+    double baseVoltage;
     
-    /** Map of Vehicles to the ID numbers of houses they are associated with. */
-    std::map<int, Vehicle>      vehicles;
+    /** Minimum voltage allowed by distribution code (local copy of config variable). */
+    int minVoltage;
+    
+    /** The pole that is the root of the distribution network tree. */
+    FeederPole* root;
+    
+    /** The Distribution transformer, usually connected at the network root. */
+    DistributionTransformer* transformer;
+    
+    /** All poles in the distribution network, mapped to their names. */
+    std::map<std::string, FeederPole*> poles;
+    
+    /** All power line segments (backbone) in the distribution network, mapped to their names. */
+    std::map<std::string, FeederLineSegment*> lineSegments;
+    
+    /** All Households in the network, mapped to their ID (=NMI) numbers. */
+    std::map<std::string, Household*> households;
+    
+    /** All Vehicles in the network, mapped to the ID(=NMI) numbers of houses they are associated with. */
+    std::map<std::string, Vehicle*> vehicles;
 
-    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
-    double phaseV[12];
+    /** All relevant network data */
+    NetworkData networkData;
     
-    /** Current RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
-    double phaseI[12];
-    
-    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at end-of-line. */
-    double eolV[12];
     
     
 public:
@@ -112,21 +127,21 @@ public:
     
     /** Using households' demand profiles, assigns a demand to each house for
       * next interval. */
-    void generateLoads(DateTime currTime, HouseholdDemand householdDemand);
+    void generateLoads(DateTime currTime, HouseholdDemandModel householdDemand);
 
     /** Display summary of all individual household and vehicle loads. */
-    void displayFullSummary();
+    void displayFullSummary(DateTime currTime);
     
     /** Display summary of vehicle charging / discharging. */
     void displayVehicleSummary();
     
     /** Display summary of aggregated household and vehicle loads. */
-    void displayLoadSummary();
+    void displayLoadSummary(DateTime currTime);
     
     /** Run load flow applying household loads only (and no vehicle loads) at
       * 4:00 am. Required for e.g. distributed charging algorithm.
       * This function should ideally be deprecated, to do. */
-    void runValleyLoadFlow(DateTime datetime, HouseholdDemand householdDemand);  
+    void runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand);  
     
     /** Run full load flow using specified load flow interface. */
     void runLoadFlow(DateTime currTime);
@@ -135,14 +150,42 @@ public:
       * loads are accounted for (required for EqualShare charging algorithm) */
     double getAvailableCapacity();
     
-
-private:
-    /** Load the full grid model from loadflow interface / file. */
-    void loadGridModel(LoadFlowInterface* loadflow);
+    /** Find the household with the given NMI */
+    Household* findHousehold(int NMI);
+    
+    /** Find the household with the given NMI */
+    Vehicle* findVehicle(int NMI);
     
     /** Add vehicles to the grid model as required. */
     void addVehicles(Config* config);
     
+    /** Set logging directory. */
+    void setLogDir(std::string logDir);
+
+private:
+    /** Load the full grid model from loadflow interface / file. */
+    void loadGridModel();
+    
+    /** Calculate the total impedance at each household (using DFS traversal of tree)*/
+    void calculateHouseholdZ(FeederPole* pole, double r, double x);
+    
+    /** Following a load flow calculation, calculate voltage unbalance at each
+      * pole in the network. */
+    void calculateVoltageUnbalance(DateTime currTime);
+    
+    /** DFS traversal of network tree, recalculating current at each pole. */
+    void calculatePoleCurrents(FeederPole* pole, Phasor I[], DateTime currTime);
+    
+    /** DFS traversal of network tree, recalculating voltages at each pole. */
+    void calculatePoleVoltages(FeederPole* pole);
+    
+    /** Houses are initially mapped to their names.  It can be convenient to
+      * have a mapping to their NMI as well.  This function creates that mapping. */
+    void buildHouseholdNMImap();
+
+    /** Vehicles are initially mapped to their names.  It can be convenient to
+      * have a mapping to their NMI as well.  This function creates that mapping. */
+    void buildVehicleNMImap();
 };
 
 #endif	/* GRIDMODEL_H */

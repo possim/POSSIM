@@ -126,6 +126,7 @@ public:
     /** Display battery details. */
     void displayCharacteristics();
 
+
 private:
     /** Upload key battery specification to populate model. */
     void uploadCharacteristics(std::string filename);

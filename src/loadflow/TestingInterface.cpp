@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 /*   CONSTRUCTOR, DESTRUCTOR   */
     
-TestingInterface::TestingInterface(std::string modelname) {
+TestingInterface::TestingInterface(Config* config) {
     std::cout << " - Using testing interface ... OK" << std::endl;
 }
 
@@ -48,9 +48,16 @@ TestingInterface::~TestingInterface() {
 }
 
 
-void TestingInterface::loadModel(std::string model) {
+void TestingInterface::loadModel(Config* config) {
 }
 
+void TestingInterface::extractModel(FeederPole* &root, 
+                                    DistributionTransformer* &transformer,
+                                    std::map<std::string,FeederPole*> &poles, 
+                                    std::map<std::string,FeederLineSegment*> &lineSegments, 
+                                    std::map<std::string,Household*> &households) {
+}
+    
 void TestingInterface::runSim() {
 }
 
@@ -59,6 +66,12 @@ double TestingInterface::getVar(std::string var) {
 }
 
 void TestingInterface::setVar(std::string component, double value, std::string var) {
+}
+
+void TestingInterface::setVar(std::string component, std::string value, std::string var){
+}
+
+void TestingInterface::setTxCapacity(std::string component, double value) {
 }
 
 int TestingInterface::getNumHouses() {
@@ -81,6 +94,9 @@ void TestingInterface::addVehicle(Vehicle vehicle) {
 void TestingInterface::setDemand(std::string component, double a, double i, double c) {
 }
 
+void TestingInterface::setDemand(std::string filename) {
+}
+
 void TestingInterface::printModel(std::string targetDir) {
 }
 
@@ -88,6 +104,6 @@ void TestingInterface::generateReport(std::string dir, int month, bool isWeekday
     
 }
 
-void TestingInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<int, Household> &households) {
+void TestingInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) {
     
 }

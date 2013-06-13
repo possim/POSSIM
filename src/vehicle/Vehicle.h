@@ -67,20 +67,24 @@ struct vehicleRecord_t {
   * demand profile, and vehicle battery.*/
 class Vehicle {
    
-private:
+public:
 
     /** ID (equivalent to NMI, national meter identifier) - linked to household
       * where this vehicle connects */
     int NMI;                    
     
-    /** Name of equivalent component of this vehicle in loadflow model */
-    std::string componentRef;
+    /** Name of vehicle */
+    std::string name;
+    
+    /** Name of component in load flow model this house is represented by */
+    std::string componentName;
+    
+    /** Name of house this vehicle is connected to */
+    std::string parentHousehold;
     
     /** The vehicle battery. */
     Battery battery;
 
-    
-public:
     /** Vehicle location: Home / Away / Other? */
     VehicleLocation location;
 
@@ -121,7 +125,7 @@ public:
     
 public:
     /** Constructor */
-    Vehicle(Config* config, int nmi, std::string name);
+    Vehicle(Config* config, int nmi, std::string newName, std::string newParentHH);
     
     /** Destructor */
     virtual ~Vehicle();
@@ -132,8 +136,8 @@ public:
     /** Set vehicle's power demand */
     void setPowerDemand(double active, double inductive, double capacitive);
 
-    /** Get name of component this vehicle is tied to in load flow model. */
-    std::string getComponentRef();
+    /** Get name of this vehicle. */
+    std::string getName();
     
     /** Get vehicle ID (NMI, tied to house this vehicle is connected to).*/
     int getNMI();

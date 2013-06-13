@@ -40,25 +40,45 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 #include "../utility/Utility.h"
+#include "../utility/Power.h"
+#include "../gridmodel/Feeder.h"
+#include "HouseholdDemandModel.h"
+
 
 /** Represents a household in the grid.  Includes ID (national meter identifier),
   * demand profile, and local voltage measurements.*/
 class Household {
 
-private:
+public:
     /** ID (equivalent to NMI, national meter identifier)*/
     int NMI;                    
     
-    /** Name of equivalent component of this household in loadflow model */
-    std::string componentRef;
+    /** Name of household */
+    std::string name;
     
-    /** Demand profile */
-    double demandProfile;
+    /** Name of component in load flow model this house is represented by */
+    std::string componentName;
     
-    /** 4-tuple to add random effects on household demand */
+    /** Demand profile: greater than 1 if this is a high-use house,  less
+      * than 1 if it's a low-use house */
+    double demandProfileFactor;
+    
+    /** 4-tuple to add normal distribution random effects on household 
+      * demand each interval */
     double demandRandomness[4];
     
-public:
+    /** Phase that this household is connected to. */
+    Phase phase;
+    
+    /** Base voltage of network this household is in. */
+    double baseVoltage;
+    
+    /** This household's full demand profile for a 24-hour period. */
+    HouseholdDemandProfile demandProfile;
+    
+    /** Name of parent pole that this household is connected to. */
+    std::string parentPoleName;
+    
     /** True if there is an EV associated with this house. */
     bool hasCar;
     
@@ -71,40 +91,42 @@ public:
     /** Voltage, current interval, phase */
     double V_Pha;
     
-    /** Power demand, active */
-    double activePower;
-    
-    /** Power demand, inductive */
-    double inductivePower;
-    
-    /** Power demand, capacitive */
-    double capacitivePower;
-    
     /** Voltage at this house during valley load (for e.g. distributed charging alg) */
     double V_valley;
     
+    /** True if the Household has been assigned a parent pole (for tree building) */
+    bool hasParent;
+    
+    /** The service line (from pole to house)*/
+    lineModel serviceLine;
+    
+    /** The total impedance*/
+    Impedance totalImpedanceToTX;
+    
+    
 public:
     /** Constructor */
-    Household(int nmi, std::string name, double dP);
-    
+    Household();
+
     /** Destructor */
     virtual ~Household();
-    
-    /** Returns name of component this Household is tied to in loadflow */
-    std::string getComponentRef();
-    
-    /** Returns NMI */
-    int getNMI();
-    
-    /** Returns demand profile */
-    double getDemandProfile();
 
-    /** Sets power demand */
-    void setPowerDemand(double active, double inductive, double capacitive);
+    /** Returns demand at specified time of day.  If no value is available
+      * for the specific time, then demand value for nearest available time is
+      * returned. */
+    S_Load getDemandAt(DateTime datetime);
 
-    /** Gets power factor of this household */
-    double getPowerFactor();
+    /** Returns active component of household load at given date and time */
+    double getActivePower(DateTime datetime);
+    
+    /** Returns inductive component of household load at given date and time */
+    double getInductivePower(DateTime datetime);
 
+    /** Returns capacitive component of household load at given date and time */
+    double getCapacitivePower(DateTime datetime);
+    
+    /** Returns power factor at given date and time */
+    double getPowerFactor(DateTime datetime);
     
 };
 

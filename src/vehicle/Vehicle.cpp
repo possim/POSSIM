@@ -35,10 +35,12 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "Vehicle.h"
 
 
-Vehicle::Vehicle(Config* config, int nmi, std::string name) :
-        battery(config) {
+Vehicle::Vehicle(Config* config, int nmi, std::string newName, std::string parentHH) :
+    battery(config) {
     NMI = nmi;
-    componentRef = name;
+    name = newName;
+    parentHousehold = parentHH;
+    componentName = "";
     activePower = 0;
     inductivePower = 0;
     capacitivePower = 0;
@@ -55,8 +57,8 @@ Vehicle::Vehicle(Config* config, int nmi, std::string name) :
 Vehicle::~Vehicle() {
 }
 
-std::string Vehicle::getComponentRef() {
-    return componentRef;
+std::string Vehicle::getName() {
+    return name;
 }
 
 int Vehicle::getNMI() {

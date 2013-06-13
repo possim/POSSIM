@@ -32,44 +32,25 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#include "Household.h"
+#ifndef NETWORKDATA_H
+#define	NETWORKDATA_H
 
-Household::Household(int nmi, std::string name, double dP) {
-    NMI = nmi;
-    componentRef = name;
-    demandProfile = dP;
-    activePower = 0;
-    inductivePower = 0;
-    capacitivePower = 0;
-    V_RMS = 0;
-    V_Mag = 0;
-    V_Pha = 0;
-    V_valley = 0;
-}
+/** Maintains all relevant network data:  phase and neutral currents and
+  * voltages;  individual household voltages. */
+struct NetworkData {
+        
+    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
+    double phaseV[12];
+    
+    /** Current RMS, Magnitude, Shift, for each phase and neutral, as measured at Tx. */
+    double phaseI[12];
+    
+    /** Voltage RMS, Magnitude, Shift, for each phase and neutral, as measured at end-of-line. */
+    double eolV[12];
+    
+    /** Voltage at all individual households, mapped to households' ID (NMI)*/
+    std::map<int,double> householdV;
+};
 
+#endif	/* NETWORKDATA_H */
 
-Household::~Household() {
-}
-
-std::string Household::getComponentRef() {
-    return componentRef;
-}
-
-int Household::getNMI() {
-    return NMI;
-}
-
-double Household::getDemandProfile() {
-    return demandProfile;
-}
-
-void Household::setPowerDemand(double active, double inductive, double capacitive) {
-    activePower = active;
-    inductivePower = inductive;
-    capacitivePower = capacitive;
-}
-
-double Household::getPowerFactor() {
-    if(activePower == 0) return 0;
-    return activePower/sqrt(pow(activePower, 2) + pow(inductivePower-capacitivePower,2));
-}

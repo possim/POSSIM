@@ -42,7 +42,7 @@ ChargingDistributed::ChargingDistributed(Config* config, GridModel gridModel) :
 ChargingDistributed::~ChargingDistributed() {
 }
 
-ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime, HouseholdDemand hhDemand) :
+ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime, HouseholdDemandModel hhDemand) :
         ChargingBaseClass(config, gridModel) 
 {
     minVoltage = config->getInt("minvoltage");
@@ -66,15 +66,15 @@ ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, D
  * In Proceedings of the IEEE Power and Energy Society General Meeting. Vancouver, Canada, July 2013. */
 void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel) {
     double L, N, P, P_applied;
-    int currNMI;
+    std::string currName;
     double currV, valleyV, currSOC;
     
-    for(std::map<int,Vehicle>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it) {
-        currNMI = it->second.getNMI();
-        currSOC = it->second.getSOC();
-        it->second.switchon = false;
-        currV = gridModel.households.at(currNMI).V_RMS;
-        valleyV = gridModel.households.at(currNMI).V_valley;
+    for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it) {
+        currName = it->second->getName();
+        currSOC = it->second->getSOC();
+        it->second->switchon = false;
+        currV = gridModel.households.at(currName)->V_RMS;
+        valleyV = gridModel.households.at(currName)->V_valley;
 
         // Calculate L (voltage probability)
         if(currV > valleyV)
@@ -83,38 +83,38 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
             L = -1;
         else
             L = (currV - minVoltage) / (valleyV - minVoltage);
-        it->second.L = L;
+        it->second->L = L;
         
         // Calculate N (SOC probability)
         if(currSOC < 20)
             N = 1;
         else
             N = (100 - currSOC) / 80;
-        it->second.N = N;
+        it->second->N = N;
         
         P = std::max(0.0, ((L + N) / 2));
-        it->second.P = P;
+        it->second->P = P;
         
         P_applied = 1 - pow((1-P),(double(simInterval)/double(periodOfLoadSchedule)));
-        std::cout << "Probability of charging " << it->second.getNMI() << ": " << P << " (" << P_applied << ")" << std::endl;
+        std::cout << "Probability of charging " << it->second->getNMI() << ": " << P << " (" << P_applied << ")" << std::endl;
         
         
         // Check if this vehicle is connected, if not disregard.
-        if(!it->second.isConnected) {
-            it->second.isCharging = false;
-            it->second.chargeRate = 0;
+        if(!it->second->isConnected) {
+            it->second->isCharging = false;
+            it->second->chargeRate = 0;
             continue;
         }
         
         // Check if this vehicle is fully charged, if so disregard.
         if(currSOC > 98) {
-            it->second.isCharging = false;
-            it->second.chargeRate = 0;
+            it->second->isCharging = false;
+            it->second->chargeRate = 0;
             continue;
         }
         
         // Check if this vehicle is already charging
-        if(it->second.isCharging) {
+        if(it->second->isCharging) {
             continue;
         }
 
@@ -128,14 +128,14 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
          //         << std::setw(3) << std::right << std::setiosflags(std::ios::fixed) << P;
         
         if(utility::randomUniform(0,1) < P_applied) {
-            it->second.chargeRate = maxChargeRate;
-            it->second.isCharging = true;
-            it->second.switchon = true;
+            it->second->chargeRate = maxChargeRate;
+            it->second->isCharging = true;
+            it->second->switchon = true;
             //std::cout << " Yes, started charging " << it->second.isCharging;
         }
         else {
-            it->second.chargeRate = 0;  
-            it->second.isCharging = false;
+            it->second->chargeRate = 0;  
+            it->second->isCharging = false;
             //std::cout << " No, not yet " << it->second.isCharging;
         }
         //std::cout << std::endl;

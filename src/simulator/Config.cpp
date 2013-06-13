@@ -37,26 +37,40 @@ POSSIBILITY OF SUCH DAMAGE.
 
 // Constructor:  open config file, read all values.
 Config::Config() {
+    // Input from default xml file
+    inputXML("configs/defaultconfig.xml");
+    
+    // Ensure right values for particular variables
+    correctValues();
+}
+
+// Destructor
+Config::~Config() {
+}
+
+// Read in all config variables as specified in this xml file
+void Config::inputXML(std::string filename) {
     int start, end;
-    std::string line;
+    std::string line, name;
     configvar_t currvar;
 
     // Open config file     
-    std::ifstream infile("possim_config.xml");
+    std::ifstream infile(filename.c_str());
     if(!infile){
-       std::cout << "Cannot open possim config file!" << std::endl;
-       exit (1);
+       std::cout << "Cannot open config file: " << filename << "!" << std::endl;
+       return;
     } 
 
     // Ignore first line
     getline(infile, line);
 
     // Loop through remaining lines
+    // (Could really do with a better xml parser here!)
     while(getline(infile, line)) {
         if(!line.empty() && line.size()>2) {
             start = line.find_first_of("<")+1;
             end = line.find_first_of(" ", start);
-            currvar.name = line.substr(start, end-start);
+            name = line.substr(start, end-start);
             
             start = line.find_first_of("\"", end) + 1;
             end = line.find_first_of("\"", start);
@@ -66,16 +80,9 @@ Config::Config() {
             end = line.find_first_of("\"", start);
             currvar.value = line.substr(start, end-start);
             
-            configVars.push_back(currvar);
+            configVars[name] = currvar;
         }
     }
-    
-    // Ensure right values for particular variables
-    correctValues();
-}
-
-// Destructor
-Config::~Config() {
 }
 
 // Some simple input error checking.  Allows config to have e.g. any of the 
@@ -110,16 +117,23 @@ void Config::correctValues() {
             value.compare("distributed") == 0 ||
             value.compare("2") == 0)
                setConfigVar("chargingalgorithm", "distributed");
+    else if(value.compare("TOU") == 0 ||
+            value.compare("tou") == 0 ||
+            value.compare("4") == 0)
+               setConfigVar("chargingalgorithm", "TOU");
+    else if(value.compare("OPTIMAL1") == 0 ||
+            value.compare("Optimal1") == 0 ||
+            value.compare("optimal1") == 0 ||
+            value.compare("5") == 0)
+               setConfigVar("chargingalgorithm", "optimal1");
 }
 
 // Return string value of a given config variable.
 std::string Config::getConfigVar(std::string name) {
-    for(size_t i=0; i<configVars.size(); i++)
-        if(configVars.at(i).name == name)
-            return configVars.at(i).value;
-    
-    std::cout << std::endl << "WARNING: DID NOT FIND VALUE FOR CONFIG VARIABLE \"" << name << "\"!" << std::endl;
-    return NULL;
+    std::string val = configVars[name].value;
+    if(val.length() == 0)
+        std::cout << "\n\nWARNING: Did not find value for config variable " << name << "!\n" << std::endl;
+    return val;
 }
 
 // If config variable is boolean, get bool value directly
@@ -177,6 +191,8 @@ int Config::getChargingAlg() {
         return 3;
     else if(value.compare("TOU") == 0)
         return 4;
+    else if(value.compare("optimal1") == 0)
+        return 5;
     
     return 0;
 }
@@ -194,43 +210,44 @@ double* Config::getRandomParams(std::string name) {
 }
 
 // Set a given config variable by name
-void Config::setConfigVar(std::string name, std::string value) {
-    for(size_t i=0; i<configVars.size(); i++)
-        if(configVars.at(i).name == name)
-            configVars.at(i).value = value;
+void Config::setConfigVar(std::string name, std::string val) {
+    configVars[name].value = val;
 }
 
 // Set a given config variable by flag (e.g. from command line)
 void Config::setConfigVarByFlag(std::string flagIn, std::string value) {
     std::string flag = flagIn.substr(1,flagIn.size());
-    for(size_t i=0; i<configVars.size(); i++)
-        if(configVars.at(i).flag == flag)
-            configVars.at(i).value = value;
+    for(std::map<std::string,configvar_t>::iterator it = configVars.begin(); it!=configVars.end(); ++it)
+        if(it->second.flag == flag)
+            it->second.value = value;
     
     correctValues();
+    
+    if(flag == "C")
+        inputXML(value);
 }
 
 // Print all options, flags, defaults
 void Config::printOptions() {
-    for(size_t i=0; i<configVars.size(); i++)
-        std::cout << " -" << std::setw(5) << std::left << std::setiosflags(std::ios::fixed) << configVars.at(i).flag
-                  << " "  << std::setw(20) << std::left << std::setiosflags(std::ios::fixed) << configVars.at(i).name
-                  << " (default: " << configVars.at(i).value << ")"
+    for(std::map<std::string,configvar_t>::iterator it = configVars.begin(); it!=configVars.end(); ++it)
+        std::cout << " -" << std::setw(5) << std::left << std::setiosflags(std::ios::fixed) << it->second.flag
+                  << " "  << std::setw(20) << std::left << std::setiosflags(std::ios::fixed) << it->first
+                  << " (default: " << it->second.value << ")"
                   << std::endl;
 }
 
 // Print all config variables and their current values
 void Config::printAll() {
-    for(size_t i=0; i<configVars.size(); i++)
-        std::cout << " "  << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << configVars.at(i).name
-                  << ": " << configVars.at(i).value << std::endl;
+    for(std::map<std::string,configvar_t>::iterator it = configVars.begin(); it!=configVars.end(); ++it)
+        std::cout << " "  << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << it->first
+                  << ": " << it->second.value << std::endl;
 }
 
 // Return string of all config variables and their current values
 std::string Config::toString() {
     std::stringstream ss;
-    for(size_t i=0; i<configVars.size(); i++)
-        ss << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << configVars.at(i).name
-           << ": " << configVars.at(i).value << std::endl;
+    for(std::map<std::string,configvar_t>::iterator it = configVars.begin(); it!=configVars.end(); ++it)
+        ss << std::setw(20) << std::right << std::setiosflags(std::ios::fixed) << it->first
+           << ": " << it->second.value << std::endl;
     return ss.str();
 }
