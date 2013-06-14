@@ -76,7 +76,7 @@ private:
     /** Mapping of households to their NMI */
     std::map<int, Household*> householdNMImap;
     
-    /** Mapping of vehicles to their NMI */
+     /** Mapping of vehicles to their NMI */
     std::map<int, Vehicle*> vehicleNMImap;
     
 

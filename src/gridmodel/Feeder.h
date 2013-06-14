@@ -40,6 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <iostream>
 
+
 #include "../household/Household.h"
 
 
@@ -65,6 +66,7 @@ struct lineModel {
 /** Simulates a single pole in the distribution network. A pole has one parent
   * feeder line, any number of child feeder lines, and any number of houses
   * connected to it. */
+
 class FeederPole {
 
 public:
@@ -104,6 +106,7 @@ public:
 /** Simulates a single distribution line segment between two poles in the 
   * distribution network.  Stores impedance and length of the segment, as well  
   * as pointers to its parent and child poles. */
+
 class FeederLineSegment {
 
 public:

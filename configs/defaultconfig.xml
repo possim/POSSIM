@@ -42,6 +42,7 @@
 <chargingalgorithm  flag="c"    value="optimal1" />
 <maxchargerate      flag="c_mx" value="3450" />
 <minchargerate      flag="c_mn" value="0" />
+
 <charginghorizon    flag="c_h"  value="0.083334" />
 <servicelinemax     flag="c_s"  value="100" />
 <backbonemax        flag="c_b"  value="400" />

@@ -563,4 +563,3 @@ void GridModel::buildVehicleNMImap() {
         vehicleNMImap[it->second->NMI] = it->second;
 }
 
-
