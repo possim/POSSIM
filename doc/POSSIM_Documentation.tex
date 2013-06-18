@@ -1,3 +1,36 @@
+% Software License Agreement (BSD License)
+% 
+% Copyright (c) 2013, Julian de Hoog <julian@dehoog.ca>
+% All rights reserved.
+% 
+% Redistribution and use in source and binary forms, with or without
+% modification, are permitted provided that the following conditions
+% are met:
+% 
+%  * Redistributions of source code must retain the above copyright
+%    notice, this list of conditions and the following disclaimer.
+%  * Redistributions in binary form must reproduce the above
+%    copyright notice, this list of conditions and the following
+%    disclaimer in the documentation and/or other materials provided
+%    with the distribution.
+%  * The name of the author may not be used to endorse or promote 
+%    products derived from this software without specific prior 
+%    written permission from the author.
+% 
+% THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+% "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+% LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+% FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+% COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+% INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+% BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+% LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+% CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+% LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+% ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+% POSSIBILITY OF SUCH DAMAGE. 
+
+
 \documentclass[12pt,a4paper]{article}
 
 \usepackage{url}			% to include links
@@ -31,7 +64,7 @@
 \newcommand{\question}{\vspace{0.5cm}\noindent \textbf{Question:} \quad}
 \newcommand{\answer}{\vspace{0.1cm} \\ \noindent \textbf{Answer:} \quad \ \ }
 
-\title{POSSIM: POwer Systems SIMulator \\ Documentation \\ \vspace{1cm} \normalsize Version 0.1, 29 April 2013}
+\title{POSSIM: POwer Systems SIMulator \\ Documentation \\ \vspace{1cm} \normalsize Version 0.2, 18 June 2013}
 
 \author{}
 \date{}
@@ -430,6 +463,11 @@ All essential simulation parameters and outputs are logged at each simulation in
 The current version of POSSIM uses MATLAB to generate graphs of particular data of interest; this will likely change in the future.
 
 
+%-------------------------------------------------------------------------------
+\subsection{DateTime}
+\label{sec:datetime}
+
+Since simulations in POSSIM are time-series based, a separate DateTime class was created to keep track of time, compare one moment in time to another, maintain demand value tied to a given time of day, etc.  This is an essential component of the simulator, and it is worth familiarising yourself with it briefly before developing or using POSSIM.  DateTime objects typically have the format \texttt{hh.mm.dd.mm.yyyy}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    NETWORK MODELS
@@ -441,36 +479,12 @@ For now it is assumed that MATLAB SimPowerSystems is used to build network model
 
 Actual models of the network may be built with MATLAB's SimPowerSystems package in Simulink, using the convenient drag and drop interface.  An example model is presented in Figs. \ref{fig:model1}, \ref{fig:model2}, and \ref{fig:model3}.  Generation and transmission is not considered for now, the model starts with the distribution transformer.  Phase and neutral voltages and currents are measured individually.  Voltages are measured at each individual house.  Each segment of line, both feeder and service, is modelled individually.  The network uses a matlab-based library, which allows essential network specs to be changed at a single location.  However, network components may be altered individually as required, and may be added and removed dynamically (for example in the case of electric vehicles) as the simulation takes place.
 
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=0.8\textwidth]{model1}
-  \caption{Network model, outer}
-  \label{fig:model1}  
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=\textwidth]{model2}
-  \caption{Network model, inner}
-  \label{fig:model2}  
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-    \includegraphics[width=0.5\textwidth]{model3}
-  \caption{Network model, individual house}
-  \label{fig:model3}  
-\end{figure}
-
-
 
 All interaction with MATLAB is conducted via the MatlabInterface (in \texttt{src/loadflow}).  This object starts the matlab engine, and passes any model inputs to the model, while reading any model outputs as required in POSSIM.
 
 \newP
 To set a value (in this case the impedance of a house) use:
 {\alltt loadflow->setDemand(<house\_name>, R, L, C)} \postC
-
-\newP
 To read an output (in this case the voltage at a house) use:
 {\alltt loadflow->getOutputs()} \postC
 (in which case all relevant voltages are stored in individual household objects).
@@ -484,24 +498,103 @@ To add for example a vehicle to the matlab model, use:
 Further interaction with matlab can easily be added to this object.
 
 
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.7\textwidth]{model1}
+  \caption{Network model, outer}
+  \label{fig:model1}  
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{model2}
+  \caption{Network model, inner}
+  \label{fig:model2}  
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.5\textwidth]{model3}
+  \caption{Network model, individual house}
+  \label{fig:model3}  
+\end{figure}
+
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    HOUSEHOLD DEMAND
-
+\clearpage
 \section{Household Demand}
 \label{sec:hdemand}
 
 The majority of smart grid studies will need to have a sense of daily load fluctuations due to general household demand at the distribution level.  How this is done depends on the data available.  In some cases precise data for a specific day may be available; in others there may only be average profiles available.
 
-More coming soon!
+All files specifying household demand data must follow the following format:
+
+\noindent\texttt{<datetime1>, <realdemand1>, <reactivedemand1>}\\
+\noindent\texttt{<datetime2>, <realdemand2>, <reactivedemand2>}\\
+etc...\\
+
+\noindent
+where \texttt{datetimeX} has the standard format of the \hyperref[sec:datetime]{DateTime class}.\\
+
+\newP
+POSSIM accepts three possible modes for specifying household demand:
+
+\newP
+\begin{enumerate}
+\item \textbf{Phase-specific}:  in this mode, three profiles must be made available, one each for phases A, B, and C.  Each house is assigned the demand profile corresponding to the phase it is connected on.  This mode is useful for example in situations where phase-specific distribution transformer data has been logged, and average demand profiles are available separately for each phase.  To use this mode, set the following config variables:
+
+\begin{tabular}{p{4cm}p{4cm}}
+\texttt{demandmodel} 		&	\texttt{phasespecific} \\
+\texttt{demanddatadir}      		&	\texttt{path/to/folder/containing/profiles}\\
+\end{tabular}
+
+\vspace{0.3cm}
+The \texttt{demanddatadir} folder must contain three profiles, named \texttt{"phaseA", "phaseB",} and \texttt{"phaseC"}.  File extension doesn't matter.
+\newP
+
+\item \textbf{House-specific}:  in this mode, each individual house in the network model is assigned a specific profile.  This is possible for example when individual household data has been logged, when the effect of individual household loads wants to be examined, or when individual household profiles have been somehow pre-generated.  To use this mode, set the following config variables:
+
+\begin{tabular}{p{4cm}p{4cm}}
+\texttt{demandmodel} 		&	\texttt{housespecific} \\
+\texttt{demanddatadir}      		&	\texttt{path/to/folder/containing/profiles}\\
+\texttt{housedemandalloc}   	&	\texttt{path/to/house/allocation/file}\\
+\end{tabular}
+
+\vspace{0.3cm}
+The \texttt{demanddatadir} directory must contain all profiles, and the \texttt{housedemandalloc} file must specify which profile is to be assigned to each house in the network.  The format of this file is:
+
+\noindent\texttt{<housename1>, <profilename1>}\\
+\noindent\texttt{<housename2>, <profilename2>}\\
+etc...\\
+
+\newP
+
+\item \textbf{Random}:  in this mode, each house is assigned a random profile.  To use this mode, set the following config variables:
+\begin{tabular}{p{4cm}p{4cm}}
+\texttt{demandmodel} 		&	\texttt{random} \\
+\texttt{demanddatadir}      		&	\texttt{path/to/folder/containing/profiles}\\
+\end{tabular}
+
+\vspace{0.3cm}
+The \texttt{demanddatadir} directory must contain all profiles, and each house is assigned one of these randomly.  If the directory contains additional files, there may be errors.
+\newP
+
+
+\end{enumerate}
+
+
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    VEHICLE DEMAND
 
+\clearpage
 \section{Vehicle Demand}
 \label{sec:vdemand}
 
