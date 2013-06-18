@@ -146,3 +146,29 @@ std::string Phasor::toString() {
     return ss.str();
 }
 
+
+double power::calculatePhaseUnbalance(Phasor vAB, Phasor vBC, Phasor vCA) {
+    Phasor a, a2;
+    a.set(1,120);
+    a2.set(1,240);
+    
+    Phasor vMinus = vAB.plus(vBC.times(a2).plus(vCA.times(a)));
+    Phasor vPlus = vAB.plus(vBC.times(a).plus(vCA.times(a2)));
+    
+    /* Optional output for debug
+    std::cout << "\n------------------------"
+              << "\n         Vab: " << vAB.toString()
+              << "\n         Vbc: " << vBC.toString()
+              << "\n         Vca: " << vCA.toString()
+              << "\n       Vca*a: " << vCA.times(a).toString()
+              << "\n      Vbc*a2: " << vBC.times(a2).toString()
+              << "\nVbc*a2+Vca*a: " << (vBC.times(a2).plus(vCA.times(a))).toString()
+              << "\n          V-: " << vMinus.toString()
+              << "\n          V+: " << vPlus.toString()
+              << "\n       V-/V+: " << vMinus.dividedBy(vPlus).toString()
+              << "\n           %: " << vMinus.getAmplitude() / vPlus.getAmplitude() * 100
+              << "\n________________________________________________________\n"
+              << std::endl; */
+              
+    return (vMinus.getAmplitude() / vPlus.getAmplitude() * 100);
+}

@@ -520,7 +520,16 @@ void MatlabInterface::extractModel(FeederPole* &root,
     //for(std::map<std::string,FeederPole*>::iterator it=poles.begin(); it!=poles.end(); ++it) 
     //    std::cout << "Pole " << it->second->name << " has " << it->second->households.size() << " houses" << std::endl;
     
-    
+    // For later reference (when writing output to file e.g.), save backbone
+    // names in workspace
+    ss.str("");
+    ss << "backboneNames = {'" << lineSegments.begin()->second->name << "'";
+    std::map<std::string,FeederLineSegment*>::iterator it2 = lineSegments.begin();
+    it2++;
+    for( ; it2 != lineSegments.end(); ++it2)
+        ss << std::endl << "'" << it2->second->name << "'";
+    ss << "};" << std::endl;
+    engEvalString(eng, ss.str().c_str());
 }
 
 void MatlabInterface::runSim() {
@@ -648,30 +657,35 @@ void MatlabInterface::printModel(std::string targetDir) {
      std::cout << "OK" << std::endl;
 }
 
-void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) {
+void MatlabInterface::getOutputs(std::string logDir,
+                                NetworkData &networkData, 
+                                std::map<std::string,Household*> &households, 
+                                std::map<std::string,FeederLineSegment*> &lineSegments,
+                                std::map<std::string,FeederPole*> &poles) {
     ss.str("");
+    ss << "logDir = '" << logDir << "';" << std::endl;
     ss << "writeOutputToFile;";
     engEvalString(eng, ss.str().c_str());
     
-    std::ifstream infile("temp_output.txt");
+    std::ifstream infile(std::string(logDir + "temp_output.txt").c_str());
     std::string line;
     
     // Read in voltages
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        phaseV[i] = utility::string2double(line);
+        networkData.phaseV[i] = utility::string2double(line);
     }
     
     // Read in currents
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        phaseI[i] = utility::string2double(line);
+        networkData.phaseI[i] = utility::string2double(line);
     }
     
     // Read in eolV
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        eolV[i] = utility::string2double(line);
+        networkData.eolV[i] = utility::string2double(line);
     }
     
     // Read in household V
@@ -684,7 +698,44 @@ void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eo
         it->second->V_Pha = utility::string2double(line);
     }
     
-    infile.close();
+    // Read in backbone V (unbalance)
+    Phasor V_ab, V_bc, V_ca;
+    double a, p, unbalance;
+    Household* currHouse;
+    FeederPole currPole;
+    
+    for(std::map<std::string,FeederLineSegment*>::iterator it = lineSegments.begin(); it!=lineSegments.end(); ++it) {
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_ab.set(a,p);
+        
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_bc.set(a,p);
+        
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_ca.set(a,p);
+        
+        unbalance = power::calculatePhaseUnbalance(V_ab, V_bc, V_ca);
+        it->second->voltageUnbalance = unbalance;
+        
+        // Set individual houses' unbalance
+        for(std::map<std::string,Household*>::iterator it2 = households.begin(); it2!=households.end(); ++it2) {
+            currHouse = it2->second;
+            if(currHouse->hasParent) {
+                currPole = *(poles[currHouse->parentPoleName]);
+                if(currPole.parentLineSegment != NULL && currPole.parentLineSegment->name == it->first)
+                    currHouse->V_unbalance = unbalance;
+            }
+        }
+    }
     //remove("tempoutput.txt");
 }
 
@@ -744,6 +795,16 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
     // Generate battery SOC plot
     ss.str("");
     ss << "plotBatterySOC('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+
+    // Generate phase unbalance plot by house
+    ss.str("");
+    ss << "plotPhaseUnbalance('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+
+    // Generate phase unbalance plot by line
+    ss.str("");
+    ss << "plotPhaseUnbalanceByLine('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
 
 }

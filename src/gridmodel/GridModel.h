@@ -54,6 +54,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "DistributionTransformer.h"
 #include "NetworkData.h"
 
+
 /** The full grid model.  This class contains all houses, vehicles, and any
   * further components as required, as well as the network structure, network
   * specs, etc.  It interacts with the load flow interface, sending inputs to 
@@ -78,6 +79,9 @@ private:
     
      /** Mapping of vehicles to their NMI */
     std::map<int, Vehicle*> vehicleNMImap;
+    
+    /** Directory for logging data */
+    std::string logDir;
     
 
 public:
@@ -141,7 +145,7 @@ public:
     /** Run load flow applying household loads only (and no vehicle loads) at
       * 4:00 am. Required for e.g. distributed charging algorithm.
       * This function should ideally be deprecated, to do. */
-    void runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand);  
+    void runValleyLoadFlow(DateTime datetime);  
     
     /** Run full load flow using specified load flow interface. */
     void runLoadFlow(DateTime currTime);

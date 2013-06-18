@@ -45,6 +45,7 @@ Household::Household() {
     V_Mag = 0;
     V_Pha = 0;
     V_valley = 0;
+    V_unbalance = 0;
     hasParent = false;
     serviceLine.resistance = 0;
     serviceLine.inductance = 0;

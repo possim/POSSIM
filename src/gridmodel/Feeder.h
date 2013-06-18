@@ -123,6 +123,8 @@ public:
     
     std::string parentPoleName;
     std::string childPoleName;
+    
+    double voltageUnbalance;
 
 public:
     FeederLineSegment() {
@@ -131,6 +133,7 @@ public:
         line.inductance = 0.0;
         line.capacitance = 0.0;
         line.length = 0.0;
+        voltageUnbalance = 0.0;
     };
     
     FeederLineSegment(std::string n, double r, double i, double c, double l) {

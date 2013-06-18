@@ -46,6 +46,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../household/Household.h"
 #include "../gridmodel/Feeder.h"
 #include "../gridmodel/DistributionTransformer.h"
+#include "../gridmodel/NetworkData.h"
+
+
 
 /** Base class for interaction with third party load flow / network modelling
   * software.  One goal of POSSIM is to allow a variety of load flow packages
@@ -103,7 +106,11 @@ public:
     virtual void generateReport(std::string dir, int month, bool isWeekday, int simInterval) = 0;
     
     /** Get load flow simulator's outputs, after load flow conducted. */
-    virtual void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) = 0;
+    virtual void getOutputs(std::string logDir,
+                                NetworkData &networkData, 
+                                std::map<std::string,Household*> &households, 
+                                std::map<std::string,FeederLineSegment*> &lineSegments,
+                                std::map<std::string,FeederPole*> &poles) = 0;
     
 };
 

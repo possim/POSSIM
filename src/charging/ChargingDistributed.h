@@ -79,7 +79,7 @@ public:
     ~ChargingDistributed();
     
     /** Alternate constructor, which includes datetime and household demand. */
-    ChargingDistributed(Config* config, GridModel &gridmodel, DateTime datetime, HouseholdDemandModel hhDemand);
+    ChargingDistributed(Config* config, GridModel &gridmodel, DateTime datetime);
 
     /** Set charge rates of all vehicles at this date and time. */
     void setChargeRates(DateTime datetime, GridModel &gridModel);

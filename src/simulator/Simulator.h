@@ -51,6 +51,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../charging/ChargingDistributed.h"
 #include "../charging/ChargingTOU.h"
 #include "../charging/ChargingOptimal1.h"
+#include "../charging/ChargingOptimal2.h"
 
 
 /** The outer Simulator loop.

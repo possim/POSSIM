@@ -104,6 +104,10 @@ void TestingInterface::generateReport(std::string dir, int month, bool isWeekday
     
 }
 
-void TestingInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) {
+void TestingInterface::getOutputs(std::string logDir,
+                                NetworkData &networkData, 
+                                std::map<std::string,Household*> &households, 
+                                std::map<std::string,FeederLineSegment*> &lineSegments,
+                                std::map<std::string,FeederPole*> &poles) {
     
 }

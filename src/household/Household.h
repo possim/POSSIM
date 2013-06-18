@@ -94,6 +94,9 @@ public:
     /** Voltage at this house during valley load (for e.g. distributed charging alg) */
     double V_valley;
     
+    /** Phase unbalance at this house ( |V_-| / |V_+|), as a percentage */
+    double V_unbalance;
+    
     /** True if the Household has been assigned a parent pole (for tree building) */
     bool hasParent;
     

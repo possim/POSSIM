@@ -73,6 +73,7 @@ Simulator::Simulator(Config* configIn):
 
     // Initialise log
     log.initialise(config, gridModel);
+    gridModel.setLogDir(log.getDir());
 
     // Create charging algorithm
     switch(config->getChargingAlg()) {
@@ -80,11 +81,13 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 1:         charger = new ChargingEqualShares(config, gridModel);
                         break;
-        case 2:         charger = new ChargingDistributed(config, gridModel, startTime, householdDemandModel);
+        case 2:         charger = new ChargingDistributed(config, gridModel, startTime);
                         break;
         case 4:         charger = new ChargingTOU(config, gridModel);
                         break;
         case 5:         charger = new ChargingOptimal1(config, gridModel, loadflow, log.getDir());
+                        break;
+        case 6:         charger = new ChargingOptimal2(config, gridModel, loadflow, log.getDir(), &spotPrice);
                         break;
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
@@ -130,7 +133,7 @@ void Simulator::run() {
         std::cout << std::endl;
 
         // Update electricity spot price
-        // spotPrice.update(currTime);
+        spotPrice.update(currTime);
         
         // Update traffic model
         trafficModel.update(currTime, gridModel.vehicles);

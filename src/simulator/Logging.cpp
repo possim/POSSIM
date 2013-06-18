@@ -170,6 +170,21 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile << std::endl;
     outfile.close();
     
+    // Create phase unbalance measurements file -- first by house, second by line
+    file_phaseUnbalance = directory + "data_phaseUnbalance.csv";
+    outfile.open(file_phaseUnbalance.c_str());
+    outfile << "Time, ";
+    for(std::map<std::string,Household*>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
+        outfile << it->second->name << " (House " << it->second->NMI << "), ";
+    outfile << std::endl;
+    outfile.close();
+    file_phaseUnbalanceByLine = directory + "data_phaseUnbalanceByLine.csv";
+    outfile.open(file_phaseUnbalanceByLine.c_str());
+    outfile << "Time, ";
+    for(std::map<std::string,FeederLineSegment*>::iterator it = gridmodel.lineSegments.begin(); it != gridmodel.lineSegments.end(); ++it)
+        outfile << it->second->name << ", ";
+    outfile << std::endl;
+    outfile.close();
 
     std::cout << " OK" << std::endl;
 }
@@ -342,6 +357,20 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
                 << it->second->N << ", "
                 << it->second->P << ", "
                 << it->second->switchon << ", ";
+    outfile << std::endl;
+    outfile.close();
+    
+    outfile.open(file_phaseUnbalance.c_str(), std::ofstream::app);
+    outfile << currtime.toString() << ", ";
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) 
+        outfile << it->second->V_unbalance << ", ";
+    outfile << std::endl;
+    outfile.close();
+    
+    outfile.open(file_phaseUnbalanceByLine.c_str(), std::ofstream::app);
+    outfile << currtime.toString() << ", ";
+    for(std::map<std::string,FeederLineSegment*>::iterator it = gridModel.lineSegments.begin(); it != gridModel.lineSegments.end(); ++it) 
+        outfile << it->second->voltageUnbalance << ", ";
     outfile << std::endl;
     outfile.close();
     

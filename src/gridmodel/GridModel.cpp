@@ -342,32 +342,51 @@ void GridModel::displayLoadSummary(DateTime currTime) {
 }
 
 
-void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand) {
-    boost::posix_time::ptime timer;
-    
-    utility::startTimer(timer);
-    std::cout << " - Running valley load flow analysis ... ";
-    std::cout.flush();
+void GridModel::runValleyLoadFlow(DateTime datetime) {
+    boost::posix_time::ptime timerFull, timer;
     
     // Choose valley time
     DateTime valleytime = datetime;
     valleytime.hour = 4;
     valleytime.minute = 0;
 
-    // Set all household loads to valley load, vehicle loads to zero
+    utility::startTimer(timerFull);
+    utility::startTimer(timer);
+    
+    std::cout << "Running valley load flow analysis ... " << std::endl;
+    
+    std::cout << " - setting household loads ...";
+    std::ofstream outfile(std::string(logDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
-        loadflow->setDemand(it->second->componentName, it->second->getActivePower(valleytime), it->second->getInductivePower(valleytime), it->second->getCapacitivePower(valleytime));
-
+        outfile << it->second->componentName << ", "
+                << it->second->getActivePower(valleytime)+0.001 << ", "
+                << it->second->getInductivePower(valleytime) << ", "
+                << it->second->getCapacitivePower(valleytime) << std::endl;
+    outfile.close();
+    loadflow->setDemand(std::string(logDir + "tempHHloads.txt"));
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
+    
+    std::cout << " - setting vehicle loads ...";
+    outfile.open(std::string(logDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second->componentName, 0, 0, 0);
+        outfile << it->second->componentName << ", "
+                << it->second->activePower+0.001 << ", "
+                << it->second->inductivePower << ", "
+                << it->second->capacitivePower << std::endl;
+    outfile.close();
+    loadflow->setDemand(std::string(logDir + "tempVHloads.txt"));
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
+    std::cout << " - running load flow calculation ...";
+    std::cout.flush();
     loadflow->runSim();
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
-    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
-    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
-        it->second->V_valley = it->second->V_RMS;
+    std::cout << " - getting output ...";
+    loadflow->getOutputs(logDir, networkData, households, lineSegments, poles);
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
-    std::cout << "complete, took: " << utility::endTimer(timer) << std::endl;
+    std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
 }
 
 
@@ -380,25 +399,25 @@ void GridModel::runLoadFlow(DateTime currTime) {
     std::cout << "Running load flow analysis ... " << std::endl;
     
     std::cout << " - setting household loads ...";
-    std::ofstream outfile("tempHHloads.txt");
+    std::ofstream outfile(std::string(logDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->getActivePower(currTime)+0.001 << ", "
                 << it->second->getInductivePower(currTime) << ", "
                 << it->second->getCapacitivePower(currTime) << std::endl;
     outfile.close();
-    loadflow->setDemand("tempHHloads.txt");
+    loadflow->setDemand(std::string(logDir + "tempHHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - setting vehicle loads ...";
-    outfile.open("tempVHloads.txt");
+    outfile.open(std::string(logDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->activePower+0.001 << ", "
                 << it->second->inductivePower << ", "
                 << it->second->capacitivePower << std::endl;
     outfile.close();
-    loadflow->setDemand("tempVHloads.txt");
+    loadflow->setDemand(std::string(logDir + "tempVHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - running load flow calculation ...";
@@ -407,7 +426,7 @@ void GridModel::runLoadFlow(DateTime currTime) {
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - getting output ...";
-    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
+    loadflow->getOutputs(logDir, networkData, households, lineSegments, poles);
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
     //std::cout << " - calculating voltage unbalance ..." << std::endl;
@@ -563,3 +582,6 @@ void GridModel::buildVehicleNMImap() {
         vehicleNMImap[it->second->NMI] = it->second;
 }
 
+void GridModel::setLogDir(std::string path) {
+    logDir = path;
+}

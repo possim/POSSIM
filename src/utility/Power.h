@@ -133,6 +133,10 @@ public:
     
     std::string toString();
 };
+
+namespace power {
+    double calculatePhaseUnbalance(Phasor ab, Phasor bc, Phasor ca);
+}
     
 #endif	/* POWER_H */
 

@@ -17,7 +17,7 @@ function plotBatterySOC(logdir, simInterval)
     end
     
     setAxes(gca, numData, simInterval);
-        axis([1 numData 1 2]);
+    axis([1 numData 1 2]);
     axis 'auto y';
     xlabel('Time of Day');
     ylabel('Battery SOC (%)');

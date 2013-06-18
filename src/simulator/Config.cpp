@@ -126,6 +126,11 @@ void Config::correctValues() {
             value.compare("optimal1") == 0 ||
             value.compare("5") == 0)
                setConfigVar("chargingalgorithm", "optimal1");
+    else if(value.compare("OPTIMAL2") == 0 ||
+            value.compare("Optimal2") == 0 ||
+            value.compare("optimal2") == 0 ||
+            value.compare("6") == 0)
+               setConfigVar("chargingalgorithm", "optimal2");
 }
 
 // Return string value of a given config variable.
@@ -193,6 +198,8 @@ int Config::getChargingAlg() {
         return 4;
     else if(value.compare("optimal1") == 0)
         return 5;
+    else if(value.compare("optimal2") == 0)
+        return 6;
     
     return 0;
 }

@@ -1,0 +1,591 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{url}			% to include links
+\usepackage{verbatim}  		% for long comments, code display
+\usepackage{alltt}			% to allow code display with commands inside
+\usepackage{graphicx}		% to include figures
+\usepackage{caption}		% For subfigures
+\usepackage{subcaption}		% For subfigures
+\usepackage{mathtools}		% for display of equations etc
+\usepackage{hyperref}  		% creates links in PDF document
+\usepackage{fullpage}		% better use of margins
+\usepackage{wrapfig} 		% to present legends next to tables without caption and fig number / float figures
+\usepackage{float}			% to use H specifier for floats
+\hypersetup{
+    bookmarks,%
+    colorlinks,%
+    citecolor=blue,%
+    filecolor=blue,%
+    linkcolor=blue,%
+    urlcolor=blue,%
+    pdftitle={POSSIM: Documentation}, 
+    pdfauthor={Julian de Hoog}
+}
+\usepackage{enumitem}		% reduce list spacing
+\setlist{nolistsep}
+
+\graphicspath{{./}{figures/}}	% graphics path
+
+\newcommand{\newP}{\vspace{0.5cm}\noindent}
+\newcommand{\postC}{\vspace{0.3cm} \\}
+\newcommand{\question}{\vspace{0.5cm}\noindent \textbf{Question:} \quad}
+\newcommand{\answer}{\vspace{0.1cm} \\ \noindent \textbf{Answer:} \quad \ \ }
+
+\title{POSSIM: POwer Systems SIMulator \\ Documentation \\ \vspace{1cm} \normalsize Version 0.1, 29 April 2013}
+
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\small
+
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    INTRODUCTION
+
+\section{Introduction}
+\label{sec:introduction}
+
+
+
+%-------------------------------------------------------------------------------
+\subsection{What is POSSIM?}
+
+POSSIM (\textbf{PO}wer \textbf{S}ystems \textbf{SIM}ulator) is a simulation tool aimed at examining the effects of emerging smart grid technologies on the electricity grid at the distribution level.  POSSIM provides a time series based simulation platform, takes care of all data input/output and logging, and makes it possible to plug different solutions and power flow tools in and out as required.
+
+POSSIM does \textit{not} conduct any power flow calculations itself, as there are already several established packages that do a very good job of this.  Rather, POSSIM provides interfaces to these other packages, allowing smart grid researchers to plug in the power flow package of their choice.
+
+POSSIM was designed to be as flexible and extendable as possible, and allows for a variety of network components and solution algorithms to be implemented and compared, all under the roof of a single, free, common, open-source architecture.
+
+\vspace{0.5cm}
+\noindent
+In short, POSSIM \textit{does}:
+\begin{itemize}
+\item input power demand profiles, either for individual components or on an average basis
+\item allow different models of network components or solution algorithms to be plugged in and out as required
+\item input data specific to particular network components, such as electric vehicles
+\item interface with established power flow calculation tools such as MATLAB SimPowerSystems (interfaces to DIgSILENT PowerFactory and OpenDSS are planned)
+\item log all relevant outputs
+\item allow researchers with different interests, using different platforms, to share and compare approaches
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent
+POSSIM \textit{does not}:
+\begin{itemize}
+\item conduct load flow calculations
+\item provide a user-interface based interaction, such as drag and drop network building
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\subsection{Background}
+
+POSSIM was originally developed for the electric vehicles research group at the University of Melbourne by Julian de Hoog.  In this group, different team members were using different power flow packages to build and examine networks.  One goal of the group was to develop and compare smart electric vehicle charging algorithms on each of these various networks.  It was decided that a common platform should be developed that would allow different power flow solutions to be plugged in as required, while allowing development of different approaches all within the same codebase.   The initial emphasis was on electric vehicles and smart charging, but as the project grew and developed it became clear that further network components (such as distributed generation and storage) would need to be added.
+
+Collaboration, portability, and extendability were goals from the start, and POSSIM has been designed from the bottom up to be as platform independent and flexible as possible.  Any further contributions to the code are always welcome.
+
+POSSIM is licensed under the BSD 3-clause license, see Appendix \ref{app:license}.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    INSTALL
+
+\section{Install}
+\label{sec:install}
+
+To ensure that POSSIM may be built and used across various platforms, some third party libraries and build tools are necessary.  Please read the install instructions carefully.
+
+
+%-------------------------------------------------------------------------------
+\subsection{Boost}
+\label{sec:boost}
+
+POSSIM uses the \href{http://www.boost.org/}{Boost C++ libraries}, primarily to ensure that access to computer clock, file structure, etc works across various platforms.  Boost is essential and \textit{must be installed} for POSSIM to function.   Boost is available at \url{http://www.boost.org/};  please ensure that the \textbf{filesystem} library is compiled after your boost install.  
+
+\newP
+Full instructions are available in Boost's \href{http://www.boost.org/doc/libs/1_53_0/more/getting_started/index.html}{Getting Started} guide; the quick and dirty version is:
+
+\begin{itemize}
+\item Download the latest version from the \href{http://www.boost.org}{boost website}, unzip and extract
+\item In the boost home directory (e.g. C:/boost\_1\_53\_0/) type: 
+	{\alltt \$ ./bootstrap.sh --prefix=bin} \postC
+	(On Windows, this command would be \texttt{bootstrap.bat --prefix=bin}). \\ \\
+	This will prepare your system for compiling all boost libraries (which can take some time);  if you only want to install filesystem use instead 
+	{\alltt \$ ./bootstrap.sh --prefix=bin --with-libraries=filesystem} \postC
+	(again, on Windows use \texttt{bootstrap.bat --prefix=bin --with-libraries=filesystem}) \\
+\item Compile the libraries:
+	{\alltt \$ ./b2 install} \\
+	(Or on windows, \texttt{b2 install})
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\subsection{Git}
+\label{sec:github}
+
+The POSSIM codebase is maintained on \href{https://github.com/}{GitHub}.  If you do not know how to use Git, we suggest you briefly familiarise yourself with it via their tutorials.   
+
+\newP
+To fork a copy of POSSIM,
+
+\begin{itemize}
+\item Create an account with GitHub (\url{https://github.com/})
+\item Find POSSIM in the GitHub interface (simply search for "POSSIM"), and fork the POSSIM repository
+\item Install Git on your computer (\url{http://git-scm.com/downloads})
+\item Use a terminal and change to the directory where POSSIM is to be installed
+\item Clone the fork:
+	{\alltt \$ git clone https://github.com/{\color{red}username}/POSSIM.git}
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\subsection{CMake}
+\label{sec:cmake}
+
+CMake (\url{http://www.cmake.org/}) is a cross-platform build tool that generates native makefiles and workspaces to be used in the environment of your choice.  POSSIM is supplied with cmake files; using these to build POSSIM is optional, but will be helpful towards getting compiler settings and linker paths correct.
+
+\newP
+To use cmake to create build files for POSSIM,
+
+\begin{itemize}
+\item Install the latest version of CMake: \\ \url{http://www.cmake.org/cmake/resources/software.html}
+\item In POSSIM's home directory, check the CMakeLists.txt file.  If you are using MATLAB, the variables should be set as follows: 
+   \begin{itemize}
+	\item MATLAB\_ROOT: \quad Directory where your MATLAB installation sits \\
+	 (e.g. /usr/local/MATLAB/R2012a, or C:/Program Files/MATLAB/R2012a)
+	\item MATLAB\_LIBRARIES: \quad the extension to MATLAB's library files \\
+	 (e.g. /bin/glnx86, or /bin/maci64, or /bin/win32, etc)
+	\item MATLAB\_MEX\_LIBRARY \ ends with .dll on windows, .dylib on mac, .so on linux
+	\item MATLAB\_MX\_LIBRARY \ ends with .dll on windows, .dylib on mac, .so on linux
+	\item MATLAB\_ENG\_LIBRARY \ ends with .dll on windows, .dylib on mac, .so on linux
+   \end{itemize}
+\item In POSSIM's home directory, run:
+	{\alltt \$ cmake .} \\
+	(Note, this can also be done via the CMake user interface that comes with a standard CMake install)
+\item Ensure that CMake finds boost and MATLAB (if you intend to use MATLAB).   If boost was installed in a non-standard location then it may not be found, and you may need to uncomment the lines below in CMakeLists.txt using your system's path to boost:
+{\alltt #set(BOOST_ROOT "/path/to/boost/boost\_1\_53\_0"} \\
+{\alltt #set(BOOST_LIBRARYDIR "/path/to/boost/boost\_1\_53\_0/bin/lib"}
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\subsection{MATLAB}
+\label{sec:matlab}
+
+Currently MATLAB is the only power flow software that POSSIM supports;  interfaces to DIgSILENT PowerFactory and OpenDSS are planned.   MATLAB allows for network models to be built using the SimPowerSystems toolbox.  This toolbox is further used for all power flow calculations conducted as part of POSSIM's simulations.
+
+\newP
+MATLAB has its own pages dedicated to using MATLAB and C++ together: \url{http://www.mathworks.com.au/help/matlab/matlab_external/using-matlab-engine.html}.
+
+\newP
+In short, you need to:
+\begin{itemize}
+\item Ensure MATLAB is on the PATH
+\item Include MATLAB's header files
+\item Link to MATLAB's libraries libeng and libmx (and libmex on Mac platforms)
+\end{itemize}
+
+\newP
+If you use CMake to create your build files, this should be taken care of.
+
+
+%-------------------------------------------------------------------------------
+\subsection{Installing in Windows XP}
+\label{sec:install_WindowsXP}
+
+Before continuing with the steps in this section, ensure that you have:
+
+\begin{itemize}
+\item Installed boost (see Section \ref{sec:boost})
+\item Compiled boost's filesystem library (Section \ref{sec:boost})
+\item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\end{itemize}
+
+\newP
+The following works for getting POSSIM running in Windows XP using Visual Studio 2010:
+
+\begin{itemize}
+\item It is assumed you have Visual Studio 2010 (or another version) already installed.  If not, install this first.
+\item Open a terminal and navigate to the directory you cloned POSSIM into
+\item Run cmake to create Visual Studio project files with all relevant compiler and linkage paths included:  \texttt{\$ cmake .}  (Remember to include the period).  You can also use CMake's user interface option for this if you prefer.
+\item If there are any errors with running CMake, ensure these are solved before you open the project in Visual Studio.  See Section \ref{sec:cmake}.
+\item Next, open Visual Studio, select \texttt{File -> Open ... -> Project/Solution} and choose the cmake-generated Visual Studio project file.
+\item Choose \texttt{Build -> Build Solution}, followed by \texttt{Debug -> Start Debugging}.
+\item As part of the build you may see errors like \texttt{Cannot find or open the PDB file}; these are related to debugging settings and can be safely ignored (see \href{http://stackoverflow.com/questions/12954821/cannot-find-or-open-the-pdb-file-in-visual-studio-c-2010}{here}).
+\end{itemize}
+
+
+\newP
+If you do not have access to a version of Visual Studio, POSSIM may still be run on your Windows machine.  However, you will need to ensure that your system has C++ build tools as well as make installed.  For example, consider using \href{http://www.mingw.org/}{MinGW} for your build tools and \href{http://gnuwin32.sourceforge.net/packages/make.htm}{make for Windows}.  Full instructions are not provided as how you set this up could vary considerably from one system to the next.
+
+
+\newP
+If you continue to have trouble, check the \hyperlink{sec:install_FAQ}{Install FAQ} (Section \ref{sec:install_FAQ}).
+
+
+
+
+%-------------------------------------------------------------------------------
+\subsection{Installing in Windows 7}
+\label{sec:install_Windows7}
+
+Before continuing with the steps in this section, ensure that you have:
+
+\begin{itemize}
+\item Installed boost (see Section \ref{sec:boost})
+\item Compiled boost's filesystem library (Section \ref{sec:boost})
+\item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\end{itemize}
+
+\newP
+The following works for getting POSSIM running in Windows 7 using Visual Studio 2012:
+
+\begin{itemize}
+\item It is assumed you have Visual Studio 2012 (or another version) already installed.  If not, install this first.
+\item Open a terminal and navigate to the directory you cloned POSSIM into
+\item Run cmake to create Visual Studio project files with all relevant compiler and linkage paths included:  \texttt{\$ cmake .}  (Remember to include the period).  You can also use CMake's user interface option for this if you prefer.
+\item If there are any errors with running CMake, ensure these are solved before you open the project in Visual Studio.  See Section \ref{sec:cmake}.
+\item Next, open Visual Studio, select \texttt{File -> Open ... -> Project/Solution} and choose the cmake-generated Visual Studio project file.
+\item Since you are using Windows 7, presumably your version of MATLAB is running in 64-bit.  Change the project settings to create a 64-bit target.
+\item Choose \texttt{Build -> Build Solution}, followed by \texttt{Debug -> Start Debugging}.
+\item As part of the build you may see errors like \texttt{Cannot find or open the PDB file}; these are related to debugging settings and can be safely ignored (see \href{http://stackoverflow.com/questions/12954821/cannot-find-or-open-the-pdb-file-in-visual-studio-c-2010}{here}).
+\end{itemize}
+
+\newP
+In Windows 7 you may have some issues involving 32-bit vs 64-bit.  If so, ensure that both your boost and matlab versions are 64-bit, and also ensure that you are using a 64-bit build tool (e.g. visual studio) to build a 64-bit target.
+
+\newP
+If you do not have access to a version of Visual Studio, POSSIM may still be run on your Windows machine.  However, you will need to ensure that your system has C++ build tools as well as make installed.  For example, consider using \href{http://www.mingw.org/}{MinGW} for your build tools and \href{http://gnuwin32.sourceforge.net/packages/make.htm}{make for Windows}.  Full instructions are not provided as how you set this up could vary considerably from one system to the next.
+
+
+\newP
+If you continue to have trouble, check the \hyperlink{sec:install_FAQ}{Install FAQ} (Section \ref{sec:install_FAQ}).
+
+
+%-------------------------------------------------------------------------------
+\subsection{Installing in Linux}
+\label{sec:install_Linux}
+
+Before continuing with the steps in this section, ensure that you have:
+
+\begin{itemize}
+\item Installed boost (see Section \ref{sec:boost})
+\item Compiled boost's filesystem library (Section \ref{sec:boost})
+\item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\end{itemize}
+
+\newP
+In linux, CMake is the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
+
+\newP
+Next, you need to compile using make.  Simply run:
+{\alltt \$ make}
+
+\newP
+Following compile, you may receive an error like:
+{\alltt make[2]: *** No rule to make target `.../libmx' needed by `possim'.  Stop.}
+
+\newP
+If so, you need to set the runtime library path to include matlab's libraries (as explained on \href{http://www.mathworks.com.au/help/matlab/matlab_external/compiling-and-linking-mat-file-programs.html}{matlab's site}).  Use the following command:
+{\alltt \$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:\textit{matlabroot}/bin/glnxa64} \\(of course substituting in the path where your matlab libraries sit)
+
+\newP
+If you're going to be using POSSIM often, it's probably a good idea to put the above command into your .profile file so that you don't have to add the path each time.
+
+\newP
+That's it -- you can now run POSSIM from a terminal, or load it into your favourite IDE (Eclipse, NetBeans, etc), create a project from makefile, and you're ready to go.
+
+\newP
+If you continue to have trouble, check the \hyperlink{sec:install_FAQ}{Install FAQ} (Section \ref{sec:install_FAQ}).
+
+%-------------------------------------------------------------------------------
+\subsection{Installing in Mac}
+\label{sec:install_Mac}
+
+Before continuing with the steps in this section, ensure that you have:
+
+\begin{itemize}
+\item Installed boost (see Section \ref{sec:boost})
+\item Compiled boost's filesystem library (Section \ref{sec:boost})
+\item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\end{itemize}
+
+\newP
+In Mac, CMake is the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
+
+\newP
+Next, you need to compile using make.  Simply run:
+{\alltt \$ make}
+
+\newP
+Following compile, you may receive an error like:
+{\alltt make[2]: *** No rule to make target `.../libmx' needed by `possim'.  Stop.}
+
+\newP
+If so, you need to set the runtime library path to include matlab's libraries (as explained on \href{http://www.mathworks.com.au/help/matlab/matlab_external/compiling-and-linking-mat-file-programs.html}{matlab's site}).  Use the following command:
+{\alltt \$ export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:\textit{matlabroot}/bin/maci64} \\(of course substituting in the path where your matlab libraries sit). 
+
+\newP
+If you're going to be using POSSIM often, it's probably a good idea to put the above command into your .profile file so that you don't have to add the path each time.
+
+\newP
+That's it -- you can now run POSSIM from a terminal, or load it into your favourite IDE (Eclipse, NetBeans, etc), create a project from makefile, and you're ready to go.
+
+\newP
+If you continue to have trouble, check the \hyperlink{sec:install_FAQ}{Install FAQ} (Section \ref{sec:install_FAQ}).
+
+
+%-------------------------------------------------------------------------------
+\hypertarget{sec:install_FAQ}{}
+\subsection{Install FAQ}
+\label{sec:install_FAQ}
+
+\question I get the error \texttt{Trying to start MATLAB ... matlab: Command not found.}
+\answer Is MATLAB on your PATH?  If not make sure you add it.  In Windows this can be done via the Control Panel.  On Mac or Linux, use:{\alltt \$ export PATH=$PATH:\textit{matlabroot}/bin/glnxa64} \\
+(or wherever your matlab binaries are located).  You may also want to configure your system to add matlab to the path permanently.
+
+\question I get the output \texttt{ - Trying to start MATLAB ... Fail! }
+\answer This means the MATLAB engine isn't opening properly.  MATLAB needs a C shell (see \href{http://www.mathworks.com.au/matlabcentral/newsreader/view_thread/238828}{here}), so make sure you have csh installed.  (On linux this is simply done with: \\ \texttt{\$ sudo apt-get install csh}).
+
+\question When starting matlab, I get the message\\ \texttt{.../bin/matlab: 1: .../bin/util/oscheck.sh: /lib/libc.so.6: not found}
+\answer This appears to be a problem with recent installations of matlab and ubuntu (see \href{http://www.mathworks.com.au/matlabcentral/answers/10134-usr-local-matlab-r2011a-bin-util-oscheck-sh-605-lib64-libc-so-6-not-found}{here}); try adding a symbolic link to your c library.
+
+\question I get the error \texttt{Undefined symbols for architecture x86\_64:\\"\_mxDestroyArray", referenced from:\\MatlabInterface::~MatlabInterface() in MatlabInterface.cpp.o}.  (Mac)
+\answer Maybe you have an extra libmx.dylib in your path?  Try adding the following line to CMakeLists.txt (below the find\_library commands):
+{\alltt SET(MATLAB\_MX\_LIBRARY  ${MATLAB\_LIBRARIES\_DIR}/libmx.dylib)} \postC
+Then run cmake, make again.
+
+\question I get the error \texttt{dyld: Library not loaded: @rpath/libeng.dylib}.  (Mac)
+\answer You need to make sure your runtime library path includes matlab libraries.  Try: \texttt{DYLD\_LIBRARY\_PATH=/Applications/MATLAB\_R2012a.app/bin/maci64/:\$DYLD\_LIBRARY\_PATH} \\(obviously, replace with your own computer's path to matlab).
+
+\question I get the error \texttt{No rule to make target Ô.../libmxÕ needed by ÔpossimÕ.} (Linux)
+\answer You need to make sure your runtime library path includes matlab libraries.  Try: {\alltt \$ export LD\_LIBRARY\_PATH=\$LD\_LIBRARY\_PATH:\textit{matlabroot}/bin/glnxa64} \\(obviously, replace with your own computer's path to matlab).
+
+\question  I get the message: \\
+ \texttt{Undefined symbols for architecture x86\_64: \\
+ "\_mxGetData", referenced from: \\
+     MatlabInterface::getVar(...) }.
+\answer On some systems, when cmake tries to find matlab's libraries it may find the wrong one (same name, but wrong location, usually \texttt{/usr/lib/libmx.dylib}).  In this case uncomment the lines in the cmake file and insert your own path:\\
+\texttt{\# SET(MATLAB\_MEX\_LIBRARY "/Application/MATLAB\_R2012a.app/bin/maci64/libmex.dylib") \\
+\# SET(MATLAB\_MX\_LIBRARY "/Application/MATLAB\_R2012a.app/bin/maci64/libmx.dylib") \\
+\# SET(MATLAB\_ENG\_LIBRARY "/Application/MATLAB\_R2012a.app/bin/maci64/libeng.dylib")}
+
+
+\question  I get the message: \\
+ \texttt{- Trying to start MATLAB ...objc[8975]: Object 0x108044070 of class \_\_NSCFData \\ autoreleased with no pool in place - just leaking - break on objc\_autoreleaseNoPool() to debug
+OK}.
+\answer This is an issue with MATLAB on Mac Lion systems.  More info is available \href{http://www.mathworks.com/matlabcentral/answers/18762-annoying-matlab-start-up-warnings-on-mac-matlab\_maci64-attempting-to-exclude-an-item-from}{here}.  You can either run the matlab compiler once as superuser (with admin privileges), or simply ignore the warning.  (No impact on POSSIM / MATLAB).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    GETTING STARTED
+
+\section{Getting Started}
+\label{sec:getstarted}
+
+
+
+%-------------------------------------------------------------------------------
+\subsection{Simulator Loop}
+
+\begin{wrapfigure}[10]{r}{0.45\textwidth}
+  \vspace{-32pt}
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{simloop}
+  \end{center}
+  \caption{Simulator loop}
+  \label{fig:simloop}  
+\end{wrapfigure}
+
+POSSIM is a single-threaded application.  All time-series simulations follow a simple outer loop.  As a default, this loop is time-based -- however there is no reason it couldn't be extended into e.g. an event-based simulator.
+
+For the application of EV charging, the outer loop is as shown in Fig. \ref{fig:simloop}.
+
+The simulator loop can be found in: \\ \texttt{src/simulator/Simulator.cpp}.
+
+\vspace{2.5cm}
+
+%-------------------------------------------------------------------------------
+\subsection{Configuration}
+
+Key global simulation parameters are stored in a single object called \texttt{Config}, which maps parameter names to their values.   These parameters may be changed via command line options, or in a master xml-based file called \texttt{possim\_config.xml} in POSSIM's home directory.  The Config object may be passed from one object to another, and parameters may be changed on the fly.  Call by reference means that any changes to the global configuration proliferate throughout the simulation;  this was a conscious design decision.
+
+To access a global configuration parameter, use \\ \texttt{config->getConfigVar("<config\_variable\_name>")}.  For convenience, when the type of the variable is known, type specific functions \texttt{config->getBool}, \texttt{config->getDouble}, etc may be used.
+
+To set a global configuration parameter, use \\ \texttt{config->setConfigVar("<config\_variable\_name>", value)}.
+
+For a full list of default parameters and their flags, type \texttt{./possim -h} at the command line.
+
+To add your own configuration variable, simply add a line to the \texttt{possim\_config.xml} file.  This variable will now be accessible throughout the code via \\  \texttt{config->getConfigVar("<config\_variable\_name>")} as above.
+
+%-------------------------------------------------------------------------------
+\subsection{Logging}
+
+All essential simulation parameters and outputs are logged at each simulation interval.  A separate logging class takes care of all log file creation and updating.  For each simulation an individual directory is created that contains all logs.  This is located at \\ \texttt{<possim\_home>/logs/<date\_sim\_start>/<time\_sim\_start>}.
+
+The current version of POSSIM uses MATLAB to generate graphs of particular data of interest; this will likely change in the future.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    NETWORK MODELS
+
+\section{Network Models and Load Flow}
+\label{sec:models}
+
+For now it is assumed that MATLAB SimPowerSystems is used to build network models; as extensions to other power flow packages are included in future versions of POSSIM, these will be included here as well.
+
+Actual models of the network may be built with MATLAB's SimPowerSystems package in Simulink, using the convenient drag and drop interface.  An example model is presented in Figs. \ref{fig:model1}, \ref{fig:model2}, and \ref{fig:model3}.  Generation and transmission is not considered for now, the model starts with the distribution transformer.  Phase and neutral voltages and currents are measured individually.  Voltages are measured at each individual house.  Each segment of line, both feeder and service, is modelled individually.  The network uses a matlab-based library, which allows essential network specs to be changed at a single location.  However, network components may be altered individually as required, and may be added and removed dynamically (for example in the case of electric vehicles) as the simulation takes place.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{model1}
+  \caption{Network model, outer}
+  \label{fig:model1}  
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=\textwidth]{model2}
+  \caption{Network model, inner}
+  \label{fig:model2}  
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.5\textwidth]{model3}
+  \caption{Network model, individual house}
+  \label{fig:model3}  
+\end{figure}
+
+
+
+All interaction with MATLAB is conducted via the MatlabInterface (in \texttt{src/loadflow}).  This object starts the matlab engine, and passes any model inputs to the model, while reading any model outputs as required in POSSIM.
+
+\newP
+To set a value (in this case the impedance of a house) use:
+{\alltt loadflow->setDemand(<house\_name>, R, L, C)} \postC
+
+\newP
+To read an output (in this case the voltage at a house) use:
+{\alltt loadflow->getOutputs()} \postC
+(in which case all relevant voltages are stored in individual household objects).
+
+\newP
+To add for example a vehicle to the matlab model, use:
+{\alltt loadflow->addVehicle(<vehicle\_name>)} \postC
+(where vehicle\_name must match the house it is associated with).
+
+\newP
+Further interaction with matlab can easily be added to this object.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    HOUSEHOLD DEMAND
+
+\section{Household Demand}
+\label{sec:hdemand}
+
+The majority of smart grid studies will need to have a sense of daily load fluctuations due to general household demand at the distribution level.  How this is done depends on the data available.  In some cases precise data for a specific day may be available; in others there may only be average profiles available.
+
+More coming soon!
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    VEHICLE DEMAND
+
+\section{Vehicle Demand}
+\label{sec:vdemand}
+
+Coming soon!
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   EV CHARGING ALGORITHMS
+
+\section{Electric Vehicle Charging Algorithms}
+\label{sec:evcharging}
+
+Coming soon!
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   EV Battery
+
+\section{Electric Vehicle Battery Model}
+\label{sec:evbattery}
+
+Coming soon!
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    FUTURE PLANS
+
+\section{Future Plans}
+\label{sec:future}
+
+POSSIM remains very much an ongoing project, and could be extended in many directions.  Among other things, we are keen to:
+\begin{itemize}
+\item improve the documentation
+\item add a user interface
+\item add interfaces to DIgSILENT PowerFactory and OpenDSS
+\item make the install process simpler
+\item add multi-threading functionality
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\appendix
+
+%-------------------------------------------------------------------------------
+\section{License}
+\label{app:license}
+
+POSSIM (both the codebase and this documentation) is licensed under the BSD 3-clause license:
+
+\vspace{0.5cm}
+\noindent 
+Copyright (c) 2013, Julian de Hoog $<$julian@dehoog.ca$>$
+\noindent
+All rights reserved.
+
+\vspace{0.5cm}
+\noindent
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+\begin{itemize}
+\item Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+\item Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+\item The name of the author may not be used to endorse or promote products derived from this software without specific prior written permission from the author.
+\end{itemize}
+
+\vspace{0.5cm}
+\noindent
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%uncommnent next line to change bibliography name to references
+%\renewcommand{\bibname}{References}
+\bibliography{../../Bibliography/bibliography}
+\bibliographystyle{plain}
+
+
+\end{document}
