@@ -397,6 +397,9 @@ void GridModel::runValleyLoadFlow(DateTime datetime) {
     loadflow->getOutputs(tempDir, networkData, households, lineSegments, poles);
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+	it->second->V_valley = it->second->V_RMS;
+
     std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
 }
 
