@@ -83,6 +83,9 @@ private:
     /** Directory for logging data */
     std::string logDir;
     
+    /** Directory for temporary data storage / file interaction with load flow software */
+    std::string tempDir;
+    
 
 public:
 

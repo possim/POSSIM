@@ -47,8 +47,6 @@ HouseholdDemandModel::HouseholdDemandModel(Config* config) {
     demandDataDir = config->getConfigVar("demanddatadir");
     houseProfileAllocFile = config->getConfigVar("housedemandalloc");
     randomDistribution = config->getRandomParams("demandrandom_int");
-    
-    inputAllProfiles();
 }
 
 HouseholdDemandModel::~HouseholdDemandModel() {
@@ -135,10 +133,6 @@ void HouseholdDemandModel::inputAllProfiles() {
         }
     }
     
-    // If model type is house specific, input additionally the house-profile mapping
-    if(modelType == "housespecific")
-        inputProfileAllocationFromFile();
-    
     std::cout << " - found " << numDemandProfiles << " demand profile files" << std::endl;
 }
 
@@ -160,11 +154,16 @@ void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &hou
     std::cout << " - Assigning demand profiles to houses ...";
     for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it) {
         
-        if(modelType == "random") {
+        if(modelType == "generic")
+            it->second->demandProfile = inputProfileFromFile(demandDataDir);
+        
+        else if(modelType == "random") {
+            inputAllProfiles();
             it->second->demandProfile = getRandomProfile();
         }
 
         else if(modelType == "phasespecific") {
+            inputAllProfiles();
             Phase phase = it->second->phase;
             if(phase == A)      it->second->demandProfile = demandProfiles["phaseA"];
             else if(phase == B) it->second->demandProfile = demandProfiles["phaseB"];
@@ -174,6 +173,8 @@ void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &hou
         }
 
         else if(modelType == "housespecific") {
+            inputAllProfiles();
+            inputProfileAllocationFromFile();
             std::string profileName = allocationMap[it->second->name];
             it->second->demandProfile = demandProfiles[profileName];
         }

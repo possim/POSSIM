@@ -41,6 +41,10 @@ GridModel::GridModel() {
 }
 
 GridModel::~GridModel() {
+    // If a temporary directory was created for temp data storage, delete
+    // directory and its contents
+    boost::filesystem::path tempPath(tempDir);
+    boost::filesystem::remove_all(tempPath);
 }
 
 void GridModel::initialise(Config* config, LoadFlowInterface* lf) {
@@ -75,6 +79,7 @@ void GridModel::initialise(Config* config, LoadFlowInterface* lf) {
         loadflow->setTxCapacity(transformer->name, config->getDouble("txcapacity"));
         transformer->capacity = config->getDouble("txcapacity");
     }
+
 }
 
 void GridModel::loadGridModel() {
@@ -355,26 +360,32 @@ void GridModel::runValleyLoadFlow(DateTime datetime) {
     
     std::cout << "Running valley load flow analysis ... " << std::endl;
     
+    // Create temporary directory for file interaction with load flow software
+    tempDir = logDir + "temp/";
+    boost::filesystem::path tempPath(tempDir);
+    if(!boost::filesystem::exists(tempPath))
+        boost::filesystem::create_directory(tempPath);
+    
     std::cout << " - setting household loads ...";
-    std::ofstream outfile(std::string(logDir + "tempHHloads.txt").c_str());
+    std::ofstream outfile(std::string(tempDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->getActivePower(valleytime)+0.001 << ", "
                 << it->second->getInductivePower(valleytime) << ", "
                 << it->second->getCapacitivePower(valleytime) << std::endl;
     outfile.close();
-    loadflow->setDemand(std::string(logDir + "tempHHloads.txt"));
+    loadflow->setDemand(std::string(tempDir + "tempHHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - setting vehicle loads ...";
-    outfile.open(std::string(logDir + "tempVHloads.txt").c_str());
+    outfile.open(std::string(tempDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->activePower+0.001 << ", "
                 << it->second->inductivePower << ", "
                 << it->second->capacitivePower << std::endl;
     outfile.close();
-    loadflow->setDemand(std::string(logDir + "tempVHloads.txt"));
+    loadflow->setDemand(std::string(tempDir + "tempVHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - running load flow calculation ...";
@@ -383,7 +394,7 @@ void GridModel::runValleyLoadFlow(DateTime datetime) {
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - getting output ...";
-    loadflow->getOutputs(logDir, networkData, households, lineSegments, poles);
+    loadflow->getOutputs(tempDir, networkData, households, lineSegments, poles);
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
     std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
@@ -397,27 +408,33 @@ void GridModel::runLoadFlow(DateTime currTime) {
     utility::startTimer(timer);
     
     std::cout << "Running load flow analysis ... " << std::endl;
-    
+        
+    // Create temporary directory for file interaction with load flow software
+    tempDir = logDir + "temp/";
+    boost::filesystem::path tempPath(tempDir);
+    if(!boost::filesystem::exists(tempPath))
+        boost::filesystem::create_directory(tempPath);
+
     std::cout << " - setting household loads ...";
-    std::ofstream outfile(std::string(logDir + "tempHHloads.txt").c_str());
+    std::ofstream outfile(std::string(tempDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->getActivePower(currTime)+0.001 << ", "
                 << it->second->getInductivePower(currTime) << ", "
                 << it->second->getCapacitivePower(currTime) << std::endl;
     outfile.close();
-    loadflow->setDemand(std::string(logDir + "tempHHloads.txt"));
+    loadflow->setDemand(std::string(tempDir + "tempHHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - setting vehicle loads ...";
-    outfile.open(std::string(logDir + "tempVHloads.txt").c_str());
+    outfile.open(std::string(tempDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->activePower+0.001 << ", "
                 << it->second->inductivePower << ", "
                 << it->second->capacitivePower << std::endl;
     outfile.close();
-    loadflow->setDemand(std::string(logDir + "tempVHloads.txt"));
+    loadflow->setDemand(std::string(tempDir + "tempVHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - running load flow calculation ...";
@@ -426,7 +443,8 @@ void GridModel::runLoadFlow(DateTime currTime) {
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - getting output ...";
-    loadflow->getOutputs(logDir, networkData, households, lineSegments, poles);
+    std::cout.flush();
+    loadflow->getOutputs(tempDir, networkData, households, lineSegments, poles);
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
     //std::cout << " - calculating voltage unbalance ..." << std::endl;

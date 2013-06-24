@@ -49,8 +49,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 /** A full household demand profile for a 24-hour period.  Stores all 
-  * time - load pairs for this profile, plus the date it represents and a
-  * unique name for it.  */
+  * time - load pairs for this profile, plus a unique name for it.  */
 struct HouseholdDemandProfile {
     std::string name;
     std::map<int, S_Load> demand;
@@ -58,8 +57,7 @@ struct HouseholdDemandProfile {
 
 #include "Household.h"
 
-/** A simple household demand profile class, that can either read in an average
-  * profile from file, or specific demand at specific dates from actual data. */
+/** Generates 24-hour demand profiles for households */
 class HouseholdDemandModel {
 private:
     
@@ -67,9 +65,10 @@ private:
     int simInterval;
     
     /** Determines whether to use:
-      * (i)   randomly assigned profiles ("random") 
-      * (ii)  phase-specific profiles, ("phasespecific"), or
-      * (iii) house-specific profiles ("housespecific") */
+      * (i)   generic profiles ("generic") 
+      * (ii)  randomly assigned profiles ("random") 
+      * (iii) phase-specific profiles, ("phasespecific"), or
+      * (iv)  house-specific profiles ("housespecific") */
     std::string modelType;
     
     /** Path to demand data directory */
@@ -94,13 +93,20 @@ public:
     /** Destructor */
     virtual ~HouseholdDemandModel();
     
-    /** Find demand at given time for given house */
+    /** Assign a full 24-hour demand profile to each household */
     void assignProfiles(std::map<std::string, Household*> &households);
     
 private:
+    /** Choose a random profile */
     HouseholdDemandProfile getRandomProfile();
+    
+    /** Input all profiles in the specified demanddatadir directory */
     void inputAllProfiles();
+    
+    /** Input a specific profile from file */
     HouseholdDemandProfile inputProfileFromFile(std::string filename);
+    
+    /** Input profile allocation from file (matching houses to specific profiles) */
     void inputProfileAllocationFromFile();
 };
 

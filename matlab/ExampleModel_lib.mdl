@@ -1,6 +1,6 @@
 Library {
   Name			  "ExampleModel_lib"
-  Version		  7.9
+  Version		  7.8
   MdlSubVersion		  0
   RequirementInfo	  "{}  %GIDa_6317c1c3_1285_46a1_a401_c249d430af69"
   SavedCharacterEncoding  "ISO-8859-1"
@@ -17,9 +17,9 @@ Library {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "jde1"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Mar 25 15:29:45 2013"
-  RTWModifiedTimeStamp	  286126105
-  ModelVersionFormat	  "1.%<AutoIncrement:176>"
+  LastModifiedDate	  "Tue Jun 25 08:26:02 2013"
+  RTWModifiedTimeStamp	  294001671
+  ModelVersionFormat	  "1.%<AutoIncrement:179>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -88,13 +88,13 @@ Library {
     Dimension		    1
     Simulink.ConfigSet {
       $ObjectID		      1
-      Version		      "1.12.0"
+      Version		      "1.11.1"
       Array {
 	Type			"Handle"
 	Dimension		8
 	Simulink.SolverCC {
 	  $ObjectID		  2
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
 	  AbsTol		  "auto"
@@ -112,7 +112,6 @@ Library {
 	  MaxConsecutiveMinStep	  "1"
 	  RelTol		  "1e-3"
 	  SolverMode		  "Auto"
-	  EnableConcurrentExecution off
 	  ConcurrentTasks	  off
 	  Solver		  "ode45"
 	  SolverName		  "ode45"
@@ -129,7 +128,7 @@ Library {
 	}
 	Simulink.DataIOCC {
 	  $ObjectID		  3
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
 	  FinalStateName	  "xFinal"
@@ -161,7 +160,7 @@ Library {
 	}
 	Simulink.OptimizationCC {
 	  $ObjectID		  4
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    8
@@ -213,11 +212,11 @@ Library {
 	  BufferReusableBoundary  on
 	  SimCompilerOptimization "Off"
 	  AccelVerboseBuild	  off
-	  ParallelExecutionInRapidAccelerator on
+	  AccelParallelForEachSubsystem	on
 	}
 	Simulink.DebuggingCC {
 	  $ObjectID		  5
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
 	  ArrayBoundsChecking	  "none"
@@ -305,7 +304,7 @@ Library {
 	}
 	Simulink.HardwareCC {
 	  $ObjectID		  6
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
 	  ProdBitPerInt		  32
@@ -342,7 +341,7 @@ Library {
 	}
 	Simulink.ModelReferenceCC {
 	  $ObjectID		  7
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
 	  EnableParallelModelReferenceBuilds off
@@ -357,7 +356,7 @@ Library {
 	}
 	Simulink.SFSimCC {
 	  $ObjectID		  8
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  on
@@ -372,7 +371,7 @@ Library {
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
 	  $ObjectID		  9
-	  Version		  "1.12.0"
+	  Version		  "1.11.1"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    9
@@ -416,9 +415,8 @@ Library {
 	  GenerateTraceReportSf	  off
 	  GenerateTraceReportEml  off
 	  GenerateCodeInfo	  off
-	  GenerateWebview	  off
+	  GenerateSLWebview	  off
 	  GenerateCodeMetricsReport off
-	  GenerateCodeReplacementReport	off
 	  RTWCompilerOptimization "Off"
 	  CheckMdlBeforeBuild	  "Off"
 	  CustomRebuildMode	  "OnUpdate"
@@ -427,7 +425,7 @@ Library {
 	    Dimension		    2
 	    Simulink.CodeAppCC {
 	      $ObjectID		      10
-	      Version		      "1.12.0"
+	      Version		      "1.11.1"
 	      Array {
 		Type			"Cell"
 		Dimension		21
@@ -492,7 +490,7 @@ Library {
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
 	      $ObjectID		      11
-	      Version		      "1.12.0"
+	      Version		      "1.11.1"
 	      Array {
 		Type			"Cell"
 		Dimension		16
@@ -517,14 +515,14 @@ Library {
 	      TargetFcnLib	      "ansi_tfl_table_tmw.mat"
 	      TargetLibSuffix	      ""
 	      TargetPreCompLibLocation ""
-	      CodeReplacementLibrary  "ANSI_C"
+	      TargetFunctionLibrary   "ANSI_C"
 	      UtilityFuncGeneration   "Auto"
 	      ERTMultiwordTypeDef     "System defined"
 	      CodeExecutionProfiling  off
 	      ERTMultiwordLength      256
 	      MultiwordLength	      2048
 	      GenerateFullHeader      on
-	      GenerateExampleERTMain   off
+	      GenerateSampleERTMain   off
 	      GenerateTestInterfaces  off
 	      IsPILTarget	      off
 	      ModelReferenceCompliant on
@@ -555,7 +553,6 @@ Library {
 	      ModelStepFunctionPrototypeControlCompliant off
 	      CPPClassGenCompliant    off
 	      AutosarCompliant	      off
-	      GRTInterface	      on
 	      UseMalloc		      off
 	      ExtMode		      off
 	      ExtModeStaticAlloc      off
@@ -581,7 +578,6 @@ Library {
     }
     PropName		    "ConfigurationSets"
   }
-  ExplicitPartitioning	  off
   BlockDefaults {
     ForegroundColor	    "black"
     BackgroundColor	    "white"
@@ -650,7 +646,7 @@ Library {
   }
   System {
     Name		    "ExampleModel_lib"
-    Location		    [4, 292, 505, 512]
+    Location		    [586, 360, 1087, 580]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -664,7 +660,7 @@ Library {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "855"
+    SIDHighWatermark	    "858"
     Block {
       BlockType		      SubSystem
       Name		      "Backbone"
@@ -694,7 +690,7 @@ Library {
       MaskValueString	      "0.0465"
       System {
 	Name			"Backbone"
-	Location		[809, 322, 1204, 541]
+	Location		[781, 69, 1167, 523]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -709,13 +705,73 @@ Library {
 	ZoomFactor		"100"
 	Block {
 	  BlockType		  Reference
+	  Name			  "Voltage_AB"
+	  SID			  "856"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [145, 271, 230, 289]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.178"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage_BC"
+	  SID			  "857"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [145, 326, 230, 344]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.178"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Voltage_CA"
+	  SID			  "858"
+	  Ports			  [0, 0, 0, 0, 0, 1, 1]
+	  Position		  [145, 381, 230, 399]
+	  ZOrder		  -19
+	  LibraryVersion	  "1.178"
+	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
+	  SourceType		  ""
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	}
+	Block {
+	  BlockType		  Reference
 	  Name			  "line_A"
 	  SID			  "840"
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [165, 39, 210, 51]
 	  ZOrder		  -11
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -738,7 +794,7 @@ Library {
 	  Position		  [165, 79, 210, 91]
 	  ZOrder		  -11
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -761,7 +817,7 @@ Library {
 	  Position		  [165, 119, 210, 131]
 	  ZOrder		  -11
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -785,7 +841,7 @@ Library {
 	  ZOrder		  -11
 	  BlockMirror		  on
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -870,59 +926,119 @@ Library {
 	}
 	Line {
 	  LineType		  "Connection"
-	  SrcBlock		  "line_N"
+	  SrcBlock		  "n"
 	  SrcPort		  RConn1
-	  DstBlock		  "n"
+	  DstBlock		  "line_N"
 	  DstPort		  RConn1
 	}
 	Line {
 	  LineType		  "Connection"
-	  SrcBlock		  "N"
-	  SrcPort		  RConn1
-	  DstBlock		  "line_N"
-	  DstPort		  LConn1
+	  SrcBlock		  "line_N"
+	  SrcPort		  LConn1
+	  DstBlock		  "N"
+	  DstPort		  RConn1
 	}
 	Line {
 	  LineType		  "Connection"
 	  SrcBlock		  "a"
 	  SrcPort		  RConn1
-	  DstBlock		  "line_A"
-	  DstPort		  RConn1
+	  Points		  [-25, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "line_A"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "Voltage_CA"
+	    SrcPort		    RConn1
+	    Points		    [30, 0; 0, -345]
+	  }
 	}
 	Line {
 	  LineType		  "Connection"
 	  SrcBlock		  "line_B"
 	  SrcPort		  RConn1
-	  DstBlock		  "b"
-	  DstPort		  RConn1
+	  Points		  [30, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "b"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "Voltage_AB"
+	    SrcPort		    RConn1
+	    Points		    [10, 0; 0, -195]
+	  }
 	}
 	Line {
 	  LineType		  "Connection"
-	  SrcBlock		  "c"
+	  SrcBlock		  "line_C"
 	  SrcPort		  RConn1
-	  DstBlock		  "line_C"
-	  DstPort		  RConn1
+	  Points		  [40, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "c"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_DEST"
+	    SrcBlock		    "Voltage_BC"
+	    SrcPort		    RConn1
+	    Points		    [20, 0; 0, -210]
+	  }
 	}
 	Line {
 	  LineType		  "Connection"
 	  SrcBlock		  "C"
 	  SrcPort		  RConn1
-	  DstBlock		  "line_C"
-	  DstPort		  LConn1
+	  Points		  [30, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "line_C"
+	    DstPort		    LConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 265]
+	    DstBlock		    "Voltage_CA"
+	    DstPort		    LConn1
+	  }
 	}
 	Line {
 	  LineType		  "Connection"
 	  SrcBlock		  "line_B"
 	  SrcPort		  LConn1
-	  DstBlock		  "B"
-	  DstPort		  RConn1
+	  Points		  [-45, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "B"
+	    DstPort		    RConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 250]
+	    DstBlock		    "Voltage_BC"
+	    DstPort		    LConn1
+	  }
 	}
 	Line {
 	  LineType		  "Connection"
 	  SrcBlock		  "A"
 	  SrcPort		  RConn1
-	  DstBlock		  "line_A"
-	  DstPort		  LConn1
+	  Points		  [10, 0]
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    DstBlock		    "line_A"
+	    DstPort		    LConn1
+	  }
+	  Branch {
+	    ConnectType		    "DEST_SRC"
+	    Points		    [0, 235]
+	    DstBlock		    "Voltage_AB"
+	    DstPort		    LConn1
+	  }
 	}
       }
     }
@@ -973,7 +1089,7 @@ Library {
 	  Ports			  [0, 1, 0, 0, 0, 1, 1]
 	  Position		  [145, 31, 165, 49]
 	  ZOrder		  -4
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Measurements/Current Measurement"
@@ -1156,7 +1272,7 @@ Library {
       Opaque		      off
       RequestExecContextInheritance off
       MaskHideContents	      off
-      MaskPromptString	      "Length of service line"
+      MaskPromptString	      "Length of service line (km)"
       MaskStyleString	      "promote(Service Active/Length|Service Neutral/Length)"
       MaskVariables	      "length=@1;"
       MaskTunableValueString  "off"
@@ -1173,7 +1289,7 @@ Library {
       MaskValueString	      "0.02"
       System {
 	Name			"Individual House"
-	Location		[105, 439, 673, 699]
+	Location		[88, 510, 656, 770]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1196,7 +1312,7 @@ Library {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  NamePlacement		  "alternate"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Series RLC Branch"
@@ -1223,7 +1339,7 @@ Library {
 	  BlockRotation		  270
 	  BlockMirror		  on
 	  ShowName		  off
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Ground"
@@ -1238,7 +1354,7 @@ Library {
 	  Position		  [230, 73, 290, 137]
 	  ZOrder		  -10
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Parallel RLC Load"
@@ -1264,7 +1380,7 @@ Library {
 	  Position		  [100, 99, 150, 111]
 	  ZOrder		  -11
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -1287,7 +1403,7 @@ Library {
 	  Position		  [420, 99, 470, 111]
 	  ZOrder		  -11
 	  AttributesFormatString  "\\n"
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Elements/Pi Section Line"
@@ -1309,7 +1425,7 @@ Library {
 	  Ports			  [0, 0, 0, 0, 0, 1, 1]
 	  Position		  [220, 16, 305, 34]
 	  ZOrder		  -19
-	  LibraryVersion	  "1.175"
+	  LibraryVersion	  "1.178"
 	  SourceBlock		  "ExampleModel_lib/Voltage Measurement"
 	  SourceType		  ""
 	  ShowPortLabels	  "FromPortIcon"
@@ -1400,7 +1516,6 @@ Library {
 	  DstPort		  RConn1
 	}
 	Annotation {
-	  SID			  "854"
 	  Name			  "Ground"
 	  Position		  [385, 184]
 	}
@@ -1540,7 +1655,7 @@ Library {
 	  Ports			  [0, 1, 0, 0, 0, 2]
 	  Position		  [170, 90, 190, 110]
 	  ZOrder		  -9
-	  LibraryVersion	  "1.2119"
+	  LibraryVersion	  "1.2088"
 	  FontName		  "Verdana"
 	  FontSize		  11
 	  SourceBlock		  "powerlib/Measurements/Voltage Measurement"
@@ -1627,7 +1742,6 @@ Library {
       }
     }
     Annotation {
-      SID		      "855"
       Name		      "Example model library"
       Position		      [245, 24]
       FontSize		      18

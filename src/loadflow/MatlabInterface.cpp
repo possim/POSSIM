@@ -509,6 +509,7 @@ void MatlabInterface::extractModel(FeederPole* &root,
     
     // Create root       
     createRoot(root, households, lineSegments, modelLines);
+    poles[root->name] = root;
     //std::cout << " - Root has " << root->childLineSegments.size() << " child lines and " << root->households.size() << " houses." << std::endl;
  
     // Recursively build tree
@@ -674,20 +675,23 @@ void MatlabInterface::getOutputs(std::string logDir,
     for(int i=0; i<12; i++) {
         getline(infile, line);
         networkData.phaseV[i] = utility::string2double(line);
+        //std::cout << networkData.phaseV[i] << std::endl;
     }
-    
+
     // Read in currents
     for(int i=0; i<12; i++) {
         getline(infile, line);
         networkData.phaseI[i] = utility::string2double(line);
+        //std::cout << networkData.phaseI[i] << std::endl;
     }
-    
+
     // Read in eolV
     for(int i=0; i<12; i++) {
         getline(infile, line);
         networkData.eolV[i] = utility::string2double(line);
+        //std::cout << networkData.eolV[i] << std::endl;
     }
-    
+
     // Read in household V
     for(std::map<std::string, Household*>::iterator it = households.begin(); it!=households.end(); ++it) {
         getline(infile, line);
@@ -696,14 +700,15 @@ void MatlabInterface::getOutputs(std::string logDir,
         it->second->V_Mag = utility::string2double(line);
         getline(infile, line);
         it->second->V_Pha = utility::string2double(line);
+        //std::cout << it->second->V_RMS << std::endl;
     }
-    
+
     // Read in backbone V (unbalance)
     Phasor V_ab, V_bc, V_ca;
     double a, p, unbalance;
     Household* currHouse;
     FeederPole currPole;
-    
+
     for(std::map<std::string,FeederLineSegment*>::iterator it = lineSegments.begin(); it!=lineSegments.end(); ++it) {
         getline(infile, line);
         a = utility::string2double(line);
@@ -725,18 +730,26 @@ void MatlabInterface::getOutputs(std::string logDir,
         
         unbalance = power::calculatePhaseUnbalance(V_ab, V_bc, V_ca);
         it->second->voltageUnbalance = unbalance;
-        
+
         // Set individual houses' unbalance
         for(std::map<std::string,Household*>::iterator it2 = households.begin(); it2!=households.end(); ++it2) {
             currHouse = it2->second;
-            if(currHouse->hasParent) {
+            
+            // No unbalance at root (transformer as a voltage source assumption)
+            if(currHouse->hasParent && currHouse->parentPoleName != "Root") {
                 currPole = *(poles[currHouse->parentPoleName]);
-                if(currPole.parentLineSegment != NULL && currPole.parentLineSegment->name == it->first)
+                if(currPole.parentLineSegment->name == it->first)
                     currHouse->V_unbalance = unbalance;
             }
         }
     }
-    //remove("tempoutput.txt");
+  
+    // temp storage of a copy for debug
+    //boost::filesystem::path pathFrom(std::string(logDir + "temp_output.txt"));
+    //boost::filesystem::path pathTo(std::string(logDir + "../temp_output.txt"));
+    //if (boost::filesystem::exists(pathTo))
+    //    boost::filesystem::remove (pathTo);
+    //boost::filesystem::copy_file(pathFrom, pathTo);
 }
 
 
