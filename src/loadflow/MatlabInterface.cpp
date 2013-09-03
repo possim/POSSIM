@@ -863,6 +863,7 @@ void MatlabInterface::runOptimisation(std::string optDir, std::string optAlg,
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << "   - writing output to file ...";
+    std::cout.flush();
     ss.str("");
     ss << "dlmwrite(['" << optDir << "' 'xsol.txt'], xsol);" << std::endl;
     engEvalString(eng, ss.str().c_str());

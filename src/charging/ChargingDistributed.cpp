@@ -34,17 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChargingDistributed.h"
 
-ChargingDistributed::ChargingDistributed(Config* config, GridModel gridModel) :
-    ChargingBaseClass(config, gridModel){
-    maxChargeRate = config->getDouble("maxchargerate");
-}
-
-ChargingDistributed::~ChargingDistributed() {
-}
-
 ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime) :
         ChargingBaseClass(config, gridModel) 
 {
+    maxChargeRate = config->getDouble("maxchargerate");
     minVoltage = config->getInt("minvoltage");
     simInterval = config->getInt("simulationinterval");
     periodOfLoadSchedule = config->getInt("loadscheduleperiod");
@@ -58,6 +51,11 @@ ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, D
 
     std::cout << " - Distributed charging algorithm init complete!" << std::endl;   
 }
+
+
+ChargingDistributed::~ChargingDistributed() {
+}
+
 
 
 /* For more detail on how this algorithm works, see:

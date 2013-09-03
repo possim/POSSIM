@@ -445,13 +445,15 @@ The simulator loop can be found in: \\ \texttt{src/simulator/Simulator.cpp}.
 %-------------------------------------------------------------------------------
 \subsection{Configuration}
 
-Key global simulation parameters are stored in a single object called \texttt{Config}, which maps parameter names to their values.   These parameters may be changed via command line options, or in a master xml-based file called \texttt{possim\_config.xml} in POSSIM's home directory.  The Config object may be passed from one object to another, and parameters may be changed on the fly.  Call by reference means that any changes to the global configuration proliferate throughout the simulation;  this was a conscious design decision.
+Key global simulation parameters are stored in a single object called \texttt{Config}, which maps parameter names to their values.   A full list of frequently used config parameters is available in Appendix \ref{app:configs}, although please note that these are likely to change from version to version.
+
+These parameters may be changed via command line options, or in a master xml-based file (the default config can be found in  \texttt{configs/default\_config.xml}.  The Config object may be passed from one object to another, and parameters may be changed on the fly.  Call by reference means that any changes to the global configuration proliferate throughout the simulation;  this was an intentional design decision.
 
 To access a global configuration parameter, use \\ \texttt{config->getConfigVar("<config\_variable\_name>")}.  For convenience, when the type of the variable is known, type specific functions \texttt{config->getBool}, \texttt{config->getDouble}, etc may be used.
 
 To set a global configuration parameter, use \\ \texttt{config->setConfigVar("<config\_variable\_name>", value)}.
 
-For a full list of default parameters and their flags, type \texttt{./possim -h} at the command line.
+For a current list of default parameters and their flags, type \texttt{./possim -h} at the command line.
 
 To add your own configuration variable, simply add a line to the \texttt{possim\_config.xml} file.  This variable will now be accessible throughout the code via \\  \texttt{config->getConfigVar("<config\_variable\_name>")} as above.
 
@@ -538,13 +540,26 @@ All files specifying household demand data must follow the following format:
 etc...\\
 
 \noindent
-where \texttt{datetimeX} has the standard format of the \hyperref[sec:datetime]{DateTime class}.\\
+where
+\begin{itemize}
+\item \texttt{datetime} is specified using either the standard format of the \hyperref[sec:datetime]{DateTime class} (hh.mm.dd.mm.yyyy), or using only number of minutes in day, [0 1440]
+\item  \texttt{realdemand} is specified in W
+\item \texttt{reactivedemand} is specified in VAr.   Positive \texttt{reactivedemand} implies an inductive load; negative \texttt{reactivedemand} implies a capacitive load.
+\end{itemize}
 
 \newP
-POSSIM accepts three possible modes for specifying household demand:
+POSSIM accepts four possible modes for specifying household demand:
 
 \newP
 \begin{enumerate}
+\item \textbf{Generic}:  in this mode, each house is assigned exactly the same profile.  To use this mode, set the following config variables:
+
+\begin{tabular}{p{4cm}p{4cm}}
+\texttt{demandmodel} 		&	\texttt{generic} \\
+\texttt{demanddatadir}      		&	\texttt{path/to/file}\\
+\end{tabular}
+
+\vspace{0.3cm}
 \item \textbf{Phase-specific}:  in this mode, three profiles must be made available, one each for phases A, B, and C.  Each house is assigned the demand profile corresponding to the phase it is connected on.  This mode is useful for example in situations where phase-specific distribution transformer data has been logged, and average demand profiles are available separately for each phase.  To use this mode, set the following config variables:
 
 \begin{tabular}{p{4cm}p{4cm}}
@@ -554,8 +569,8 @@ POSSIM accepts three possible modes for specifying household demand:
 
 \vspace{0.3cm}
 The \texttt{demanddatadir} folder must contain three profiles, named \texttt{"phaseA", "phaseB",} and \texttt{"phaseC"}.  File extension doesn't matter.
-\newP
 
+\vspace{0.3cm}
 \item \textbf{House-specific}:  in this mode, each individual house in the network model is assigned a specific profile.  This is possible for example when individual household data has been logged, when the effect of individual household loads wants to be examined, or when individual household profiles have been somehow pre-generated.  To use this mode, set the following config variables:
 
 \begin{tabular}{p{4cm}p{4cm}}
@@ -571,9 +586,10 @@ The \texttt{demanddatadir} directory must contain all profiles, and the \texttt{
 \noindent\texttt{<housename2>, <profilename2>}\\
 etc...\\
 
-\newP
+\vspace{0.3cm}
 
 \item \textbf{Random}:  in this mode, each house is assigned a random profile.  To use this mode, set the following config variables:
+
 \begin{tabular}{p{4cm}p{4cm}}
 \texttt{demandmodel} 		&	\texttt{random} \\
 \texttt{demanddatadir}      		&	\texttt{path/to/folder/containing/profiles}\\
@@ -586,9 +602,10 @@ The \texttt{demanddatadir} directory must contain all profiles, and each house i
 
 \end{enumerate}
 
+\newP
+\textbf{Adding randomness}
 
-
-
+For many applications some degree of randomness in demand is desirable.  Randomness can be added to household profiles (in any of the above modes) in two ways:
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -598,8 +615,7 @@ The \texttt{demanddatadir} directory must contain all profiles, and each house i
 \section{Vehicle Demand}
 \label{sec:vdemand}
 
-Coming soon!
-
+The vehicle demand model works quite differently from the household demand model in POSSIM.  Unlike households, for which daily load curves are typically available (with data points for every time of day), vehicle demand is more likely to be \textit{event-driven}, with singular events like vehicle arrivals and departures determining the demand that vehicles put on the network.  While some studies may use average vehicle usage data to estimate demand, we except that it is more likely that event-related data will be used for traffic simulation.  Thus, POSSIM currently uses an underlying event-based mechanism to determine vehicle demand.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -637,6 +653,9 @@ POSSIM remains very much an ongoing project, and could be extended in many direc
 \item add multi-threading functionality
 \end{itemize}
 
+\newP
+Contributions to any of these tasks, or any further additions to POSSIM are always welcome.  Please get in touch with Julian de Hoog at \href{mailto:julian@dehoog.ca}{julian@dehoog.ca}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
@@ -670,6 +689,13 @@ are met:
 \vspace{0.5cm}
 \noindent
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+
+%-------------------------------------------------------------------------------
+\section{Configuration Parameters}
+\label{app:license}
+
+The following is a list of all configuration parameters at time of writing.  For more information on using and setting configuration parameters, see section \ref{sec:config}.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
