@@ -287,7 +287,14 @@ void MatlabInterface::parseModelFile(DistributionTransformer* &transformer,
                transformer->name = utility::stripQuotations(currBlock["Name"]);
                std::string nomPower = currBlock["NominalPower"].substr(2,currBlock["NominalPower"].find_first_of(",")-2);
                transformer->capacity = utility::string2double(nomPower);
-               std::cout << " - Found transformer with capacity " << std::setprecision(0) << transformer->capacity/1000 << " kVA" << std::endl;
+               std::string vOut = currBlock["Winding2"];
+               std::string::size_type p1 = vOut.find_first_of("[")+1;
+               std::string::size_type p2 = vOut.find_first_of(" ", p1+1);
+               vOut = vOut.substr(p1, p2-p1);
+               transformer->voltageOut = utility::string2double(vOut) / std::sqrt(3.0);
+               std::cout << " - Found transformer with capacity " 
+                         << std::setprecision(0) << transformer->capacity/1000 << " kVA" 
+                         << " and output voltage " << transformer->voltageOut << std::endl;
                
                std::cout << " - Parsing the rest of the matlab model ... \n";
            }
@@ -502,6 +509,7 @@ void MatlabInterface::extractModel(FeederPole* &root,
     
     // Create root       
     createRoot(root, households, lineSegments, modelLines);
+    poles[root->name] = root;
     //std::cout << " - Root has " << root->childLineSegments.size() << " child lines and " << root->households.size() << " houses." << std::endl;
  
     // Recursively build tree
@@ -513,7 +521,16 @@ void MatlabInterface::extractModel(FeederPole* &root,
     //for(std::map<std::string,FeederPole*>::iterator it=poles.begin(); it!=poles.end(); ++it) 
     //    std::cout << "Pole " << it->second->name << " has " << it->second->households.size() << " houses" << std::endl;
     
-    
+    // For later reference (when writing output to file e.g.), save backbone
+    // names in workspace
+    ss.str("");
+    ss << "backboneNames = {'" << lineSegments.begin()->second->name << "'";
+    std::map<std::string,FeederLineSegment*>::iterator it2 = lineSegments.begin();
+    it2++;
+    for( ; it2 != lineSegments.end(); ++it2)
+        ss << std::endl << "'" << it2->second->name << "'";
+    ss << "};" << std::endl;
+    engEvalString(eng, ss.str().c_str());
 }
 
 void MatlabInterface::runSim() {
@@ -641,32 +658,40 @@ void MatlabInterface::printModel(std::string targetDir) {
      std::cout << "OK" << std::endl;
 }
 
-void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households) {
+void MatlabInterface::getOutputs(std::string logDir,
+                                NetworkData &networkData, 
+                                std::map<std::string,Household*> &households, 
+                                std::map<std::string,FeederLineSegment*> &lineSegments,
+                                std::map<std::string,FeederPole*> &poles) {
     ss.str("");
+    ss << "logDir = '" << logDir << "';" << std::endl;
     ss << "writeOutputToFile;";
     engEvalString(eng, ss.str().c_str());
     
-    std::ifstream infile("temp_output.txt");
+    std::ifstream infile(std::string(logDir + "temp_output.txt").c_str());
     std::string line;
     
     // Read in voltages
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        phaseV[i] = utility::string2double(line);
+        networkData.phaseV[i] = utility::string2double(line);
+        //std::cout << networkData.phaseV[i] << std::endl;
     }
-    
+
     // Read in currents
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        phaseI[i] = utility::string2double(line);
+        networkData.phaseI[i] = utility::string2double(line);
+        //std::cout << networkData.phaseI[i] << std::endl;
     }
-    
+
     // Read in eolV
     for(int i=0; i<12; i++) {
         getline(infile, line);
-        eolV[i] = utility::string2double(line);
+        networkData.eolV[i] = utility::string2double(line);
+        //std::cout << networkData.eolV[i] << std::endl;
     }
-    
+
     // Read in household V
     for(std::map<std::string, Household*>::iterator it = households.begin(); it!=households.end(); ++it) {
         getline(infile, line);
@@ -675,10 +700,56 @@ void MatlabInterface::getOutputs(double phaseV[12], double phaseI[12], double eo
         it->second->V_Mag = utility::string2double(line);
         getline(infile, line);
         it->second->V_Pha = utility::string2double(line);
+        //std::cout << it->second->V_RMS << std::endl;
     }
-    
-    infile.close();
-    //remove("tempoutput.txt");
+
+    // Read in backbone V (unbalance)
+    Phasor V_ab, V_bc, V_ca;
+    double a, p, unbalance;
+    Household* currHouse;
+    FeederPole currPole;
+
+    for(std::map<std::string,FeederLineSegment*>::iterator it = lineSegments.begin(); it!=lineSegments.end(); ++it) {
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_ab.set(a,p);
+        
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_bc.set(a,p);
+        
+        getline(infile, line);
+        a = utility::string2double(line);
+        getline(infile, line);
+        p = utility::string2double(line);
+        V_ca.set(a,p);
+        
+        unbalance = power::calculatePhaseUnbalance(V_ab, V_bc, V_ca);
+        it->second->voltageUnbalance = unbalance;
+
+        // Set individual houses' unbalance
+        for(std::map<std::string,Household*>::iterator it2 = households.begin(); it2!=households.end(); ++it2) {
+            currHouse = it2->second;
+            
+            // No unbalance at root (transformer as a voltage source assumption)
+            if(currHouse->hasParent && currHouse->parentPoleName != "Root") {
+                currPole = *(poles[currHouse->parentPoleName]);
+                if(currPole.parentLineSegment->name == it->first)
+                    currHouse->V_unbalance = unbalance;
+            }
+        }
+    }
+  
+    // temp storage of a copy for debug
+    //boost::filesystem::path pathFrom(std::string(logDir + "temp_output.txt"));
+    //boost::filesystem::path pathTo(std::string(logDir + "../temp_output.txt"));
+    //if (boost::filesystem::exists(pathTo))
+    //    boost::filesystem::remove (pathTo);
+    //boost::filesystem::copy_file(pathFrom, pathTo);
 }
 
 
@@ -739,6 +810,16 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
     ss << "plotBatterySOC('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
 
+    // Generate phase unbalance plot by house
+    ss.str("");
+    ss << "plotPhaseUnbalance('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+
+    // Generate phase unbalance plot by line
+    ss.str("");
+    ss << "plotPhaseUnbalanceByLine('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+
 }
 
 
@@ -753,9 +834,10 @@ void MatlabInterface::runOptimisation(std::string optDir, std::string optAlg,
     std::cout << "   - reading in matrix A ...";
     // Matrix A is set of coordinates and values
     ss.str("");
-    ss << "A = zeros(" << numConstraints << "," << numDecVars << ");" << std::endl;
-    ss << "A_in = dlmread(['" << optDir << "' 'A.txt']);" << std::endl;
-    ss << "for i=1:" << numConstraints << std::endl
+    ss << "A = zeros(" << numConstraints << "," << numDecVars << ");" << std::endl
+       << "A_in = dlmread(['" << optDir << "' 'A.txt']);" << std::endl
+       << "[rows cols] = size(A_in);" << std::endl
+       << "for i=1:rows" << std::endl
        << "      A(A_in(i,1)+1, A_in(i,2)+1) = A_in(i,3);" << std::endl
        << "end" << std::endl;
     engEvalString(eng, ss.str().c_str());
@@ -781,6 +863,7 @@ void MatlabInterface::runOptimisation(std::string optDir, std::string optAlg,
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << "   - writing output to file ...";
+    std::cout.flush();
     ss.str("");
     ss << "dlmwrite(['" << optDir << "' 'xsol.txt'], xsol);" << std::endl;
     engEvalString(eng, ss.str().c_str());

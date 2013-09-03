@@ -20,6 +20,7 @@ function plotTotalDemand(logdir, simInterval)
     legend('EV Demand', 'Household Demand', 2);
     
     setAxes(gca, numData, simInterval);
+   
     xlabel('Time of Day');
     ylabel('Demand (kW)');
     title('Total Demand');

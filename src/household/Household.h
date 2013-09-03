@@ -39,7 +39,6 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <sstream>
 
-#include "../networkgraph/NetworkGraphComponents.h"
 #include "../utility/Utility.h"
 #include "../utility/Power.h"
 #include "../gridmodel/Feeder.h"
@@ -48,7 +47,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 /** Represents a household in the grid.  Includes ID (national meter identifier),
   * demand profile, and local voltage measurements.*/
-class Household : public NetworkGraphVertex {
+class Household {
 
 public:
     /** ID (equivalent to NMI, national meter identifier)*/
@@ -94,6 +93,9 @@ public:
     
     /** Voltage at this house during valley load (for e.g. distributed charging alg) */
     double V_valley;
+    
+    /** Phase unbalance at this house ( |V_-| / |V_+|), as a percentage */
+    double V_unbalance;
     
     /** True if the Household has been assigned a parent pole (for tree building) */
     bool hasParent;

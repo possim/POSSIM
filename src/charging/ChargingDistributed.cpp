@@ -34,17 +34,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChargingDistributed.h"
 
-ChargingDistributed::ChargingDistributed(Config* config, GridModel gridModel) :
-    ChargingBaseClass(config, gridModel){
-    maxChargeRate = config->getDouble("maxchargerate");
-}
-
-ChargingDistributed::~ChargingDistributed() {
-}
-
-ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime, HouseholdDemandModel hhDemand) :
+ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime) :
         ChargingBaseClass(config, gridModel) 
 {
+    maxChargeRate = config->getDouble("maxchargerate");
     minVoltage = config->getInt("minvoltage");
     simInterval = config->getInt("simulationinterval");
     periodOfLoadSchedule = config->getInt("loadscheduleperiod");
@@ -54,10 +47,15 @@ ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, D
     // voltages at each house.  In other words, calibrate the system.  We now 
     // know that each house can safely schedule additional load when its voltage
     // is at or near this "valley" level.
-    gridModel.runValleyLoadFlow(datetime, hhDemand);
+    gridModel.runValleyLoadFlow(datetime);
 
     std::cout << " - Distributed charging algorithm init complete!" << std::endl;   
 }
+
+
+ChargingDistributed::~ChargingDistributed() {
+}
+
 
 
 /* For more detail on how this algorithm works, see:
@@ -73,8 +71,8 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
         currName = it->second->getName();
         currSOC = it->second->getSOC();
         it->second->switchon = false;
-        currV = gridModel.households.at(currName)->V_RMS;
-        valleyV = gridModel.households.at(currName)->V_valley;
+        currV = gridModel.findHousehold(it->second->NMI)->V_RMS;
+        valleyV = gridModel.findHousehold(it->second->NMI)->V_valley;
 
         // Calculate L (voltage probability)
         if(currV > valleyV)

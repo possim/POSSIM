@@ -58,8 +58,8 @@ double SpotPrice::findPriceAt(DateTime datetime) {
     // Open data file
    std::fstream infile(ss.str().c_str(), std::ios::in);
    if(!infile){
-      std::cout << "Cannot open spot price input file.";
-      exit (1);
+      std::cout << "ERROR:  Cannot open spot price input file!";
+      return 0;
    }
    
    // Skip to correct line

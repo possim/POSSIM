@@ -40,7 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <iostream>
 
-#include "../networkgraph/NetworkGraphComponents.h"
+
 #include "../household/Household.h"
 
 
@@ -66,7 +66,8 @@ struct lineModel {
 /** Simulates a single pole in the distribution network. A pole has one parent
   * feeder line, any number of child feeder lines, and any number of houses
   * connected to it. */
-class FeederPole : public NetworkGraphVertex {
+
+class FeederPole {
 
 public:
     /** The name of this pole. Usually similar to its parent line segment. */
@@ -81,6 +82,14 @@ public:
     /** A vector of all houses connected to this pole. */
     std::vector<Household*> households;
     
+    /** Current of each phase, recalculated after each load flow. */
+    Phasor current[3];
+    
+    /** Voltage of each phase, recalculated after each load flow. */
+    Phasor voltage[3];
+    
+    /** Resistance and reactance from transformer to this pole. */
+    Impedance totalImpedanceToTX;
 
 public:
     FeederPole() {
@@ -97,7 +106,8 @@ public:
 /** Simulates a single distribution line segment between two poles in the 
   * distribution network.  Stores impedance and length of the segment, as well  
   * as pointers to its parent and child poles. */
-class FeederLineSegment : public NetworkGraphEdge {
+
+class FeederLineSegment {
 
 public:
     /** Name of feeder line segment.  Should match the equivalent segment
@@ -113,6 +123,8 @@ public:
     
     std::string parentPoleName;
     std::string childPoleName;
+    
+    double voltageUnbalance;
 
 public:
     FeederLineSegment() {
@@ -121,6 +133,7 @@ public:
         line.inductance = 0.0;
         line.capacitance = 0.0;
         line.length = 0.0;
+        voltageUnbalance = 0.0;
     };
     
     FeederLineSegment(std::string n, double r, double i, double c, double l) {

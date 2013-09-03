@@ -47,8 +47,6 @@ HouseholdDemandModel::HouseholdDemandModel(Config* config) {
     demandDataDir = config->getConfigVar("demanddatadir");
     houseProfileAllocFile = config->getConfigVar("housedemandalloc");
     randomDistribution = config->getRandomParams("demandrandom_int");
-    
-    inputAllProfiles();
 }
 
 HouseholdDemandModel::~HouseholdDemandModel() {
@@ -135,10 +133,6 @@ void HouseholdDemandModel::inputAllProfiles() {
         }
     }
     
-    // If model type is house specific, input additionally the house-profile mapping
-    if(modelType == "housespecific")
-        inputProfileAllocationFromFile();
-    
     std::cout << " - found " << numDemandProfiles << " demand profile files" << std::endl;
 }
 
@@ -158,26 +152,35 @@ HouseholdDemandProfile HouseholdDemandModel::getRandomProfile() {
 
 void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &households) {
     std::cout << " - Assigning demand profiles to houses ...";
-    for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it) {
-        
-        if(modelType == "random") {
-            it->second->demandProfile = getRandomProfile();
-        }
 
-        else if(modelType == "phasespecific") {
+    if(modelType == "generic")
+        for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it)
+            it->second->demandProfile = inputProfileFromFile(demandDataDir);
+
+    else if(modelType == "random") {
+        inputAllProfiles();
+        for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it)
+            it->second->demandProfile = getRandomProfile();
+    }
+
+    else if(modelType == "phasespecific") {
+        inputAllProfiles();
+        for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it) {
             Phase phase = it->second->phase;
             if(phase == A)      it->second->demandProfile = demandProfiles["phaseA"];
             else if(phase == B) it->second->demandProfile = demandProfiles["phaseB"];
             else                it->second->demandProfile = demandProfiles["phaseC"];
-            
-            //std::cout << "- Assigned profile " << it->second->demandProfile.name << " to " << it->first << std::endl;
         }
+    }
 
-        else if(modelType == "housespecific") {
+    else if(modelType == "housespecific") {
+        inputAllProfiles();
+        inputProfileAllocationFromFile();
+        for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it) {
             std::string profileName = allocationMap[it->second->name];
             it->second->demandProfile = demandProfiles[profileName];
         }
-
     }
+
     std::cout << " OK" << std::endl;
 }

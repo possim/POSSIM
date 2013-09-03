@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<configfile         flag="C"    value="configs/defaultconfig.xml" />
+<configfile         flag="C"    value="" />
 
-<simulationinterval flag="i"    value="5" />
-<starttime          flag="s"    value="18.00.21.08.2012" />           
-<finishtime         flag="f"    value="23.59.24.08.2012" />    
+<simulationinterval flag="i"    value="30" />
+<starttime          flag="s"    value="00.00.22.08.2012" />           
+<finishtime         flag="f"    value="00.00.23.08.2012" />    
 
 <intervaldelay      flag="d"    value="0" />           
 <showdebug          flag="D"    value="yes" />   
@@ -15,12 +15,12 @@
 <housedemandalloc   flag="hda"  value="data/demand/houseallocation.csv" />
 <demandrandom_int   flag="dri"  value="0,0,0,0" />
 
-<evpenetration      flag="p"    value="80" />
+<evpenetration      flag="p"    value="40" />
 <trafficdata        flag="f_td" value="data/traffic/united/vehicleProfiles_Whitehorse_wk.csv" />
 <vehicleassignment  flag="f_ve" value="random" />
 <vehiclechargedata  flag="f_vc" value="" />
 
-<batterystart       flag="S"    value="60" />
+<batterystart       flag="S"    value="40" />
 <batteryrandom      flag="S_r"  value="0,7,-12,12" />
 <batterycapacity    flag="b"    value="80" />
 <batterydata        flag="f_ba" value="data/battery/batterydata.txt" />
@@ -28,8 +28,8 @@
 <spotpricedata      flag="f_sp" value="data/spotprice/AEMO/" />
 
 <loadflowsimulator  flag="l"    value="matlab" />
-<modelpath          flag="m"    value="matlab/UnitedModel1.mdl" />
-<modellibpath       flag="ml"   value="matlab/UnitedModel_lib.mdl" />
+<modelpath          flag="m"    value="matlab/ExampleModel.mdl" />
+<modellibpath       flag="ml"   value="matlab/ExampleModel_lib.mdl" />
 
 <frequency          flag="f"    value="50" />
 <txcapacity         flag="t"    value="300000" />
@@ -42,8 +42,7 @@
 <chargingalgorithm  flag="c"    value="optimal1" />
 <maxchargerate      flag="c_mx" value="3450" />
 <minchargerate      flag="c_mn" value="0" />
-
-<charginghorizon    flag="c_h"  value="0.083334" />
+<charginghorizon    flag="c_h"  value="1" />
 <servicelinemax     flag="c_s"  value="100" />
 <backbonemax        flag="c_b"  value="400" />
 <matlaboptalg       flag="moa"  value="interior-point" />

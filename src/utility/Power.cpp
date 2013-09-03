@@ -48,6 +48,19 @@ Phasor::Phasor(double a, double p) {
     
 Phasor::~Phasor() {
 }
+
+double Phasor::getAmplitude() {return amplitude;}
+double Phasor::getPhase() {return phase;}
+
+void Phasor::set(double a, double p) {
+    amplitude = a;
+    phase = p*M_PI/180;
+}
+
+void Phasor::setRC(double r, double c) {
+    phase = atan2(c,r);
+    amplitude = sqrt((double)(pow(r,2)+pow(c,2)));
+}
     
 double Phasor::real() {return amplitude*cos(phase);}
 double Phasor::imag() {return amplitude*sin(phase);}
@@ -65,6 +78,18 @@ Phasor Phasor::plus(Phasor other) {
     return sum;
 }
 
+Phasor Phasor::minus(Phasor other) {
+    Phasor diff;
+    double diffReal, diffImag;
+
+    diffReal = real() - other.real();
+    diffImag = imag() - other.imag();
+    diff.phase = atan2(diffImag,diffReal);
+    diff.amplitude = sqrt((double)(pow(diffReal,2)+pow(diffImag,2)));
+
+    return diff;
+}
+
 Phasor Phasor::times(Phasor other) {
     Phasor product;
 
@@ -74,14 +99,76 @@ Phasor Phasor::times(Phasor other) {
     return product;
 }
 
+Phasor Phasor::times(Impedance Z) {
+    Phasor other;
+    other.setRC(Z.resistance, Z.reactance);
+    return this->times(other);
+}
+
+Phasor Phasor::dividedBy(Phasor other) {
+    Phasor quotient;
+
+    quotient.amplitude = amplitude / other.amplitude;
+    quotient.phase = phase - other.phase;
+
+    return quotient;
+}
+
 Phasor Phasor::squared() {return times(*this);}
 
 Phasor Phasor::divideByConst(double n) {amplitude /= n; return *this;}
 
 Phasor Phasor::timesConst(double n) {amplitude *= n; return *this;}
 
+void Phasor::addReal(double r) {
+    double x = real() + r;
+    double y = imag();
+    setRC(x,y);
+}
+
+void Phasor::addImaginary(double i) {
+    double x = real();
+    double y = imag() + i;
+    setRC(x,y);
+}
+
+void Phasor::addAmp(double a) {
+    amplitude += a;
+}
+
+void Phasor::addPhase(double p) {
+    phase += p*M_PI/180;
+}
+
 std::string Phasor::toString() {
     std::stringstream ss;
     ss << "RMS " << toRMS() << ", Amp " << amplitude << ", Pha " << phase;
     return ss.str();
+}
+
+
+double power::calculatePhaseUnbalance(Phasor vAB, Phasor vBC, Phasor vCA) {
+    Phasor a, a2;
+    a.set(1,120);
+    a2.set(1,240);
+    
+    Phasor vMinus = vAB.plus(vBC.times(a2).plus(vCA.times(a)));
+    Phasor vPlus = vAB.plus(vBC.times(a).plus(vCA.times(a2)));
+    
+    /* Optional output for debug
+    std::cout << "\n------------------------"
+              << "\n         Vab: " << vAB.toString()
+              << "\n         Vbc: " << vBC.toString()
+              << "\n         Vca: " << vCA.toString()
+              << "\n       Vca*a: " << vCA.times(a).toString()
+              << "\n      Vbc*a2: " << vBC.times(a2).toString()
+              << "\nVbc*a2+Vca*a: " << (vBC.times(a2).plus(vCA.times(a))).toString()
+              << "\n          V-: " << vMinus.toString()
+              << "\n          V+: " << vPlus.toString()
+              << "\n       V-/V+: " << vMinus.dividedBy(vPlus).toString()
+              << "\n           %: " << vMinus.getAmplitude() / vPlus.getAmplitude() * 100
+              << "\n________________________________________________________\n"
+              << std::endl; */
+              
+    return (vMinus.getAmplitude() / vPlus.getAmplitude() * 100);
 }

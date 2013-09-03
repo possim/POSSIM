@@ -126,11 +126,19 @@ void Config::correctValues() {
             value.compare("optimal1") == 0 ||
             value.compare("5") == 0)
                setConfigVar("chargingalgorithm", "optimal1");
+    else if(value.compare("OPTIMAL2") == 0 ||
+            value.compare("Optimal2") == 0 ||
+            value.compare("optimal2") == 0 ||
+            value.compare("6") == 0)
+               setConfigVar("chargingalgorithm", "optimal2");
 }
 
 // Return string value of a given config variable.
 std::string Config::getConfigVar(std::string name) {
-    return configVars[name].value;
+    std::string val = configVars[name].value;
+    if(val.length() == 0)
+        std::cout << "\n\nWARNING: Did not find value for config variable " << name << "!\n" << std::endl;
+    return val;
 }
 
 // If config variable is boolean, get bool value directly
@@ -190,6 +198,8 @@ int Config::getChargingAlg() {
         return 4;
     else if(value.compare("optimal1") == 0)
         return 5;
+    else if(value.compare("optimal2") == 0)
+        return 6;
     
     return 0;
 }

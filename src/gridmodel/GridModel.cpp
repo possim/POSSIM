@@ -41,6 +41,10 @@ GridModel::GridModel() {
 }
 
 GridModel::~GridModel() {
+    // If a temporary directory was created for temp data storage, delete
+    // directory and its contents
+    boost::filesystem::path tempPath(tempDir);
+    boost::filesystem::remove_all(tempPath);
 }
 
 void GridModel::initialise(Config* config, LoadFlowInterface* lf) {
@@ -69,8 +73,13 @@ void GridModel::initialise(Config* config, LoadFlowInterface* lf) {
     
     // Update transformer capacity if config is different from value
     // extracted from model
-    if(transformer->capacity != config->getDouble("transformercapacity"))
-        loadflow->setTxCapacity(transformer->name, config->getDouble("transformercapacity"));
+    if(transformer->capacity != config->getDouble("txcapacity")) {
+        std::cout << " - transformer capacity was " << transformer->capacity
+                  << ", resetting to " << config->getDouble("txcapacity") << std::endl;
+        loadflow->setTxCapacity(transformer->name, config->getDouble("txcapacity"));
+        transformer->capacity = config->getDouble("txcapacity");
+    }
+
 }
 
 void GridModel::loadGridModel() {
@@ -123,6 +132,11 @@ void GridModel::addVehicles(Config* config) {
     std::vector<int> indexVector;
     bool generateRandom = false;
     Household *currHousehold;
+    
+    // To be safe, ensure all household hasCar booleans are set to false until
+    // vehicles are added
+    for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it)
+        it->second->hasCar = false;
     
     // Check if vehicle file exists
     std::string inputFile = config->getString("vehicleassignment");
@@ -184,14 +198,12 @@ void GridModel::addVehicles(Config* config) {
 }
 
 void GridModel::updateVehicleBatteries() {
-    std::cout << " - Updating vehicle batteries ...";
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
         if(it->second->distanceDriven > 0)
             it->second->dischargeBattery();
-        else if(it->second->isConnected)
+        else if(it->second->isConnected && it->second->isCharging)
             it->second->rechargeBattery();
     }
-    std::cout << " OK" << std::endl;
 }
 
 void GridModel::generateLoads(DateTime currTime, HouseholdDemandModel householdDemand) {
@@ -335,32 +347,60 @@ void GridModel::displayLoadSummary(DateTime currTime) {
 }
 
 
-void GridModel::runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand) {
-    boost::posix_time::ptime timer;
-    
-    utility::startTimer(timer);
-    std::cout << " - Running valley load flow analysis ... ";
-    std::cout.flush();
+void GridModel::runValleyLoadFlow(DateTime datetime) {
+    boost::posix_time::ptime timerFull, timer;
     
     // Choose valley time
     DateTime valleytime = datetime;
     valleytime.hour = 4;
     valleytime.minute = 0;
 
-    // Set all household loads to valley load, vehicle loads to zero
+    utility::startTimer(timerFull);
+    utility::startTimer(timer);
+    
+    std::cout << "Running valley load flow analysis ... " << std::endl;
+    
+    // Create temporary directory for file interaction with load flow software
+    tempDir = logDir + "temp/";
+    boost::filesystem::path tempPath(tempDir);
+    if(!boost::filesystem::exists(tempPath))
+        boost::filesystem::create_directory(tempPath);
+    
+    std::cout << " - setting household loads ...";
+    std::ofstream outfile(std::string(tempDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
-        loadflow->setDemand(it->second->componentName, it->second->getActivePower(valleytime), it->second->getInductivePower(valleytime), it->second->getCapacitivePower(valleytime));
-
+        outfile << it->second->componentName << ", "
+                << it->second->getActivePower(valleytime)+0.001 << ", "
+                << it->second->getInductivePower(valleytime) << ", "
+                << it->second->getCapacitivePower(valleytime) << std::endl;
+    outfile.close();
+    loadflow->setDemand(std::string(tempDir + "tempHHloads.txt"));
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
+    
+    std::cout << " - setting vehicle loads ...";
+    outfile.open(std::string(tempDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        loadflow->setDemand(it->second->componentName, 0, 0, 0);
+        outfile << it->second->componentName << ", "
+                << it->second->activePower+0.001 << ", "
+                << it->second->inductivePower << ", "
+                << it->second->capacitivePower << std::endl;
+    outfile.close();
+    loadflow->setDemand(std::string(tempDir + "tempVHloads.txt"));
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
+    std::cout << " - running load flow calculation ...";
+    std::cout.flush();
     loadflow->runSim();
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
-    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
-    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
-        it->second->V_valley = it->second->V_RMS;
+    std::cout << " - getting output ...";
+    loadflow->getOutputs(tempDir, networkData, households, lineSegments, poles);
+    std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
-    std::cout << "complete, took: " << utility::endTimer(timer) << std::endl;
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
+	it->second->V_valley = it->second->V_RMS;
+
+    std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
 }
 
 
@@ -371,27 +411,33 @@ void GridModel::runLoadFlow(DateTime currTime) {
     utility::startTimer(timer);
     
     std::cout << "Running load flow analysis ... " << std::endl;
-    
+        
+    // Create temporary directory for file interaction with load flow software
+    tempDir = logDir + "temp/";
+    boost::filesystem::path tempPath(tempDir);
+    if(!boost::filesystem::exists(tempPath))
+        boost::filesystem::create_directory(tempPath);
+
     std::cout << " - setting household loads ...";
-    std::ofstream outfile("tempHHloads.txt");
+    std::ofstream outfile(std::string(tempDir + "tempHHloads.txt").c_str());
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->getActivePower(currTime)+0.001 << ", "
                 << it->second->getInductivePower(currTime) << ", "
                 << it->second->getCapacitivePower(currTime) << std::endl;
     outfile.close();
-    loadflow->setDemand("tempHHloads.txt");
+    loadflow->setDemand(std::string(tempDir + "tempHHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - setting vehicle loads ...";
-    outfile.open("tempVHloads.txt");
+    outfile.open(std::string(tempDir + "tempVHloads.txt").c_str());
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
         outfile << it->second->componentName << ", "
                 << it->second->activePower+0.001 << ", "
                 << it->second->inductivePower << ", "
                 << it->second->capacitivePower << std::endl;
     outfile.close();
-    loadflow->setDemand("tempVHloads.txt");
+    loadflow->setDemand(std::string(tempDir + "tempVHloads.txt"));
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - running load flow calculation ...";
@@ -400,8 +446,13 @@ void GridModel::runLoadFlow(DateTime currTime) {
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
     
     std::cout << " - getting output ...";
-    loadflow->getOutputs(networkData.phaseV, networkData.phaseI, networkData.eolV, households);
+    std::cout.flush();
+    loadflow->getOutputs(tempDir, networkData, households, lineSegments, poles);
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
+
+    //std::cout << " - calculating voltage unbalance ..." << std::endl;
+    //calculateVoltageUnbalance(currTime);
+    //std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 
     std::cout << "Load flow analysis complete, took: " << utility::endTimer(timerFull) << std::endl;
 }
@@ -419,8 +470,109 @@ Vehicle* GridModel::findVehicle(int NMI) {
     return vehicleNMImap[NMI];
 }
 
+// recalculate individual phase voltages at each pole
+void GridModel::calculateVoltageUnbalance(DateTime currTime) {
+    Phasor current[3];
+    current[0].set(0,0);
+    current[1].set(0,-120);
+    current[2].set(0,120);
+    
+    calculatePoleCurrents(root, current, currTime);
+    std::cout << "At root, currents are: " << std::endl;
+    for(int i=0; i<3; i++)
+        std::cout << " " << i+1 << ": " << current[i].toString() << "\n";
+    
+    calculatePoleVoltages(root);
+    std::cout << "At root, voltages are: " << std::endl;
+    for(int i=0; i<3; i++)
+        std::cout << " " << i+1 << ": " << root->voltage[i].toString() << "\n";
+    
+}
+
+// Calculate current at each pole
+void GridModel::calculatePoleCurrents(FeederPole* pole, Phasor I[], DateTime currTime) {
+    // Recursively iterate through to leaves
+    if(pole->childLineSegments.size() > 0)
+        for(std::vector<FeederLineSegment*>::iterator it=pole->childLineSegments.begin(); it!=pole->childLineSegments.end(); ++it)
+            if((*it)->childPole != NULL)
+                calculatePoleCurrents((*it)->childPole, I, currTime);
+    
+    // Add current from each house and vehicle
+    Household* currHouse;
+    int currPhase;
+    Phasor currI;
+    
+    if(pole->households.size() > 0)
+        for(std::vector<Household*>::iterator it=pole->households.begin(); it!=pole->households.end(); ++it) {
+
+            currHouse = *it;
+            currPhase = (int)(currHouse->phase);
+            currI.setRC(currHouse->getDemandAt(currTime).P / baseVoltage, currHouse->getDemandAt(currTime).Q / baseVoltage);
+            if(currHouse->hasCar)
+                currI.addReal(findVehicle(currHouse->NMI)->chargeRate / baseVoltage);
+            if(currPhase == 1)
+                currI.addPhase(120);
+            else if(currPhase == 2)
+                currI.addPhase(240);
+
+            I[currPhase] = I[currPhase].plus(currI);
+        }
+    
+    for(int i=0; i<3; i++)
+        pole->current[i] = I[i];
+}
+
+// Calculate current at each pole
+void GridModel::calculatePoleVoltages(FeederPole* pole) {
+    Phasor txVoltage[3];
+    txVoltage[0].set(transformer->voltageOut*sqrt(2.0), 0);
+    txVoltage[1].set(transformer->voltageOut*sqrt(2.0), -120);
+    txVoltage[2].set(transformer->voltageOut*sqrt(2.0), 120);
+    
+    std::cout << pole->name << ":";
+    for(int i=0; i<3; i++) {
+        pole->voltage[i] = txVoltage[i].minus(pole->current[i].times(pole->totalImpedanceToTX));
+        std::cout << "\n  " << i << "        I: " << pole->current[i].toString() 
+                  << "\n           Z: " << pole->totalImpedanceToTX.toString()
+                  << "\n           V: " << pole->voltage[i].toString() << std::endl;
+    }
+    
+    Phasor a, a2;
+    a.set(1,120);
+    a2.set(1,240);
+    
+    Phasor vAB = pole->voltage[1].minus(pole->voltage[0]);
+    Phasor vBC = pole->voltage[2].minus(pole->voltage[1]);
+    Phasor vCA = pole->voltage[0].minus(pole->voltage[2]);
+    
+    Phasor vMinus = vAB.plus(vBC.times(a2).plus(vCA.times(a)));
+    Phasor vPlus = vAB.plus(vBC.times(a).plus(vCA.times(a2)));
+    
+    std::cout << "\n------------------------"
+              << "\n         Vab: " << vAB.toString()
+              << "\n         Vbc: " << vBC.toString()
+              << "\n         Vca: " << vCA.toString()
+              << "\n       Vca*a: " << vCA.times(a).toString()
+              << "\n      Vbc*a2: " << vBC.times(a2).toString()
+              << "\nVbc*a2+Vca*a: " << (vBC.times(a2).plus(vCA.times(a))).toString()
+              << "\n          V-: " << vMinus.toString()
+              << "\n          V+: " << vPlus.toString()
+              << "\n       V-/V+: " << vMinus.dividedBy(vPlus).toString()
+              << "\n           %: " << vMinus.getAmplitude() / vPlus.getAmplitude() * 100
+              << "\n________________________________________________________\n"
+              << std::endl;
+              
+
+    for(std::vector<FeederLineSegment*>::iterator it=pole->childLineSegments.begin(); it!=pole->childLineSegments.end(); ++it)
+        if((*it)->childPole != NULL)
+            calculatePoleVoltages((*it)->childPole);
+}
+
 // Recursive DFS traversal of network tree, keeping track of impedance for each house
 void GridModel::calculateHouseholdZ(FeederPole* pole, double r, double x) {
+    pole->totalImpedanceToTX.resistance = r;
+    pole->totalImpedanceToTX.reactance = x;
+    
     // First, update all households connected to this pole (Note: ignore service line impedance)
     for(std::vector<Household*>::iterator it=pole->households.begin(); it!=pole->households.end(); ++it) {
         (*it)->totalImpedanceToTX.resistance = r + 2* (*it)->serviceLine.length * (*it)->serviceLine.resistance;
@@ -451,4 +603,6 @@ void GridModel::buildVehicleNMImap() {
         vehicleNMImap[it->second->NMI] = it->second;
 }
 
-
+void GridModel::setLogDir(std::string path) {
+    logDir = path;
+}

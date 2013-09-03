@@ -54,10 +54,14 @@ public:
     /** Nominal capacity of transformer in kVA*/
     double capacity;
 
+    /** Nominal capacity of transformer in kVA*/
+    double voltageOut;
+
 public:
     DistributionTransformer() {
         name = "Noname";
         capacity = 200000;
+        voltageOut = 250;
     }
 
     virtual ~DistributionTransformer() {   

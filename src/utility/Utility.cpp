@@ -160,9 +160,10 @@ double utility::randomNormal(double mean, double sigma, double min, double max) 
     typedef boost::mt19937                     ENG;    // Mersenne Twister
     typedef boost::normal_distribution<double> DIST;   // Normal Distribution
     typedef boost::variate_generator<ENG,DIST> GEN;    // Variate generator
-    struct timeval timemilli;
-    gettimeofday(&timemilli, NULL);
-    ENG  eng(timemilli.tv_usec);
+    boost::posix_time::ptime time = boost::posix_time::microsec_clock::local_time();
+    boost::posix_time::time_duration duration(time.time_of_day());
+
+    ENG  eng(duration.total_milliseconds());
     DIST dist(mean,sigma);
     GEN  gen(eng,dist);
  

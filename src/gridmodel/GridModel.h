@@ -51,9 +51,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../household/HouseholdDemandModel.h"
 #include "../household/Household.h"
 #include "../vehicle/Vehicle.h"
-#include "../networkgraph/NetworkGraph.h"
 #include "DistributionTransformer.h"
 #include "NetworkData.h"
+
 
 /** The full grid model.  This class contains all houses, vehicles, and any
   * further components as required, as well as the network structure, network
@@ -65,33 +65,36 @@ private:
     /** Local copy of pointer to load flow interface. */
     LoadFlowInterface *loadflow;
     
-    /** Base voltage */
-    double baseVoltage;
-    
     /** Percentage of houses having an EV. */
     int evPenetration;
     
     /** Average power factor of household loads (local copy of config variable). */
     double averagePowerFactor;
     
-    /** Minimum voltage allowed by distribution code (local copy of config variable). */
-    int minVoltage;
-    
     /** Total household loads at current point in time. */
     double sumHouseholdLoads;
-    
-    /** Graph equivalent of the network (using boost::graph) */
-    NetworkGraph* networkGraph;
     
     /** Mapping of households to their NMI */
     std::map<int, Household*> householdNMImap;
     
-    /** Mapping of vehicles to their NMI */
+     /** Mapping of vehicles to their NMI */
     std::map<int, Vehicle*> vehicleNMImap;
+    
+    /** Directory for logging data */
+    std::string logDir;
+    
+    /** Directory for temporary data storage / file interaction with load flow software */
+    std::string tempDir;
     
 
 public:
 
+    /** Base voltage */
+    double baseVoltage;
+    
+    /** Minimum voltage allowed by distribution code (local copy of config variable). */
+    int minVoltage;
+    
     /** The pole that is the root of the distribution network tree. */
     FeederPole* root;
     
@@ -145,7 +148,7 @@ public:
     /** Run load flow applying household loads only (and no vehicle loads) at
       * 4:00 am. Required for e.g. distributed charging algorithm.
       * This function should ideally be deprecated, to do. */
-    void runValleyLoadFlow(DateTime datetime, HouseholdDemandModel householdDemand);  
+    void runValleyLoadFlow(DateTime datetime);  
     
     /** Run full load flow using specified load flow interface. */
     void runLoadFlow(DateTime currTime);
@@ -172,6 +175,16 @@ private:
     
     /** Calculate the total impedance at each household (using DFS traversal of tree)*/
     void calculateHouseholdZ(FeederPole* pole, double r, double x);
+    
+    /** Following a load flow calculation, calculate voltage unbalance at each
+      * pole in the network. */
+    void calculateVoltageUnbalance(DateTime currTime);
+    
+    /** DFS traversal of network tree, recalculating current at each pole. */
+    void calculatePoleCurrents(FeederPole* pole, Phasor I[], DateTime currTime);
+    
+    /** DFS traversal of network tree, recalculating voltages at each pole. */
+    void calculatePoleVoltages(FeederPole* pole);
     
     /** Houses are initially mapped to their names.  It can be convenient to
       * have a mapping to their NMI as well.  This function creates that mapping. */

@@ -78,7 +78,11 @@ public:
     void setDemand(std::string filename);
     void printModel(std::string targetDir);
     void generateReport(std::string dir, int month, bool isWeekday, int simInterval);
-    void getOutputs(double phaseV[12], double phaseI[12], double eolV[12], std::map<std::string, Household*> &households);
+    void getOutputs(std::string logDir,
+                                NetworkData &networkData, 
+                                std::map<std::string,Household*> &households, 
+                                std::map<std::string,FeederLineSegment*> &lineSegments,
+                                std::map<std::string,FeederPole*> &poles);
 };
 #endif	/* TESTINGINTERFACE_H */
 

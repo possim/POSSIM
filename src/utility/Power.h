@@ -32,8 +32,8 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE. 
 */
 
-#ifndef PHASOR_H
-#define	PHASOR_H
+#ifndef POWER_H
+#define	POWER_H
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
@@ -61,9 +61,18 @@ struct Impedance {
     
     /** Reactance */
     double reactance;
+    
+    /** Display as a string */
+    std::string toString() {
+        std::stringstream ss;
+        ss << "(R " << resistance << ", X " << reactance << ")";
+        return ss.str();
+    }
 };
 
-/** A simple Phasor class for straightforward manipulation of phasor quantities. */
+/** A simple Phasor class for straightforward manipulation of phasor quantities.
+  * Phase values are set externally using degrees but maintained internally
+  * using radians. */
 class Phasor {
 
 private:
@@ -80,6 +89,15 @@ public:
     /** Destructor */
     virtual ~Phasor();
     
+    double getAmplitude();
+    double getPhase();
+    
+    /** Set amplitude and phase (in degrees) */
+    void set(double a, double p);
+    
+    /** Set real and reactive components */
+    void setRC(double r, double c);
+    
     /** Return real part of phasor */
     double real();
     
@@ -91,7 +109,13 @@ public:
     
     Phasor plus(Phasor other);
     
+    Phasor minus(Phasor other);
+    
     Phasor times(Phasor other);
+    
+    Phasor times(Impedance Z);
+    
+    Phasor dividedBy(Phasor other);
     
     Phasor squared();
     
@@ -99,8 +123,20 @@ public:
     
     Phasor timesConst(double n);
     
+    void addReal(double r);
+    
+    void addImaginary(double c);
+    
+    void addAmp(double a);
+    
+    void addPhase(double p);
+    
     std::string toString();
 };
+
+namespace power {
+    double calculatePhaseUnbalance(Phasor ab, Phasor bc, Phasor ca);
+}
     
-#endif	/* PHASOR_H */
+#endif	/* POWER_H */
 
