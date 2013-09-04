@@ -3,7 +3,6 @@ function plotEVbehaviour(logdir, simInterval)
     B = A.data;
     [numData numEVs] = size(B);
 
-simInterval
     figure
     hold on
     grid on

@@ -819,7 +819,15 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
     ss.str("");
     ss << "plotPhaseUnbalanceByLine('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
-
+    
+    // If this was a run involving optimisation, also plot optimisation fval and exit flags
+    std::string optDir = dir+"optdata/";
+    if(boost::filesystem::exists(optDir)) {
+        ss.str("");
+        ss << "plotOptimisationOutput('" << optDir << "', " << simInterval << ");";
+        engEvalString(eng, ss.str().c_str());
+    }
+        
 }
 
 

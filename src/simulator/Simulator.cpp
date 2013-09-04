@@ -172,7 +172,6 @@ void Simulator::run() {
         std::cout << "Cycle complete, took: " << utility::updateTimer(timerCycle) << std::endl;
 
         currTime.increment(config->getInt("simulationinterval"));
-        
     }
     
     // Simulation complete, provide some output, generate report.
