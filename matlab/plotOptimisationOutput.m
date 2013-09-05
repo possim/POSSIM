@@ -40,7 +40,7 @@ function plotOptimisationOutput(optdir, simInterval)
     setAxes(AX2, numData, simInterval);
 
     % Set y axes
-    set(get(AX2(1),'YLabel'), 'String', 'Optimisation Output');
+    set(get(AX2(1),'YLabel'), 'String', 'Objective Value');
     set(get(AX2(2),'YLabel'), 'String', 'Optimisation Success');
     ylim('auto');
     axes(AX2(2));
