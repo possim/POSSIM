@@ -171,7 +171,7 @@ public:
                                 std::map<std::string,FeederPole*> &poles);
     
     /** Run Optimisation in matlab.*/
-    void runOptimisation(std::string optDir, std::string optAlg, 
+    void runOptimisationLinear(std::string optDir, std::string optAlg, 
                          int numDecVars, int numConstraints, 
                          double &fval, double &exitflag);
     

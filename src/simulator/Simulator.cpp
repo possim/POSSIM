@@ -89,6 +89,8 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 6:         charger = new ChargingOptimal2(config, gridModel, loadflow, log.getDir(), &spotPrice);
                         break;
+        case 7:         charger = new ChargingOptimal3(config, gridModel, loadflow, log.getDir(), &spotPrice);
+                        break;
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
     }

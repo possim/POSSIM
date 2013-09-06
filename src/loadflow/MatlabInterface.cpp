@@ -831,7 +831,7 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
 }
 
 
-void MatlabInterface::runOptimisation(std::string optDir, std::string optAlg, 
+void MatlabInterface::runOptimisationLinear(std::string optDir, std::string optAlg, 
                                       int numDecVars, int numConstraints, 
                                       double &fval, double &exitflag) {
     boost::posix_time::ptime timer;
