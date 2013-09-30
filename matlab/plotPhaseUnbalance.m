@@ -1,24 +1,26 @@
 function plotPhaseUnbalance(logdir, simInterval)
-    figure
+    figure('Position', [50 50 800 400]);
     hold on
+    grid on
     
     A = importdata([logdir 'data_phaseUnbalance.csv']);
     B = A.data;
-    [numData numHouses] = size(B);
-    C = zeros(numData,1);
-    colours = hsv(numHouses);
-    for i=1:numHouses
+    A.textdata
+    [numData numPoles] = size(B);
+
+    colours = hsv(numPoles);
+    for i=1:numPoles
         plot(B(:,i), 'Color', colours(i,:));
-        C = C+B(:,i);
     end
-    C = C/numHouses;
-    pS = plot(C, 'LineWidth', 4, 'Color', 'k');
     
     setAxes(gca, numData, simInterval);
     xlabel('Time of Day');
     ylabel('Voltage Unbalance (%)');
     title('Voltage Unbalance');
     
+    legend(A.textdata{1,2:numPoles+1}, 'Location', 'EastOutside');
+    
     save2pdf([logdir 'results_phaseUnbalance.pdf']);
 end
+
 

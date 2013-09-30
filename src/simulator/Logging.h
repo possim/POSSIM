@@ -78,7 +78,6 @@ private:
     std::string file_batterySOC;
     std::string file_probchargeEV;
     std::string file_phaseUnbalance;
-    std::string file_phaseUnbalanceByLine;
 
 public:
     /** Constructor */

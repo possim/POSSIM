@@ -1,12 +1,16 @@
 function plotSpotPrice(logdir, simInterval)
-    figure
-    hold on
-    
+
+% Get data
     A = importdata([logdir 'data_spotPrice.csv']);
     B = A.data;
     [numData numHouses] = size(B);
 
-    plot(B);
+% Plot
+    figure
+    hold on
+    grid on
+    
+    plot(B, '-o', 'MarkerFaceColor', 'b');
     
     setAxes(gca, numData, simInterval);
     xlabel('Time of Day');

@@ -170,16 +170,9 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile << std::endl;
     outfile.close();
     
-    // Create phase unbalance measurements file -- first by house, second by line
+    // Create phase unbalance measurements file
     file_phaseUnbalance = directory + "data_phaseUnbalance.csv";
     outfile.open(file_phaseUnbalance.c_str());
-    outfile << "Time, ";
-    for(std::map<std::string,Household*>::iterator it = gridmodel.households.begin(); it != gridmodel.households.end(); ++it)
-        outfile << it->second->name << " (House " << it->second->NMI << "), ";
-    outfile << std::endl;
-    outfile.close();
-    file_phaseUnbalanceByLine = directory + "data_phaseUnbalanceByLine.csv";
-    outfile.open(file_phaseUnbalanceByLine.c_str());
     outfile << "Time, ";
     for(std::map<std::string,FeederLineSegment*>::iterator it = gridmodel.lineSegments.begin(); it != gridmodel.lineSegments.end(); ++it)
         outfile << it->second->name << ", ";
@@ -295,7 +288,13 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     outfile.open(file_locationEV.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it)
-        outfile << (int)(it->second->location) << ", ";
+        if(it->second->location == 1)
+            if(it->second->isConnected)
+                outfile << "1, ";  // home, connected
+            else
+                outfile << "2, ";  // home, not connected
+        else                       
+            outfile << "0, ";      // not home
     outfile << std::endl;
     outfile.close();
     
@@ -361,13 +360,6 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     outfile.close();
     
     outfile.open(file_phaseUnbalance.c_str(), std::ofstream::app);
-    outfile << currtime.toString() << ", ";
-    for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) 
-        outfile << it->second->V_unbalance << ", ";
-    outfile << std::endl;
-    outfile.close();
-    
-    outfile.open(file_phaseUnbalanceByLine.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(std::map<std::string,FeederLineSegment*>::iterator it = gridModel.lineSegments.begin(); it != gridModel.lineSegments.end(); ++it) 
         outfile << it->second->voltageUnbalance << ", ";

@@ -815,11 +815,6 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
     ss << "plotPhaseUnbalance('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
 
-    // Generate phase unbalance plot by line
-    ss.str("");
-    ss << "plotPhaseUnbalanceByLine('" << dir << "', " << simInterval << ");";
-    engEvalString(eng, ss.str().c_str());
-    
     // If this was a run involving optimisation, also plot optimisation fval and exit flags
     std::string optDir = dir+"optdata/";
     if(boost::filesystem::exists(optDir)) {
@@ -827,6 +822,16 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
         ss << "plotOptimisationOutput('" << optDir << "', " << simInterval << ");";
         engEvalString(eng, ss.str().c_str());
     }
+    
+    // Generate price of charging comparison
+    ss.str("");
+    ss << "plotCostOfCharging('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+        
+    // Generate charge rate standard deviation plot
+    ss.str("");
+    ss << "plotChargeRateStats('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
         
 }
 
