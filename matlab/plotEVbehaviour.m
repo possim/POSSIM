@@ -20,7 +20,7 @@ function plotEVbehaviour(logdir, simInterval)
     plot(C, 'o-', 'MarkerFaceColor', 'b');
     
     setAxes(gca, numData, simInterval);
-    ylim([0 100]);
+    ylim([0 102]);
     xlabel('Time of Day');
     ylabel('% Vehicles at home');
     title('EV Behaviour');

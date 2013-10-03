@@ -52,6 +52,7 @@ TrafficModel::TrafficModel(Config* config) {
     std::vector<std::string> tokens;
     vehicleRecord_t vehicleRecord;
     travelPair_t travelPair;
+    int numWeekend = 0, numWeekday = 0;
     
     // Get correct record
     while(getline(infile, line)) {
@@ -66,25 +67,64 @@ TrafficModel::TrafficModel(Config* config) {
             vehicleRecord.travelPairs.push_back(travelPair);
         }
         
-        if(tokens[1] == "Saturday" || tokens[1] == "Sunday")
-            weekendRecords.push_back(vehicleRecord);
-        else
-            weekdayRecords.push_back(vehicleRecord);
+        if(tokens[1] == "Saturday" || tokens[1] == "Sunday") {
+            vehicleRecord.isWeekday = false;
+            numWeekend++;
+        }
+        else {
+            vehicleRecord.isWeekday = true;
+            numWeekday++;
+        }
+        
+        travelRecords.push_back(vehicleRecord);
     }
     
     infile.close();
     
-    std::cout << std::endl << " - found " << weekendRecords.size()+weekdayRecords.size() 
+    std::cout << std::endl << " - found " << travelRecords.size() 
               << " vehicle records (" 
-              << weekdayRecords.size() << " weekday, " 
-              << weekendRecords.size() << " weekend) ... "
+              << numWeekday << " weekday, " 
+              << numWeekend << " weekend) ... "
               << std::endl;
 
     home2away = 0;
     away2home = 0;
     
     srand((unsigned int)(time(NULL)));
+    
+    // Store model type and path to file
+    modelType = config->getString("trafficmodel");
+    file_travelProfiles = config->getString("trafficmodelfile");
+    std::cout << " - using " << modelType << " traffic model ..." << std::endl;
+    
+    // Little check on modeltype
+    if(modelType != "random" && modelType != "ordered" && modelType != "vehiclespecific") {
+        std::cout << " - WARNING: modelType (" << modelType << ") does not correspond to a supported model. "
+                  << "Using random travel profile assignment instead." << std::endl;
+        modelType = "random";
+    }
 
+    // If using ordered list of vehicle profiles, read them in
+    if(modelType == "ordered") {
+        std::cout << " - reading in ordered travel profile list ..." << std::endl;
+        // Open data file     
+        std::ifstream infile(file_travelProfiles.c_str());
+        if(!infile){
+            std::cout << "Cannot open ordered vehicle profile input file " << file_travelProfiles << "!";
+            exit (1);
+        }
+
+        // File should have simple list of preferred vehicle profiles, store in list
+        while(std::getline(infile,line)) {
+            tokens.clear();
+            utility::tokenize(line, tokens, "\r\n");
+            vehicleRecord.name = tokens[0];
+            travelRecordList.push_back(vehicleRecord.name);
+        }
+
+        infile.close();
+    }
+    
     std::cout << " - Traffic model loaded OK" << std::endl;
     std::cout.flush();
 }
@@ -95,22 +135,48 @@ TrafficModel::~TrafficModel() {
 
 // Assign a random vehicle record to each vehicle
 void TrafficModel::assignVehicleRecords(DateTime datetime, std::map<std::string,Vehicle*> &vehicles) {
-    int randomIndex;
-    
     std::cout << " - A new day: loading new travel profiles ...";
     std::cout.flush();
     
-    for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        // Pick random record
-        if(datetime.isWeekday()) {
-            randomIndex = rand()%weekdayRecords.size();
-            it->second->travelProfile = weekdayRecords.at(randomIndex);
+
+    // If using ordered list of vehicle profiles
+    if(modelType == "ordered") {
+        int counter = 0;
+        std::string thisRecordName;
+
+        for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+            thisRecordName = travelRecordList.at(counter);
+
+            for(std::vector<vehicleRecord_t>::iterator it2 = travelRecords.begin(); it2 != travelRecords.end(); ++it2)
+                if(it2->name == thisRecordName) {
+                    it->second->travelProfile = *it2;
+                    break;
+                }
+
+            counter++;
+
+            // Cycle through ordered list if smaller than num vehicles
+            if(counter >= travelRecordList.size()) counter = 0;
         }
-        else{
-            randomIndex = rand()%weekendRecords.size();
-            it->second->travelProfile = weekendRecords.at(randomIndex);
+
+    }
+        
+    // In all other cases, pick random record
+    else {
+        int randomIndex;
+        
+        for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
+
+            // Generate random number until either weekend or weekday (as desired) is found
+            // (WARNING:  could loop endlessly, should fix in future)
+            randomIndex = rand()%travelRecords.size();
+            while(travelRecords.at(randomIndex).isWeekday != datetime.isWeekday())
+                randomIndex = rand()%travelRecords.size();
+
+            it->second->travelProfile = travelRecords.at(randomIndex); 
         }
     }
+    
     
     std::cout << " OK" << std::endl;
     std::cout.flush();

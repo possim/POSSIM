@@ -58,6 +58,7 @@ struct travelPair_t {
 
 struct vehicleRecord_t {
     std::string name;
+    bool isWeekday;
     std::list<travelPair_t> travelPairs;
 };
 /** \endcond */

@@ -55,19 +55,28 @@ POSSIBILITY OF SUCH DAMAGE.
 class TrafficModel {
     
 private:  
-    /** Vector of weekday travel records.  Each record has the format:
-      * <vehicleID>, <dayOfWeek>, <timeDeparted>, <timeArrived>, <distanceDriven>, <timeDeparted>, etc...*/
-    std::vector<vehicleRecord_t> weekdayRecords;
-   
-    /** Vector of weekend travel records.  Each record has the format:
-      * <vehicleID>, <dayOfWeek>, <timeDeparted>, <timeArrived>, <distanceDriven>, <timeDeparted>, etc...*/
-     std::vector<vehicleRecord_t> weekendRecords;
+    /** Vector of travel records.  Each record has the format:
+      * <vehicleID>, <dayOfWeek>, <timeDeparted>, <timeArrived>, <distanceDriven>, <timeDeparted>, <timeArrived>, <distanceDriven>,  etc...*/
+    std::vector<vehicleRecord_t> travelRecords;
     
     /** Keep track of transitions */
     int home2away;
 
     /** Keep track of transitions */
     int away2home;
+    
+    /** Determines whether to use:
+      * (i)   randomly assigned profiles ("random") 
+      * (ii)  a list of ordered profiles, ("ordered"), or
+      * (iii) vehicle specific ("vehiclespecific") [still to be implemented] */
+    std::string modelType;
+    
+    /** Path to file containing ordered list */
+    std::string file_travelProfiles;  
+    
+    /** List of ordered vehicle profiles (by name) */
+    std::vector<std::string> travelRecordList;
+    
     
 public:
     /** Constructor */
