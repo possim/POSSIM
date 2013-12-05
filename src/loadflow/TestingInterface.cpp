@@ -61,8 +61,8 @@ void TestingInterface::extractModel(FeederPole* &root,
 void TestingInterface::runSim() {
 }
 
-double TestingInterface::getVar(std::string var) {
-    return 2.0;
+double* TestingInterface::getVar(std::string var) {
+    return NULL;
 }
 
 void TestingInterface::setVar(std::string component, double value, std::string var) {

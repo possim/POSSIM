@@ -131,7 +131,7 @@ public:
     void runSim();
     
     /** Get value of given variable in MATLAB */
-    double getVar(std::string var);
+    double* getVar(std::string var);
     
     /** Set value of given component in MATLAB */
     void setVar(std::string component, double value, std::string var);

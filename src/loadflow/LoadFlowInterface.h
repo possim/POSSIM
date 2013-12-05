@@ -72,8 +72,8 @@ public:
     /** Run a load flow simulation. */
     virtual void runSim() = 0;
     
-    /** Get value of variable having this name. */
-    virtual double getVar(std::string var) = 0;
+    /** Get pointer to value of variable having this name. */
+    virtual double* getVar(std::string var) = 0;
     
     /** Set value of variable having this name. */
     virtual void setVar(std::string component, double value, std::string var) = 0;

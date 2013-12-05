@@ -12,7 +12,7 @@ function setAxes(handle, numData, simInterval)
     % HourLabels = [0:displayInterval:24];
 
     % New version:  12:12 hours (from noon to noon)
-    HourLabels = {'8:00', '12:00', '16:00', '20:00', '0:00', '4:00', '8:00'};
+    HourLabels = {'8:00', '12:00', '16:00', '20:00', '0:00', '4:00'};
     
     axis([startData endData 1 2]);
     axis 'auto y';

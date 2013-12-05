@@ -74,6 +74,8 @@ private:
     /** Total household loads at current point in time. */
     double sumHouseholdLoads;
     
+    double sumLastVehicleLoads;
+    
     /** Mapping of households to their NMI */
     std::map<int, Household*> householdNMImap;
     
@@ -132,9 +134,9 @@ public:
       * or discharges vehicles' batteries as required. */
     void updateVehicleBatteries();
     
-    /** Using households' demand profiles, assigns a demand to each house for
+    /** Using households' demand profiles, generates demand for each house for
       * next interval. */
-    void generateLoads(DateTime currTime, HouseholdDemandModel householdDemand);
+    void generateLoads(DateTime currTime);
 
     /** Display summary of all individual household and vehicle loads. */
     void displayFullSummary(DateTime currTime);
@@ -156,6 +158,15 @@ public:
     /** Return available distribution transformer capacity after household
       * loads are accounted for (required for EqualShare charging algorithm) */
     double getAvailableCapacity();
+	
+    double getTransformerCapacity();
+	
+    double getSumHouse();
+	
+    double getLastVehicleLoad();
+    
+    /** Determine maximum percentage deviation of any individual phase load from average phase load */
+    double getDeviation(DateTime currTime);
     
     /** Find the household with the given NMI */
     Household* findHousehold(int NMI);
@@ -172,6 +183,9 @@ public:
 private:
     /** Load the full grid model from loadflow interface / file. */
     void loadGridModel();
+    
+    /** Set for each household what the demand model (e.g. generic, phase-specific, etc.) is.*/
+    void setHouseholdDemandModel(std::string model);
     
     /** Calculate the total impedance at each household (using DFS traversal of tree)*/
     void calculateHouseholdZ(FeederPole* pole, double r, double x);

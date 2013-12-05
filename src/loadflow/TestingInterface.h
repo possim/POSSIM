@@ -67,7 +67,7 @@ public:
                       std::map<std::string,FeederLineSegment*> &lineSegments, 
                       std::map<std::string,Household*> &households);
     void runSim();
-    double getVar(std::string var);
+    double* getVar(std::string var);
     void setVar(std::string component, double value, std::string var);
     void setVar(std::string component, std::string value, std::string var);
     void setTxCapacity(std::string component, double value);

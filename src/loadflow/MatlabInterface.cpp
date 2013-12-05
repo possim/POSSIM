@@ -177,7 +177,8 @@ void MatlabInterface::parseModelFile(DistributionTransformer* &transformer,
                     // Is this a backbone or service line model?
                     if(key == "Name" && value == "\"Backbone\"")
                         isBackboneModel = true;
-                    else if(key == "Name" && value == "\"Service Active\"")
+                    else if(key == "Name" &&
+                            (value == "\"Service Active\"" || value == "\"Service_Active\""))
                         isServiceLineModel = true;
                     currBlock[key] = value;
                 }
@@ -539,9 +540,12 @@ void MatlabInterface::runSim() {
     engEvalString(eng, ss.str().c_str()); 
 }
 
-double MatlabInterface::getVar(std::string var) {
+double* MatlabInterface::getVar(std::string var) {
     result = engGetVariable(eng, var.c_str());
-    return *((double *)mxGetData(result));
+    if(result == NULL)
+        return NULL;
+    
+    return ((double *)mxGetData(result));
 }
 
 void MatlabInterface::setVar(std::string component, double value, std::string var) {
@@ -810,9 +814,14 @@ void MatlabInterface::generateReport(std::string dir, int month, bool isWeekday,
     ss << "plotBatterySOC('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
 
-    // Generate phase unbalance plot by house
+    // Generate phase unbalance plot by pole (true unbalance
     ss.str("");
-    ss << "plotPhaseUnbalance('" << dir << "', " << simInterval << ");";
+    ss << "plotPhaseUnbalanceTrue('" << dir << "', " << simInterval << ");";
+    engEvalString(eng, ss.str().c_str());
+
+    // Generate phase unbalance plot by percent deviation from average phase load
+    ss.str("");
+    ss << "plotPhaseUnbalanceDeviation('" << dir << "', " << simInterval << ");";
     engEvalString(eng, ss.str().c_str());
 
     // If this was a run involving optimisation, also plot optimisation fval and exit flags
@@ -880,7 +889,16 @@ void MatlabInterface::runOptimisationLinear(std::string optDir, std::string optA
     ss.str("");
     ss << "dlmwrite(['" << optDir << "' 'xsol.txt'], xsol);" << std::endl;
     engEvalString(eng, ss.str().c_str());
-    fval = -1*getVar("fval");
-    exitflag = getVar("exitflag");    
+
+    // It is possible that the optimisation fails during preprocessing in which
+    // case fval does not exist
+    if(getVar("fval") == NULL) {
+        fval = -1;
+        exitflag = -1;    
+    }
+    else {
+        fval = -1*(*getVar("fval"));
+        exitflag = (*getVar("exitflag"));    
+    }
     std::cout << " OK (took " << utility::updateTimer(timer) << ")" << std::endl;
 }

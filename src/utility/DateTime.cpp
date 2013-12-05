@@ -53,6 +53,27 @@ DateTime::DateTime(const char* time) {
 DateTime::~DateTime() {
 }
 
+bool DateTime::operator<(const DateTime &other) const {
+    if(year > other.year)
+        return false;
+    if(year == other.year){
+        if(month > other.month)
+            return false;
+        if(month == other.month) {
+            if(day > other.day)
+                return false;
+            if(day == other.day) {
+                if(hour > other.hour)
+                    return false;
+                if(hour == other.hour)
+                    if(minute > other.minute)
+                        return false;
+            }
+        }
+    }
+    return true;
+}
+
 void DateTime::set(int newHour, int newMinute, int newDay, int newMonth, int newYear) {
     hour = newHour;
     minute = newMinute;
@@ -128,6 +149,14 @@ bool DateTime::equals(DateTime other) {
        month == other.month &&
        day == other.day &&
        hour == other.hour &&
+       minute == other.minute)
+        return true;
+    else
+        return false;
+}
+
+bool DateTime::timeEquals(DateTime other) {
+    if(hour == other.hour &&
        minute == other.minute)
         return true;
     else
@@ -285,6 +314,13 @@ long DateTime::minus(DateTime other, int numMins) {
     }
     
     return(numIntervals); 
+}
+
+long DateTime::diffTotal(DateTime other, int numMins) {
+    if(isLaterThan(other))
+        return minus(other, numMins);
+    else
+        return other.minus(*this, numMins);
 }
 
 int DateTime::diffInMinutes(DateTime other) {

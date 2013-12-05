@@ -77,7 +77,8 @@ private:
     std::string file_householdV;
     std::string file_batterySOC;
     std::string file_probchargeEV;
-    std::string file_phaseUnbalance;
+    std::string file_phaseUnbalance_true;
+    std::string file_phaseUnbalance_deviation;
 
 public:
     /** Constructor */

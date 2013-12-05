@@ -52,7 +52,7 @@ POSSIBILITY OF SUCH DAMAGE.
   * time - load pairs for this profile, plus a unique name for it.  */
 struct HouseholdDemandProfile {
     std::string name;
-    std::map<int, S_Load> demand;
+    std::map<DateTime, S_Load> demand;
 };
 
 #include "Household.h"

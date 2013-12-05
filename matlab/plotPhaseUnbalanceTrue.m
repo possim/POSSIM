@@ -1,9 +1,9 @@
-function plotPhaseUnbalance(logdir, simInterval)
+function plotPhaseUnbalanceTrue(logdir, simInterval)
     figure('Position', [50 50 800 400]);
     hold on
     grid on
     
-    A = importdata([logdir 'data_phaseUnbalance.csv']);
+    A = importdata([logdir 'data_phaseUnbalanceTrue.csv']);
     B = A.data;
     A.textdata
     [numData numPoles] = size(B);
@@ -15,12 +15,12 @@ function plotPhaseUnbalance(logdir, simInterval)
     
     setAxes(gca, numData, simInterval);
     xlabel('Time of Day');
-    ylabel('Voltage Unbalance (%)');
+    ylabel('Voltage Unbalance (V_- / V_+)');
     title('Voltage Unbalance');
     
     legend(A.textdata{1,2:numPoles+1}, 'Location', 'EastOutside');
     
-    save2pdf([logdir 'results_phaseUnbalance.pdf']);
+    save2pdf([logdir 'results_phaseUnbalanceTrue.pdf']);
 end
 
 

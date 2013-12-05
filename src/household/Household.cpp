@@ -56,53 +56,82 @@ Household::Household() {
 Household::~Household() {
 }
 
+void Household::setModelType(std::string mt) {
+    modelType = mt;
+}
 
-S_Load Household::getDemandAt(DateTime datetime) {
-    // First check if there is value for this exact time (TO DO)
+S_Load Household::generateDemandAtTimeOfDay(DateTime datetime) {
+    // This function is used by "generic" demand model -- i.e. date not important
     
-    S_Load loadAtClosestTime;
-    int closestTime = 100000;
     
-    // Sometimes, a load profile is given in say 30 min intervals, but a 
-    // simulation is running at say 5 min intervals.  In that case, choose
-    // demand values in demand profile closest to current time.
+    S_Load demandNow;
     
-    // Iterate through full demand profile saving value at closest time
-    for(std::map<int, S_Load>::iterator iter=demandProfile.demand.begin(); iter!=demandProfile.demand.end(); ++iter) {
-        if(abs(datetime.totalMinutes() - iter->first) < closestTime) {
-            closestTime = abs(datetime.totalMinutes() - iter->first);
-            loadAtClosestTime = iter->second;
+    // Find the closest demand entry in demandProfile.  This may be
+    // exact, but in certain situations may be slightly later (e.g. if demand data is
+    // in 30-min intervals, but we are running sim in 5-min intervals)
+    for(std::map<DateTime, S_Load>::iterator iter=demandProfile.demand.begin(); iter!=demandProfile.demand.end(); ++iter) {
+        if(datetime.timeEquals(iter->first) || datetime.isEarlierInDayThan(iter->first)) {
+            demandNow = iter->second;
+            break;
         }
+    }
+    
+    // TODO:  Ensure this function is safer!
+    
+    // Load for closest time to now has been found, update local values
+    activePower = demandNow.P;
+    if(demandNow.Q < 0) {
+        inductivePower = 0.000001;
+        capacitivePower = demandNow.Q;
+    }
+    else {
+        inductivePower = demandNow.Q;
+        capacitivePower = 0.000001;
     }
    
     
-    return loadAtClosestTime;
+    return demandNow;
 }
 
-double Household::getActivePower(DateTime datetime) {
-    return(demandProfile.demand[datetime.totalMinutes()].P);
-}
-
-double Household::getInductivePower(DateTime datetime) {
-    // negative Q means capacitive load, return 0 (well close; matlab doesn't like 0's)
-    if(demandProfile.demand[datetime.totalMinutes()].Q < 0)
-        return 0.000001;
+S_Load Household::generateDemandAtExactTime(DateTime datetime) {
+    S_Load demandNow;
     
-    // positive Q means inductive
-    return(demandProfile.demand[datetime.totalMinutes()].Q);
+    // Find the closest demand entry in demandProfile.  This may be
+    // exact, but in certain situations may be slightly later (e.g. if demand data is
+    // in 30-min intervals, but we are running sim in 5-min intervals)
+    for(std::map<DateTime, S_Load>::iterator iter=demandProfile.demand.begin(); iter!=demandProfile.demand.end(); ++iter) {
+        if(datetime.equals(iter->first) || datetime.isEarlierThan(iter->first)) {
+            demandNow = iter->second;
+            break;
+        }
+    }
+    
+    // TODO:  Ensure this function is safer!
+    
+    // Load for closest time to now has been found, update local values
+    activePower = demandNow.P;
+    if(demandNow.Q < 0) {
+        inductivePower = 0.000001;
+        capacitivePower = demandNow.Q;
+    }
+    else {
+        inductivePower = demandNow.Q;
+        capacitivePower = 0.000001;
+    }
+   
+    
+    return demandNow;
 }
 
-double Household::getCapacitivePower(DateTime datetime) {
-    // positive Q means inductive load, return 0 (well close; matlab doesn't like 0's)
-    if(demandProfile.demand[datetime.totalMinutes()].Q > 0)
-        return 0.000001;
-    
-    // negative Q means capacitive
-    return(demandProfile.demand[datetime.totalMinutes()].Q);
+S_Load Household::generateDemandAt(DateTime datetime) {
+    if(modelType == "generic")
+        return generateDemandAtTimeOfDay(datetime);
+    else
+        return generateDemandAtExactTime(datetime);
 }
 
 // Return power factor
 double Household::getPowerFactor(DateTime datetime) {
-    return atan(demandProfile.demand[datetime.totalMinutes()].Q/demandProfile.demand[datetime.totalMinutes()].P);
+    return atan((inductivePower+capacitivePower)/activePower);
 }
 

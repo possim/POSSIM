@@ -37,6 +37,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/file.hpp>
+#include <ostream>
 
 HouseholdDemandModel::HouseholdDemandModel(Config* config) {
     std::cout << "Loading household demand model ..." << std::endl;
@@ -83,9 +84,9 @@ HouseholdDemandProfile HouseholdDemandModel::inputProfileFromFile(std::string fi
 
             currLoad.P = utility::string2double(tokens.at(1));
             currLoad.Q = utility::string2double(tokens.at(2));
-            //std::cout << currLoad.P << " " << currLoad.Q << std::endl;
+            //std::cout << currDatetime.toString() << " " << currLoad.P << " " << currLoad.Q << std::endl;
             
-            newProfile.demand[currDatetime.totalMinutes()] = currLoad;
+            newProfile.demand.insert(std::make_pair(currDatetime, currLoad));
         }
 
         infile.close();
@@ -153,9 +154,11 @@ HouseholdDemandProfile HouseholdDemandModel::getRandomProfile() {
 void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &households) {
     std::cout << " - Assigning demand profiles to houses ...";
 
-    if(modelType == "generic")
+    if(modelType == "generic") {
+        //std::cout << "generic model! ..." << std::endl;
         for(std::map<std::string,Household*>::iterator it=households.begin(); it!=households.end(); ++it)
             it->second->demandProfile = inputProfileFromFile(demandDataDir);
+    }
 
     else if(modelType == "random") {
         inputAllProfiles();

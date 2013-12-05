@@ -170,13 +170,19 @@ void Logging::initialise(Config* config, GridModel gridmodel) {
     outfile << std::endl;
     outfile.close();
     
-    // Create phase unbalance measurements file
-    file_phaseUnbalance = directory + "data_phaseUnbalance.csv";
-    outfile.open(file_phaseUnbalance.c_str());
+    // Create true phase unbalance measurements file
+    file_phaseUnbalance_true = directory + "data_phaseUnbalanceTrue.csv";
+    outfile.open(file_phaseUnbalance_true.c_str());
     outfile << "Time, ";
     for(std::map<std::string,FeederLineSegment*>::iterator it = gridmodel.lineSegments.begin(); it != gridmodel.lineSegments.end(); ++it)
         outfile << it->second->name << ", ";
     outfile << std::endl;
+    outfile.close();
+
+    // Create "deviation from average" phase unbalance measurements file
+    file_phaseUnbalance_deviation = directory + "data_phaseUnbalanceDeviation.csv";
+    outfile.open(file_phaseUnbalance_deviation.c_str());
+    outfile << "Time, Deviation" << std::endl;
     outfile.close();
 
     std::cout << " OK" << std::endl;
@@ -266,8 +272,8 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     outfile.open(file_demandHH.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(std::map<std::string,Household*>::iterator it = households.begin(); it != households.end(); ++it) {
-        outfile << it->second->demandProfile.demand[currtime.totalMinutes()].P << ", ";
-        powerHH += it->second->demandProfile.demand[currtime.totalMinutes()].P;
+        outfile << it->second->activePower << ", ";
+        powerHH += it->second->activePower;
     }
     outfile << std::endl;
     outfile.close();
@@ -359,11 +365,16 @@ void Logging::update(DateTime currtime, GridModel gridModel, ChargingBaseClass *
     outfile << std::endl;
     outfile.close();
     
-    outfile.open(file_phaseUnbalance.c_str(), std::ofstream::app);
+    outfile.open(file_phaseUnbalance_true.c_str(), std::ofstream::app);
     outfile << currtime.toString() << ", ";
     for(std::map<std::string,FeederLineSegment*>::iterator it = gridModel.lineSegments.begin(); it != gridModel.lineSegments.end(); ++it) 
         outfile << it->second->voltageUnbalance << ", ";
     outfile << std::endl;
+    outfile.close();
+    
+    outfile.open(file_phaseUnbalance_deviation.c_str(), std::ofstream::app);
+    outfile << currtime.toString() << ", ";
+    outfile << gridModel.getDeviation(currtime) << std::endl;
     outfile.close();
     
     std::cout << " OK" << std::endl;

@@ -53,7 +53,8 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../charging/ChargingOptimal1.h"
 #include "../charging/ChargingOptimal2.h"
 #include "../charging/ChargingOptimal3.h"
-
+#include "../charging/ChargingDiscrete.h"
+#include "../charging/ChargingWplug.h"
 
 /** The outer Simulator loop.
  * This class defines the main outer loop of the entire simulation.

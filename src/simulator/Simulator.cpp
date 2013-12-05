@@ -91,6 +91,12 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 7:         charger = new ChargingOptimal3(config, gridModel, loadflow, log.getDir(), &spotPrice);
                         break;
+        case 8:         charger = new ChargingDiscrete(config, gridModel, startTime);
+                        break;
+        //case 9:         charger = new ChargingMPC(config, gridModel, loadflow, log.getDir(), &spotPrice);
+        //                break;
+        case 10:        charger = new ChargingWplug(config, gridModel, startTime);
+                        break;
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
     }
@@ -147,7 +153,7 @@ void Simulator::run() {
         charger->setChargeRates(currTime, gridModel);
 
         // Update grid model - generate household loads & apply charge rates
-        gridModel.generateLoads(currTime, householdDemandModel);
+        gridModel.generateLoads(currTime);
 
         // If desired, show some results
         if(config->getBool("showdebug")) {

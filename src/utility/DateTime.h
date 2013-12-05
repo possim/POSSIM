@@ -64,6 +64,9 @@ public:
     /** Constructor with string-based argument */
     DateTime(const char* time);
     
+    /** Operator <, to allow datetime to be used as a key in maps */
+    bool operator<(const DateTime &other) const;
+    
     /** Destructor*/
     virtual ~DateTime();
     
@@ -84,6 +87,9 @@ public:
     
     /** True if this DateTime equals other (date and time) */
     bool equals(DateTime other);
+    
+    /** True if time of day only (not date) is equal */
+    bool timeEquals(DateTime other);
     
     /** True if this DateTime is later than other */
     bool isLaterThan(DateTime other);
@@ -106,10 +112,13 @@ public:
     /** Returns total minutes passed in this day since midnight */
     int  totalMinutes();
     
+    /** Returns number of intervals different to other, using specified interval size */
+    long diffTotal(DateTime other, int numMins);
+    
     /** Returns difference to other in minutes only (only time, ignores date) */
     int  diffInMinutes(DateTime other);
     
-    /** Returns number of intervals difference to other, using specified interval size */
+    /** Returns number of intervals greater than other, using specified interval size */
     long minus(DateTime other, int numMins);
     
     /** Displays full date and time */

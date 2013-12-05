@@ -48,7 +48,10 @@ POSSIBILITY OF SUCH DAMAGE.
 /** Represents a household in the grid.  Includes ID (national meter identifier),
   * demand profile, and local voltage measurements.*/
 class Household {
-
+private:
+    /** Stores demand model type (e.g. generic, housespecific, etc.) */
+    std::string modelType;
+    
 public:
     /** ID (equivalent to NMI, national meter identifier)*/
     int NMI;                    
@@ -106,6 +109,15 @@ public:
     /** The total impedance*/
     Impedance totalImpedanceToTX;
     
+    /** Active power demand */
+    double activePower;
+    
+    /** Inductive power demand */
+    double inductivePower;
+    
+    /** Capacitive power demand */
+    double capacitivePower;
+    
     
 public:
     /** Constructor */
@@ -113,24 +125,22 @@ public:
 
     /** Destructor */
     virtual ~Household();
+    
+    /** Set model type (generic, phase-specific, etc.)*/
+    void setModelType(std::string mt);
 
     /** Returns demand at specified time of day.  If no value is available
       * for the specific time, then demand value for nearest available time is
       * returned. */
-    S_Load getDemandAt(DateTime datetime);
-
-    /** Returns active component of household load at given date and time */
-    double getActivePower(DateTime datetime);
-    
-    /** Returns inductive component of household load at given date and time */
-    double getInductivePower(DateTime datetime);
-
-    /** Returns capacitive component of household load at given date and time */
-    double getCapacitivePower(DateTime datetime);
+    S_Load generateDemandAt(DateTime datetime);
     
     /** Returns power factor at given date and time */
     double getPowerFactor(DateTime datetime);
     
+private:
+    // The following two functions are helpers, depending on what demand model type is being used
+    S_Load generateDemandAtExactTime(DateTime datetime);
+    S_Load generateDemandAtTimeOfDay(DateTime datetime);
 };
 
 #endif	/* HOUSEHOLD_H */
