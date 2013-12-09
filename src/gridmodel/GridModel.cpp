@@ -214,6 +214,8 @@ void GridModel::updateVehicleBatteries() {
             it->second->dischargeBattery();
         else if(it->second->isConnected && it->second->isCharging)
             it->second->rechargeBattery();
+        else 
+            it->second->battery.SOC_last = it->second->battery.SOC;
     }
 }
 
@@ -239,22 +241,22 @@ void GridModel::generateLoads(DateTime currTime) {
 
 void GridModel::displayVehicleSummary() {
     std::cout << "Vehicle Summary" << std::endl;
-    std::cout << "  Name   Status      Con Cha dSOC  ChRa    SOC" << std::endl
-              << "  -----------------------------------------------------------" << std::endl;
+    std::cout << "  Name     Status          Con Cha   dSOC   ChRa   SOC    Ph " << std::endl
+              << "  ------------------------------------------------------------------" << std::endl;
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
 
         // Vehicle NMI (3 chars)
-        std::cout << "  " << std::setw(6) << std::right << it->second->name << " ";
+        std::cout << "  " << std::setw(8) << std::left << it->second->name << " ";
  
         // Vehicle status - home, returned, away (11 char)
         if(it->second->location != Home)
-            std::cout << "Away        ";
+            std::cout << "Away            ";
 
         else if(it->second->distanceDriven > 0)
-            std::cout << "Drove " << std::setw(3) << std::right << it->second->distanceDriven << "km ";
+            std::cout << "Drove " << std::setw(5) << std::right << std::setprecision(1) << it->second->distanceDriven << "km   ";
 
         else 
-            std::cout << "Home        ";
+            std::cout << "Home            ";
         
         // Vehicle connected
         if(it->second->isConnected)
@@ -264,31 +266,21 @@ void GridModel::displayVehicleSummary() {
 
         // Vehicle charging
         if(it->second->isCharging)
-            std::cout << "Yes ";
+            std::cout << "Yes   ";
         else
-            std::cout << "No  ";
+            std::cout << "No    ";
         
         // Last SOC inc
-        std::cout << std::setw(5) << std::right << std::setprecision(2) << it->second->getSOCchange() << " ";
+        std::cout << std::setw(4) << std::right << std::setprecision(1) << it->second->getSOCchange() << "   ";
 
         // Charge rate
-        std::cout << std::setw(4) << std::right << std::setprecision(0) << it->second->chargeRate << " ";
+        std::cout << std::setw(4) << std::right << std::setprecision(0) << it->second->chargeRate << "  ";
      
-        // L
-        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->L << " ";
-        // N
-        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->N << " ";
-        // P
-        //std::cout << std::setw(4) << std::right << std::setprecision(2) << it->second->P << " ";
-        
-        // Switch on?
-        if(it->second->switchon)
-            std::cout << "* ";
-        else
-            std::cout << "  ";
-        
         // SOC
-        std::cout << std::setw(5) << std::right << std::setprecision(1) << it->second->getSOC() << std::endl;
+        std::cout << std::setw(5) << std::right << std::setprecision(1) << it->second->getSOC() << "   ";
+        
+        // Phase
+        std::cout << findHousehold(it->second->getNMI())->phase << std::endl;
     }
 }
 

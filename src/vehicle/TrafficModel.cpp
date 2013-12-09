@@ -212,6 +212,7 @@ void TrafficModel::initialise(DateTime datetime, std::map<std::string,Vehicle*> 
             else {
                 it->second->location = Home;
                 it->second->isConnected = true;
+                it->second->setChargeStart(datetime);
             }
             
             if(it->second->travelProfile.travelPairs.size() > 0)
@@ -257,17 +258,17 @@ void TrafficModel::update(DateTime datetime, std::map<std::string,Vehicle*> &veh
             else {
                 away2home++;
                 it->second->location = Home;
-                
                 it->second->distanceDriven = nextTravelPair.distance;
-
-                // Prevent vehicles from plugging in if they are only going to be home for a short time
-                if(it->second->travelProfile.travelPairs.size() > 0 &&
+                it->second->setChargeStart(datetime);
+                it->second->isConnected = true;
+                
+                // Optional:  Prevent vehicles from plugging in if they are only going to be home for a short time
+                /*if(it->second->travelProfile.travelPairs.size() > 0 &&
                 (it->second->travelProfile.travelPairs.front().time.diffInMinutes(datetime) < 120)){
                     it->second->isConnected = false;
                     it->second->isCharging = false;
-                }
-                else
-                    it->second->isConnected = true;
+                }*/
+
             }
         }
     }

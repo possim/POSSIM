@@ -52,6 +52,7 @@ Vehicle::Vehicle(Config* config, int nmi, std::string newName, std::string paren
     N = 0;
     P = 0;
     switchon = false;
+    timeConnected.set(config->getConfigVar("starttime"));
 }
 
 Vehicle::~Vehicle() {
