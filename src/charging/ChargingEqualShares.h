@@ -64,8 +64,10 @@ public:
     /** Destructor */
     ~ChargingEqualShares();
     
-    /** Set charge rates for all vehicles at this date and time. */
-    void setChargeRates(DateTime datetime, GridModel &gridModel);
+    void setAllChargeRates(DateTime datetime, GridModel &gridModel);
+    
+    void setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID);
+
 };
 
 #endif	/* CHARGING_EQUALSHARES_H */

@@ -152,7 +152,7 @@ HouseholdDemandProfile HouseholdDemandModel::getRandomProfile() {
 
 
 void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &households) {
-    std::cout << " - Assigning demand profiles to houses ...";
+    std::cout << " - Assigning demand profiles to houses ... " << std::endl;
 
     if(modelType == "generic") {
         //std::cout << "generic model! ..." << std::endl;
@@ -184,6 +184,4 @@ void HouseholdDemandModel::assignProfiles(std::map<std::string, Household*> &hou
             it->second->demandProfile = demandProfiles[profileName];
         }
     }
-
-    std::cout << " OK" << std::endl;
 }

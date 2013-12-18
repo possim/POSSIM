@@ -97,12 +97,18 @@ public:
     
     /** Datetime at which vehicle connected to charger. */
     DateTime    timeConnected;
-    
+
+    /** The end of a charging period; should be the same as above. */
+    DateTime	timeChargeTarget;
+
     /** True if vehicle is charging. */
     bool        isCharging;
-    
+
     /** Vehicle's charge rate (in kW), as assigned by charging algorithm. */
     double      chargeRate;
+
+    /* Vehicle's SOC when it first connects to charger */
+    double	initSOC;
     
    
     /** Active power demand */

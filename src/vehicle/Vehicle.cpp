@@ -71,8 +71,8 @@ std::string Vehicle::getProfileRef() {
 }
 
 double Vehicle::getPowerFactor() {
-    if(activePower == 0) return 0;
-    return activePower/sqrt(pow(activePower, 2) + pow(inductivePower-capacitivePower,2));
+    if(activePower == 0) return 1;
+    return cos(atan2(inductivePower+capacitivePower, activePower));
 }
 
 double Vehicle::getSOC() {
@@ -85,6 +85,7 @@ double Vehicle::getSOCchange() {
 
 void Vehicle::setChargeStart(DateTime datetime) {
     timeConnected = datetime;
+    initSOC = battery.SOC;
 }
 
 void Vehicle::setPowerDemand(double active, double inductive, double capacitive) {

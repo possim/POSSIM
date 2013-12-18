@@ -61,8 +61,10 @@ public:
     /** Destructor */
     ~ChargingUncontrolled();
     
-    /** Set charge rates for all vehicles at this date and time. */
-    void setChargeRates(DateTime datetime, GridModel &gridModel);
+    void setAllChargeRates(DateTime datetime, GridModel &gridModel);
+    
+    void setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID);
+
 };
 
 #endif	/* CHARGING_UNCONTROLLED_H */

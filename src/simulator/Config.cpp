@@ -140,15 +140,16 @@ void Config::correctValues() {
             value.compare("discrete") == 0 ||
             value.compare("8") == 0)
                setConfigVar("chargingalgorithm", "discrete");
-    else if(value.compare("MPC") == 0 ||
-            value.compare("mpc") == 0 ||
-            value.compare("9") == 0)
-               setConfigVar("chargingalgorithm", "mpc");
     else if(value.compare("Wplug") == 0 ||
             value.compare("WPlug") == 0 ||
             value.compare("wplug") == 0 ||
             value.compare("10") == 0)
                setConfigVar("chargingalgorithm", "wplug");
+    else if(value.compare("Wplug2") == 0 ||
+            value.compare("WPlug2") == 0 ||
+            value.compare("wplug2") == 0 ||
+            value.compare("11") == 0)
+                setConfigVar("chargingalgorithm", "wplug2");
 }
 
 // Return string value of a given config variable.
@@ -222,10 +223,10 @@ int Config::getChargingAlg() {
         return 7;
     else if(value.compare("discrete") == 0)
         return 8;
-    else if(value.compare("mpc") == 0)
-        return 9;
     else if(value.compare("wplug") == 0)
         return 10;
+    else if(value.compare("wplug2") == 0)
+        return 11;
     
     return 0;
 }
