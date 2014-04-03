@@ -108,7 +108,7 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 4:         charger = new ChargingTOU(config, gridModel);
                         break;
-        case 5:         charger = new ChargingOptimal1(config, gridModel, loadflow, log.getDir());
+/*        case 5:         charger = new ChargingOptimal1(config, gridModel, loadflow, log.getDir());
                         break;
         case 6:         charger = new ChargingOptimal2(config, gridModel, loadflow, log.getDir(), &spotPrice);
                         break;
@@ -119,7 +119,7 @@ Simulator::Simulator(Config* configIn):
         case 10:        charger = new ChargingWplug(config, gridModel, startTime);
                         break;
         case 11:        charger = new ChargingWplug2(config, gridModel, startTime);
-                        break;
+                        break;*/
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
     }

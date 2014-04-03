@@ -46,7 +46,6 @@ HouseholdDemandModel::HouseholdDemandModel(Config* config) {
     simInterval = config->getInt("simulationinterval");
     modelType = config->getConfigVar("demandmodel");
     demandDataDir = config->getConfigVar("demanddatadir");
-    houseProfileAllocFile = config->getConfigVar("housedemandalloc");
     randomDistribution = config->getRandomParams("demandrandom_int");
 }
 

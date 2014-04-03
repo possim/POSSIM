@@ -1,0 +1,14 @@
+Vehicle1,Monday,510,0,1080,20
+Vehicle2,Monday,480,0,600,10,900,0,990,10
+Vehicle3,Tuesday,510,0,1080,20
+Vehicle4,Tuesday,480,0,600,10,900,0,990,10
+Vehicle5,Wednesday,510,0,1080,20
+Vehicle6,Wednesday,480,0,600,10,900,0,990,10
+Vehicle7,Thursday,510,0,1080,20
+Vehicle8,Thursday,480,0,600,10,900,0,990,10
+Vehicle9,Friday,510,0,1080,20,1170,0,1410,15
+Vehicle10,Friday,480,0,600,10,900,0,990,10
+Vehicle11,Saturday,600,0,730,10,900,0,1080,15
+Vehicle12,Saturday,720,0,840,20
+Vehicle13,Sunday,720,0,1020,40
+Vehicle14,Sunday,540,0,720,20
