@@ -132,15 +132,18 @@ public:
     /** Returns demand at specified time of day.  If no value is available
       * for the specific time, then demand value for nearest available time is
       * returned. */
-    S_Load generateDemandAt(DateTime datetime);
+    S_Load getDemandAt(DateTime datetime);
+    
+    /** Sets active, reactive load values */
+    void setLoadValues(DateTime datetime);
     
     /** Returns power factor at given date and time */
     double getPowerFactor(DateTime datetime);
     
 private:
     // The following two functions are helpers, depending on what demand model type is being used
-    S_Load generateDemandAtExactTime(DateTime datetime);
-    S_Load generateDemandAtTimeOfDay(DateTime datetime);
+    S_Load getDemandAtExactTime(DateTime datetime);
+    S_Load getDemandAtTimeOfDay(DateTime datetime);
 };
 
 #endif	/* HOUSEHOLD_H */

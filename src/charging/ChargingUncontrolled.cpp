@@ -43,7 +43,7 @@ ChargingUncontrolled::~ChargingUncontrolled() {
 }
 
 
-void ChargingUncontrolled::setChargeRates(DateTime datetime, GridModel &gridModel) {
+void ChargingUncontrolled::setAllChargeRates(DateTime datetime, GridModel &gridModel) {
     // Set chargeRates
     for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
         if(it->second->getSOC() < 98  &&  it->second->isConnected) {
@@ -55,3 +55,8 @@ void ChargingUncontrolled::setChargeRates(DateTime datetime, GridModel &gridMode
             it->second->isCharging = false;
         }
 }
+
+void ChargingUncontrolled::setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID) {
+}
+  
+  

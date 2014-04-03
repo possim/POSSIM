@@ -79,9 +79,10 @@ public:
     ~ChargingDistributed();
     
 
-    /** Set charge rates of all vehicles at this date and time. */
-    void setChargeRates(DateTime datetime, GridModel &gridModel);
+    void setAllChargeRates(DateTime datetime, GridModel &gridModel);
     
+    void setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID);
+
 };
 
 #endif	/* CHARGING_DISTRIBUTED_H */

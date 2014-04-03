@@ -55,6 +55,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "../charging/ChargingOptimal3.h"
 #include "../charging/ChargingDiscrete.h"
 #include "../charging/ChargingWplug.h"
+#include "../charging/ChargingWplug2.h"
 
 /** The outer Simulator loop.
  * This class defines the main outer loop of the entire simulation.
@@ -99,6 +100,21 @@ private:
     
     /** Time at which simulation is to finish (inclusive) */
     DateTime finishTime;
+    
+    /** Boolean specifying whether debug info should be displayed */
+    bool showDebug;
+    
+    /** Type of update algorithm to use when applying charging rate (batch/grouped/individual) */
+    std::string chargeRateUpdate;
+    
+    /** Number of vehicles to group together if using grouped charging algorithm updates */
+    int chargeRateGroupSize;
+    
+    /** Order in which to apply updates (ordered/random) */
+    std::string chargeRateOrder;
+    
+    /** Array of all vehicle IDs, to determine order of charging */
+    std::vector<int> vehicleIDs;
     
     /** Local pointer to config object */
     Config *config;

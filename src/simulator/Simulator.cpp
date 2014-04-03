@@ -48,7 +48,8 @@ Simulator::Simulator(Config* configIn):
     startTime.set(config->getConfigVar("starttime"));
     currTime = startTime;
     finishTime.set(config->getConfigVar("finishtime"));
-    
+    showDebug = config->getBool("showdebug");
+
     // Create interface to load flow simulator
     switch(config->getLoadFlowSim()) {
         case 0:         loadflow = new TestingInterface(config);
@@ -71,6 +72,28 @@ Simulator::Simulator(Config* configIn):
     // Assign first vehicle profiles
     trafficModel.initialise(startTime, gridModel.vehicles);
 
+    // Determine what kind of charging update method to use
+    chargeRateUpdate = config->getConfigVar("chargerateupdate");
+    
+    // If batch, update all vehicles at the same time
+    if(chargeRateUpdate == "batch")
+        chargeRateGroupSize = gridModel.vehicles.size();
+    
+    // If individual, update vehicles one at a time
+    else if(chargeRateUpdate == "individual")
+        chargeRateGroupSize = 1;
+    
+    // Otherwise grouped
+    else
+        chargeRateGroupSize = config->getInt("chargerategroupsize");
+    
+    // Determine whether to update in ordered or random way
+    chargeRateOrder = config->getConfigVar("chargerateorder");
+    
+    // Create array of vehicle IDs, for determining order of charge updates
+    for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
+        vehicleIDs.push_back(it->second->NMI);
+    
     // Initialise log
     log.initialise(config, gridModel);
     gridModel.setLogDir(log.getDir());
@@ -93,9 +116,9 @@ Simulator::Simulator(Config* configIn):
                         break;
         case 8:         charger = new ChargingDiscrete(config, gridModel, startTime);
                         break;
-        //case 9:         charger = new ChargingMPC(config, gridModel, loadflow, log.getDir(), &spotPrice);
-        //                break;
         case 10:        charger = new ChargingWplug(config, gridModel, startTime);
+                        break;
+        case 11:        charger = new ChargingWplug2(config, gridModel, startTime);
                         break;
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
@@ -149,14 +172,43 @@ void Simulator::run() {
         // Update vehicles' battery SOC based on distance driven / charging
         gridModel.updateVehicleBatteries();
 
-        // Determine EV charging rates
-        charger->setChargeRates(currTime, gridModel);
+        // Update grid model - generate household loads & reset vehicle loads
+        gridModel.generateAllHouseholdLoads(currTime);
+        gridModel.resetVehicleLoads();
 
-        // Update grid model - generate household loads & apply charge rates
-        gridModel.generateLoads(currTime);
+        // Depending on charge update model, apply charge rate updates and run load flow
+        if(chargeRateOrder == "random")
+            std::random_shuffle(vehicleIDs.begin(), vehicleIDs.end());
+        
+        // Determine EV charging rates
+        if(chargeRateUpdate == "batch") {
+            charger->setAllChargeRates(currTime, gridModel);
+            gridModel.generateAllVehicleLoads();
+            gridModel.runLoadFlow(currTime);
+        }
+        
+        else if(chargeRateUpdate == "individual") {
+            gridModel.runLoadFlow(currTime);
+            for(int i=0; i<vehicleIDs.size(); i++) {
+                charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(i));
+                gridModel.generateOneVehicleLoad(vehicleIDs.at(i));
+                gridModel.runLoadFlow(currTime);
+            }
+        }
+        
+        else {  // "grouped"
+            gridModel.runLoadFlow(currTime);
+            for(int i=0; i<vehicleIDs.size(); i+=chargeRateGroupSize) {
+                for(int j=i; j<std::min((int)gridModel.vehicles.size(), (int)(i+chargeRateGroupSize)); j++) {
+                    charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(i));
+                    gridModel.generateOneVehicleLoad(vehicleIDs.at(i));
+                }
+                gridModel.runLoadFlow(currTime);
+            }
+        }
 
         // If desired, show some results
-        if(config->getBool("showdebug")) {
+        if(showDebug) {
             spotPrice.display();
             trafficModel.displaySummary(gridModel.vehicles);
             gridModel.displayVehicleSummary();
@@ -166,9 +218,6 @@ void Simulator::run() {
         // Provide quick update on timing to output
         timingUpdate(lastCycleLength);
 
-        // Run load flow (typically the bottleneck)
-        gridModel.runLoadFlow(currTime);
-        
         // Log data
         log.update(currTime, gridModel, charger, spotPrice);
         

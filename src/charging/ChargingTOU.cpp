@@ -45,7 +45,7 @@ ChargingTOU::~ChargingTOU() {
 }
 
 
-void ChargingTOU::setChargeRates(DateTime datetime, GridModel &gridModel) {
+void ChargingTOU::setAllChargeRates(DateTime datetime, GridModel &gridModel) {
     // Set chargeRates
     for(std::map<std::string,Vehicle*>::iterator it = gridModel.vehicles.begin(); it != gridModel.vehicles.end(); ++it)
         if(it->second->getSOC() < 98  &&  it->second->isConnected && (datetime.hour >= chargeStart || datetime.hour <= chargeEnd)) {
@@ -57,3 +57,8 @@ void ChargingTOU::setChargeRates(DateTime datetime, GridModel &gridModel) {
             it->second->isCharging = false;
         }
 }
+
+  
+void ChargingTOU::setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID) {
+}
+  

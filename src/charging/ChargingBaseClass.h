@@ -59,8 +59,11 @@ public:
     /** Destructor */
     ~ChargingBaseClass();
     
-    /** Set charge rates of all vehicles in model at current date and time. */
-    virtual void setChargeRates(DateTime datetime, GridModel &gridModel) = 0;
+    /** Set charge rates of all vehicles at current date and time. */
+    virtual void setAllChargeRates(DateTime datetime, GridModel &gridModel) = 0;
+    
+    /** Set charge rates of one vehicle at current date and time.  */
+    virtual void setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID) = 0;
 };
 
 

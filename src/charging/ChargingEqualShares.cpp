@@ -42,7 +42,7 @@ ChargingEqualShares::~ChargingEqualShares() {
 }
 
 
-void ChargingEqualShares::setChargeRates(DateTime datetime, GridModel &gridModel) {
+void ChargingEqualShares::setAllChargeRates(DateTime datetime, GridModel &gridModel) {
     int numConnected = 0;
     double rate;
     
@@ -68,3 +68,7 @@ void ChargingEqualShares::setChargeRates(DateTime datetime, GridModel &gridModel
         else
             it->second->chargeRate = 0;
 }
+
+void ChargingEqualShares::setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID) {
+}
+  

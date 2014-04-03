@@ -62,7 +62,7 @@ ChargingDistributed::~ChargingDistributed() {
  * J. de Hoog, D. A. Thomas, V. Muenzel, D. C. Jayasuriya, T. Alpcan, M. Brazil, and I. Mareels,
  * "Electric Vehicle Charging and Grid Constraints: Comparing Distributed and Centralized Approaches",
  * In Proceedings of the IEEE Power and Energy Society General Meeting. Vancouver, Canada, July 2013. */
-void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel) {
+void ChargingDistributed::setAllChargeRates(DateTime datetime, GridModel &gridModel) {
     double L, N, P, P_applied;
     std::string currName;
     double currV, valleyV, currSOC;
@@ -139,3 +139,7 @@ void ChargingDistributed::setChargeRates(DateTime datetime, GridModel &gridModel
         //std::cout << std::endl;
     }
 }
+
+void ChargingDistributed::setOneChargeRate(DateTime datetime, GridModel &gridModel, int vehicleID) {
+}
+  

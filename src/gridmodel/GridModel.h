@@ -74,7 +74,8 @@ private:
     /** Total household loads at current point in time. */
     double sumHouseholdLoads;
     
-    double sumLastVehicleLoads;
+    /** Total vehicle loads at current point in time. */
+    double sumVehicleLoads;
     
     /** Mapping of households to their NMI */
     std::map<int, Household*> householdNMImap;
@@ -136,8 +137,17 @@ public:
     
     /** Using households' demand profiles, generates demand for each house for
       * next interval. */
-    void generateLoads(DateTime currTime);
+    void generateAllHouseholdLoads(DateTime currTime);
+    
+    /** Reset all vehicle loads. */
+    void resetVehicleLoads();
+    
+    /** Generate all vehicle loads at once */
+    void generateAllVehicleLoads();
 
+    /** Generate this one vehicle load */
+    void generateOneVehicleLoad(int vehicleNMI);
+    
     /** Display summary of all individual household and vehicle loads. */
     void displayFullSummary(DateTime currTime);
     
@@ -161,9 +171,10 @@ public:
 	
     double getTransformerCapacity();
 	
-    double getSumHouse();
-	
-    double getLastVehicleLoad();
+    double getSumHouseholdLoads();
+    
+    double getSumVehicleLoads();
+
     
     /** Determine maximum percentage deviation of any individual phase load from average phase load */
     double getDeviation(DateTime currTime);
