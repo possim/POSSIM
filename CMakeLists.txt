@@ -46,9 +46,8 @@ configure_file(
 
 
 ######################################################################
-# Include packages
+# Include BOOST
 
-# First, we need to find boost
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
 # If the above doesn't work on your system (say due to unconventional 
@@ -61,31 +60,41 @@ find_package(Boost COMPONENTS system filesystem REQUIRED)
 # set(Boost_DEBUG ON)
 # find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-# Second, we need to make sure the system finds matlab.  Unfortunately
-# there is no reliable findMatlab cmake file available (yet), so 
+
+######################################################################
+# Include MATLAB
+
+# Unfortunately there is no reliable findMatlab cmake file available (yet), so 
 # enter the path to your own installation of matlab manually
 
 # Linux example
-# SET(MATLAB_ROOT "/usr/local/MATLAB/R2012a")
+# SET(MATLAB_ROOT "/usr/local/MATLAB/R2014a")
 # SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/glnx86")
-
+# SET(MATLAB_INCLUDE_DIR   "${MATLAB_ROOT}/extern/include")
+# find_library(MATLAB_MEX_LIBRARY mex ${MATLAB_LIBRARIES_DIR})
+# find_library(MATLAB_MX_LIBRARY  mx  ${MATLAB_LIBRARIES_DIR})
+# find_library(MATLAB_ENG_LIBRARY eng ${MATLAB_LIBRARIES_DIR})
+  
 # Windows example
-# SET(MATLAB_ROOT "C:/Program Files/MATLAB/R2012a")
-# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/extern/lib/win32/microsoft")
-
+SET(MATLAB_ROOT "C:/Program Files/MATLAB/R2014a")
+SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/extern/lib/win32/microsoft")
+SET(MATLAB_INCLUDE_DIR   "${MATLAB_ROOT}/extern/include")
+find_library(MATLAB_MEX_LIBRARY libmex ${MATLAB_LIBRARIES_DIR})
+find_library(MATLAB_MX_LIBRARY  libmx  ${MATLAB_LIBRARIES_DIR})
+find_library(MATLAB_ENG_LIBRARY libeng ${MATLAB_LIBRARIES_DIR})
+  
 # Mac example
-SET(MATLAB_ROOT "/Applications/MATLAB_R2012a.app/")
-SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/maci64")
-
+# SET(MATLAB_ROOT "/Applications/MATLAB_R2014a.app/")
+# SET(MATLAB_LIBRARIES_DIR "${MATLAB_ROOT}/bin/maci64")
+# SET(MATLAB_INCLUDE_DIR   "${MATLAB_ROOT}/extern/include")
+# find_library(MATLAB_MEX_LIBRARY mex ${MATLAB_LIBRARIES_DIR})
+# find_library(MATLAB_MX_LIBRARY  mx  ${MATLAB_LIBRARIES_DIR})
+# find_library(MATLAB_ENG_LIBRARY eng ${MATLAB_LIBRARIES_DIR})
+        
 
 ######################################################################
-# The rest of this file should work on all platforms
+# Put it all together
 
-SET(MATLAB_INCLUDE_DIR   "${MATLAB_ROOT}/extern/include")
-find_library(MATLAB_MEX_LIBRARY mex ${MATLAB_LIBRARIES_DIR})
-find_library(MATLAB_MX_LIBRARY  mx  ${MATLAB_LIBRARIES_DIR})
-find_library(MATLAB_ENG_LIBRARY eng ${MATLAB_LIBRARIES_DIR})
-        
 # Find POSSIM source and header files
 FILE(GLOB_RECURSE POSSIM_SOURCES src/*.cpp)
 FILE(GLOB_RECURSE POSSIM_HEADERS src/*.h)
