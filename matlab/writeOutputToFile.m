@@ -1,6 +1,6 @@
 phaseNames = {'Phase A', 'Phase B', 'Phase C', 'Neutral'};
-numHouses = size(householdNames);
-numBackboneSegs = size(backboneNames);
+numHouses = size(householdNames, 1);
+numBackboneSegs = size(backboneNames, 1);
 out = zeros(36+3*numHouses+6*numBackboneSegs,1);
 counter = 0;
 % phase voltages

@@ -26,7 +26,7 @@ function plotCostOfCharging(logdir, simInterval)
     
 %  Plot
     %for plot, readjust cumulative to be zero prior to last 24 hours
-    CumulativeCost = CumulativeCost - CumulativeCost(numData-24*(60/simInterval)-1);
+    CumulativeCost = CumulativeCost - CumulativeCost(numData-24*(60/simInterval));
 
     figure('Position', [100 100 800 400]);
 
