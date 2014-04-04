@@ -65,7 +65,7 @@
 \newcommand{\answer}{\vspace{0.1cm} \\ \noindent \textbf{Answer:} \quad \ \ }
 \newcommand{\bs}{\char`\\}
 
-\title{POSSIM: POwer Systems SIMulator \\ Documentation \\ \vspace{1cm} \normalsize Version 0.2, 18 June 2013}
+\title{POSSIM: POwer Systems SIMulator \\ Documentation \\ \vspace{1cm} \normalsize Version 0.3, 4 April 2014}
 
 \author{}
 \date{}
@@ -203,8 +203,11 @@ To use cmake to create build files for POSSIM,
 	{\alltt \$ cmake .} \\
 	(Note, this can also be done via the CMake user interface that comes with a standard CMake install)
 \item Ensure that CMake finds boost and MATLAB (if you intend to use MATLAB).   If boost was installed in a non-standard location then it may not be found, and you may need to uncomment the lines below in CMakeLists.txt using your system's path to boost:
-{\alltt #set(BOOST_ROOT "/path/to/boost/boost\_1\_53\_0"} \\
-{\alltt #set(BOOST_LIBRARYDIR "/path/to/boost/boost\_1\_53\_0/bin/lib"}
+{\alltt # set(BOOST_ROOT "/path/to/boost/boost\_1\_53\_0"}
+{\alltt # set(BOOST_LIBRARYDIR "/path/to/boost/boost\_1\_53\_0/bin/lib"}
+{\alltt # set(BOOST_USE_STATIC_LIBS ON)}
+{\alltt # set(BOOST_DEBUG ON)} (Optional, if you want to see debug output)
+{\alltt # find_package(Boost COMPONENTS system filesystem REQUIRED)}
 \end{itemize}
 
 
@@ -239,6 +242,7 @@ Before continuing with the steps in this section, ensure that you have:
 \item Installed boost (see Section \ref{sec:boost})
 \item Compiled boost's filesystem library (Section \ref{sec:boost})
 \item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\item Installed CMake (see Section \ref{sec:cmake})
 \end{itemize}
 
 \newP
@@ -277,6 +281,7 @@ Before continuing with the steps in this section, ensure that you have:
 \item Installed boost (see Section \ref{sec:boost})
 \item Compiled boost's filesystem library (Section \ref{sec:boost})
 \item Forked/cloned the latest POSSIM codebase from GitHub (Section \ref{sec:github})
+\item Installed CMake (see Section \ref{sec:cmake})
 \end{itemize}
 
 \newP
@@ -318,7 +323,7 @@ Before continuing with the steps in this section, ensure that you have:
 \end{itemize}
 
 \newP
-In linux, CMake is the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
+In linux, CMake is generally the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
 
 \newP
 Next, you need to compile using make.  Simply run:
@@ -354,7 +359,7 @@ Before continuing with the steps in this section, ensure that you have:
 \end{itemize}
 
 \newP
-In Mac, CMake is the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
+In Mac, CMake is generally the best option to create your build files.   Follow the instructions in Sec. \ref{sec:cmake}.
 
 \newP
 Next, you need to compile using make.  Simply run:
@@ -453,8 +458,9 @@ The simulator loop can be found in: \\ \texttt{src/simulator/Simulator.cpp}.
 
 %-------------------------------------------------------------------------------
 \subsection{Configuration}
+\label{sec:config}
 
-Key global simulation parameters are stored in a single object called \texttt{Config}, which maps parameter names to their values.   A full list of frequently used config parameters is available in Appendix \ref{app:configs}, although please note that these are likely to change from version to version.
+Key global simulation parameters are stored in a single object called \texttt{Config}, which maps parameter names to their values.   A full list of frequently used config parameters is available in Appendix \ref{app:config}, although please note that these are likely to change from version to version.
 
 These parameters may be changed via command line options, or in a master xml-based file (the default config can be found in  \texttt{configs/default\_config.xml}.  The Config object may be passed from one object to another, and parameters may be changed on the fly.  Call by reference means that any changes to the global configuration proliferate throughout the simulation;  this was an intentional design decision.
 
@@ -701,7 +707,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 %-------------------------------------------------------------------------------
 \section{Configuration Parameters}
-\label{app:license}
+\label{app:config}
 
 The following is a list of all configuration parameters at time of writing.  For more information on using and setting configuration parameters, see section \ref{sec:config}.
 
