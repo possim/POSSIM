@@ -70,6 +70,8 @@
 \author{}
 \date{}
 
+\hyphenation{MATLAB}
+
 \begin{document}
 \maketitle
 \small
@@ -246,9 +248,10 @@ The following works for getting POSSIM running in Windows XP using Visual Studio
 \item It is assumed you have Visual Studio 2010 (or another version) already installed.  If not, install this first.
 \item Open a terminal and navigate to the directory you cloned POSSIM into
 \item Run cmake to create Visual Studio project files with all relevant compiler and linkage paths included:  \texttt{\$ cmake .}  (Remember to include the period).  You can also use CMake's user interface option for this if you prefer.
-\item If there are any errors with running CMake, ensure these are solved before you open the project in Visual Studio.  See Section \ref{sec:cmake}.
+\item If there are any errors with running CMake, ensure these are solved before you move on to the next step.  See Section \ref{sec:cmake}.
+\item Add the location of your matlab dynamic libraries to the path e.g., \texttt{C:\bs Program Files\bs \ MATLAB\bs R2014a\bs bin\bs win32;} (see \href{http://www.mathworks.com/matlabcentral/answers/100603-how-can-i-compile-a-matlab-engine-application-using-microsoft-visual-studio-9-0-or-10-0}{here}).  To do this:  \texttt{Start -> Right click on Computer -> Properties -> Advanced System Settings -> Environment variables -> System variables -> Open "Path" for editing}.   (Note, if you have multiple versions of MATLAB, make sure the path to the one you want to use is listed before any others).  
 \item Next, open Visual Studio, select \texttt{File -> Open ... -> Project/Solution} and choose the cmake-generated Visual Studio project file.
-\item You have to add a directory to your system's path for matlab to work (see \href{http://www.mathworks.com/matlabcentral/answers/100603-how-can-i-compile-a-matlab-engine-application-using-microsoft-visual-studio-9-0-or-10-0}{here}).  To do this:  \texttt{Start -> Right click on Computer -> Properties -> Advanced System Settings -> Environment variable -> System Variables -> Open "Path" for editing}. Add to the path e.g., \texttt{C:\bs Program Files\bs MATLAB\bs R2014a\bs bin\bs win32;}.  (Note, if you have multiple versions of MATLAB, make sure the path to the one you want to use is listed before any others).  
+\item Set \texttt{possim} as your start up project.
 \item Choose \texttt{Build -> Build Solution}, followed by \texttt{Debug -> Start Debugging}.
 \item As part of the build you may see errors like \texttt{Cannot find or open the PDB file}; these are related to debugging settings and can be safely ignored (see \href{http://stackoverflow.com/questions/12954821/cannot-find-or-open-the-pdb-file-in-visual-studio-c-2010}{here}).
 \end{itemize}

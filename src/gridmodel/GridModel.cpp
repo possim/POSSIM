@@ -280,7 +280,7 @@ void GridModel::displayFullSummary(DateTime currTime) {
 
 void GridModel::displayLoadSummary(DateTime currTime) {
     double hhSum=0, hhPF=0, hhMin=100000, hhMax=0;
-    double evSum=0, evPF=0, evMin=100000, evMax=0;
+    double evSum=0, evPF=0, evMin=100000, evMax=0, evAvgLoad, evAvgPF;
     int evHome=0, evCharging=0;
     double currPower;
 
@@ -314,15 +314,22 @@ void GridModel::displayLoadSummary(DateTime currTime) {
 
     
     // if no EVs connected, no min found
-    if(evMin == 100000)
+    if(evMin == 100000) {
         evMin = 0;
+        evAvgLoad = 0;
+        evAvgPF = 0;
+    }
+    else {
+        evAvgLoad = evSum/evCharging;
+        evAvgPF = evPF/evCharging;
+    }
     
     std::cout << "Vehicle Loads" << std::endl
               << "  Total Loads   : " << std::setw(4) << std::right << std::setiosflags(std::ios::fixed) << evCharging << std::endl
-              << "  Avg Load      : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evSum/evCharging << " W"  << std::endl
+              << "  Avg Load      : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evAvgLoad << " W"  << std::endl
               << "  Max           : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evMax << " W"  << std::endl
               << "  Min           : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evMin << " W"  << std::endl
-              << "  Avg PF        : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evPF/evCharging << std::endl;
+              << "  Avg PF        : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << evAvgPF << std::endl;
     std::cout << "Household Loads" << std::endl
               << "  Total Loads   : " << std::setw(4) << std::right << std::setiosflags(std::ios::fixed) << households.size() << std::endl
               << "  Avg Load      : " << std::setw(7) << std::right << std::setiosflags(std::ios::fixed) << std::setprecision(2) << hhSum/households.size() << " W"  << std::endl
