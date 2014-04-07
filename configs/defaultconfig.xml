@@ -12,6 +12,7 @@
 
 <demanddatadir      flag="f_de" value="data/demand/examples/phasespecific/" />
 <demandmodel        flag="M"    value="phasespecific" />
+<housedemandalloc   flag="hda"  value="x.csv" />
 <demandrandom_int   flag="dri"  value="0,0,0,0" />
 
 <evpenetration      flag="p"    value="50" />

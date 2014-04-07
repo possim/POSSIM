@@ -47,6 +47,7 @@ HouseholdDemandModel::HouseholdDemandModel(Config* config) {
     modelType = config->getConfigVar("demandmodel");
     demandDataDir = config->getConfigVar("demanddatadir");
     randomDistribution = config->getRandomParams("demandrandom_int");
+    houseProfileAllocFile = config->getConfigVar("housedemandalloc");
 }
 
 HouseholdDemandModel::~HouseholdDemandModel() {
