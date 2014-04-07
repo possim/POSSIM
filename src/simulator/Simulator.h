@@ -80,10 +80,13 @@ private:
       * special network components of any other sort. */
     GridModel gridModel;
     
-    /** This will be moved to Household soon. */
+    /** Model of household demand.  Used during initialisation to assign
+      * demand profiles to each household. */
     HouseholdDemandModel householdDemandModel;
     
-    /** This will be moved to Vehicle soon */
+    /** Model traffic.  Used during initialisation to assign travel profiles
+      * to all vehicles;  used throughout simulation to update vehicle
+      * locations and travel distances. */
     TrafficModel trafficModel;
     
     /** Maintains the changing electricity spot price using specifed data files */
