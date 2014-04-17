@@ -100,6 +100,15 @@ public:
     /** Phase unbalance at this house ( |V_-| / |V_+|), as a percentage */
     double V_unbalance;
     
+    /** Zero sequence voltage magnitude */
+    double V_0;
+    
+    /** Positive sequence voltage magnitude */
+    double V_1;
+    
+    /** Negative sequence voltage magnitude */
+    double V_2;
+    
     /** True if the Household has been assigned a parent pole (for tree building) */
     bool hasParent;
     
@@ -109,13 +118,13 @@ public:
     /** The total impedance*/
     Impedance totalImpedanceToTX;
     
-    /** Active power demand */
+    /** Active power demand (W) */
     double activePower;
     
-    /** Inductive power demand */
+    /** Inductive power demand (W) */
     double inductivePower;
     
-    /** Capacitive power demand */
+    /** Capacitive power demand (W) */
     double capacitivePower;
     
     

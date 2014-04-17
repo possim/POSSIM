@@ -136,6 +136,8 @@ public:
 
 namespace power {
     double calculatePhaseUnbalance(Phasor ab, Phasor bc, Phasor ca);
+    void symmetricalComponents(Phasor vAB, Phasor vBC, Phasor vCA, 
+                               Phasor &v0, Phasor &v1, Phasor &v2);
 }
     
 #endif	/* POWER_H */

@@ -37,6 +37,8 @@ POSSIBILITY OF SUCH DAMAGE.
 ChargingDistributed::ChargingDistributed(Config* config, GridModel &gridModel, DateTime datetime) :
         ChargingBaseClass(config, gridModel) 
 {
+    name = "distributed";
+           
     maxChargeRate = config->getDouble("maxchargerate");
     minVoltage = config->getInt("minvoltage");
     simInterval = config->getInt("simulationinterval");

@@ -36,7 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 ChargingBaseClass::ChargingBaseClass(Config* config, GridModel gridModel) {
-    std::cout << " - Using " << config->getString("chargingalgorithm") << " charging algorithm" << std::endl;
+    std::cout << " - Using charging algorithm: " << name << std::endl;
 }
 
 ChargingBaseClass::~ChargingBaseClass() {

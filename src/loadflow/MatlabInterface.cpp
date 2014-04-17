@@ -709,6 +709,7 @@ void MatlabInterface::getOutputs(std::string logDir,
 
     // Read in backbone V (unbalance)
     Phasor V_ab, V_bc, V_ca;
+    Phasor v0, v1, v2;
     double a, p, unbalance;
     Household* currHouse;
     FeederPole currPole;
@@ -733,6 +734,12 @@ void MatlabInterface::getOutputs(std::string logDir,
         V_ca.set(a,p);
         
         unbalance = power::calculatePhaseUnbalance(V_ab, V_bc, V_ca);
+        
+        //  Calculate symmetrical components.
+        //  Could really turn above line (unbalance) and below line (symmetrical 
+        //  components) into single function but may be useful to keep them separate.
+        power::symmetricalComponents(V_ab, V_bc, V_ca, v0, v1, v2);
+        
         it->second->voltageUnbalance = unbalance;
 
         // Set individual houses' unbalance
@@ -742,8 +749,15 @@ void MatlabInterface::getOutputs(std::string logDir,
             // No unbalance at root (transformer as a voltage source assumption)
             if(currHouse->hasParent && currHouse->parentPoleName != "Root") {
                 currPole = *(poles[currHouse->parentPoleName]);
-                if(currPole.parentLineSegment->name == it->first)
+                if(currPole.parentLineSegment->name == it->first) {
                     currHouse->V_unbalance = unbalance;
+                    currHouse->V_0 = v0.getAmplitude();
+                    currHouse->V_1 = v1.getAmplitude();
+                    currHouse->V_2 = v2.getAmplitude();   
+                    //std::cout << currHouse->name << " has phase " << currHouse->phase 
+                    //        << " v0 " << currHouse->V_0 << " v1 " << currHouse->V_1 
+                    //        << " v2 " << currHouse->V_2 << std::endl;
+                }
             }
         }
     }

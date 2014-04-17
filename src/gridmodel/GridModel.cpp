@@ -143,7 +143,7 @@ void GridModel::addVehicles(Config* config) {
         }
         evPenetration = 100*numEVs/households.size();
         config->setConfigVar("evpenetration", utility::int2string(evPenetration));
-        std::cout << " - Added " << numEVs << " vehicles (" << evPenetration << "%) ...";
+        std::cout << " - Added " << numEVs << " vehicles (" << evPenetration << "%) ..." << std::endl;
     }
 
     // Create vector of EVs and add to grid model
@@ -342,10 +342,13 @@ void GridModel::displayLoadSummary(DateTime currTime) {
 void GridModel::runValleyLoadFlow(DateTime datetime) {
     boost::posix_time::ptime timerFull, timer;
     
-    // Choose valley time
+    // Choose valley time 4am on the chosen date
     DateTime valleytime = datetime;
     valleytime.hour = 4;
     valleytime.minute = 0;
+    
+    for(std::map<std::string,Household*>::iterator it = households.begin(); it!= households.end(); ++it)
+        it->second->setLoadValues(valleytime);
 
     utility::startTimer(timerFull);
     utility::startTimer(timer);
@@ -393,7 +396,7 @@ void GridModel::runValleyLoadFlow(DateTime datetime) {
 }
 
 
-void GridModel::runLoadFlow(DateTime currTime) {
+void GridModel::runLoadFlow() {
     boost::posix_time::ptime timerFull, timer;
     
     utility::startTimer(timerFull);

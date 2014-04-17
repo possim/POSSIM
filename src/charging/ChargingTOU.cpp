@@ -36,6 +36,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingTOU::ChargingTOU(Config* config, GridModel gridModel) :
 ChargingBaseClass(config, gridModel){
+    name = "TOU";
+    
     maxChargeRate = config->getDouble("maxchargerate");
     chargeStart = 23;
     chargeEnd = 6;

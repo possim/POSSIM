@@ -40,6 +40,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 #include <vector>
 #include <map>
+#include <string>
 
 #include "../gridmodel/GridModel.h"
 #include "../simulator/Config.h"
@@ -51,6 +52,9 @@ POSSIBILITY OF SUCH DAMAGE.
   * code, polymorphism is used.  This is the base class that any charging
   * algorithm must inherit. */
 class ChargingBaseClass {
+
+protected:
+    std::string name;
 
 public:
     /** Constructor */

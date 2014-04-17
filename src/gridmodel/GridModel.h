@@ -163,7 +163,7 @@ public:
     void runValleyLoadFlow(DateTime datetime);  
     
     /** Run full load flow using specified load flow interface. */
-    void runLoadFlow(DateTime currTime);
+    void runLoadFlow();
     
     /** Return available distribution transformer capacity after household
       * loads are accounted for (required for EqualShare charging algorithm) */

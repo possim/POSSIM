@@ -35,6 +35,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingEqualShares::ChargingEqualShares(Config* config, GridModel gridModel) :
 ChargingBaseClass(config, gridModel){
+    name = "equalshares";
+    
     maxChargeRate = config->getDouble("maxchargerate");
 }
 

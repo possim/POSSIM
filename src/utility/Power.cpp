@@ -172,3 +172,30 @@ double power::calculatePhaseUnbalance(Phasor vAB, Phasor vBC, Phasor vCA) {
               
     return (vMinus.getAmplitude() / vPlus.getAmplitude() * 100);
 }
+
+void power::symmetricalComponents(Phasor vAB, Phasor vBC, Phasor vCA, Phasor &v0, Phasor &v1, Phasor &v2) {
+    Phasor a, a2;
+    a.set(1,120);
+    a2.set(1,240);
+    
+    v0 = vAB.plus(vBC.plus(vCA)).timesConst(double(1)/3);
+    v1 = vAB.plus(vBC.times(a).plus(vCA.times(a2))).timesConst(double(1)/3);
+    v2 = vAB.plus(vBC.times(a2).plus(vCA.times(a))).timesConst(double(1)/3);
+    
+    
+    // Optional output for debug
+    /*std::cout << "\n------------------------"
+              << "\n         Vab: " << vAB.toString()
+              << "\n         Vbc: " << vBC.toString()
+              << "\n         Vca: " << vCA.toString()
+              << "\n       Vca*a: " << vCA.times(a).toString()
+              << "\n      Vbc*a2: " << vBC.times(a2).toString()
+              << "\nVbc*a2+Vca*a: " << (vBC.times(a2).plus(vCA.times(a))).toString()
+              << "\n          V0: " << v0.toString()
+              << "\n          V1: " << v1.toString()
+              << "\n          V2: " << v2.toString()
+              << "\n________________________________________________________\n"
+              << std::endl;*/
+
+}
+
