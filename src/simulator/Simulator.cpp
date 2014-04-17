@@ -202,8 +202,8 @@ void Simulator::run() {
             gridModel.runLoadFlow();
             for(int i=0; i<vehicleIDs.size(); i+=chargeRateGroupSize) {
                 for(int j=i; j<std::min((int)gridModel.vehicles.size(), (int)(i+chargeRateGroupSize)); j++) {
-                    charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(i));
-                    gridModel.generateOneVehicleLoad(vehicleIDs.at(i));
+                    charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(j));
+                    gridModel.generateOneVehicleLoad(vehicleIDs.at(j));
                 }
                 gridModel.runLoadFlow();
             }

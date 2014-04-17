@@ -167,8 +167,10 @@ void GridModel::addVehicles(Config* config) {
 
 void GridModel::updateVehicleBatteries() {
     for(std::map<std::string,Vehicle*>::iterator it = vehicles.begin(); it != vehicles.end(); ++it) {
-        if(it->second->distanceDriven > 0)
+        if(it->second->distanceDriven > 0) {
             it->second->dischargeBattery();
+            it->second->initSOC = it->second->battery.SOC;
+        }
         else if(it->second->isConnected && it->second->isCharging)
             it->second->rechargeBattery();
         else 
