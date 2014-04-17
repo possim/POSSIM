@@ -119,6 +119,8 @@ Simulator::Simulator(Config* configIn):
         case 10:        charger = new ChargingWplug(config, gridModel, startTime);
                         break;
         case 11:        charger = new ChargingWplug2(config, gridModel, startTime);
+                        break;
+        case 12:        charger = new ChargingGameMechanism(config, gridModel, startTime, loadflow, log.getDir());
                         break;*/
         default:        charger = new ChargingUncontrolled(config, gridModel);
                         break;
@@ -184,26 +186,26 @@ void Simulator::run() {
         if(chargeRateUpdate == "batch") {
             charger->setAllChargeRates(currTime, gridModel);
             gridModel.generateAllVehicleLoads();
-            gridModel.runLoadFlow(currTime);
+            gridModel.runLoadFlow();
         }
         
         else if(chargeRateUpdate == "individual") {
-            gridModel.runLoadFlow(currTime);
+            gridModel.runLoadFlow();
             for(int i=0; i<vehicleIDs.size(); i++) {
                 charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(i));
                 gridModel.generateOneVehicleLoad(vehicleIDs.at(i));
-                gridModel.runLoadFlow(currTime);
+                gridModel.runLoadFlow();
             }
         }
         
         else {  // "grouped"
-            gridModel.runLoadFlow(currTime);
+            gridModel.runLoadFlow();
             for(int i=0; i<vehicleIDs.size(); i+=chargeRateGroupSize) {
                 for(int j=i; j<std::min((int)gridModel.vehicles.size(), (int)(i+chargeRateGroupSize)); j++) {
                     charger->setOneChargeRate(currTime, gridModel, vehicleIDs.at(i));
                     gridModel.generateOneVehicleLoad(vehicleIDs.at(i));
                 }
-                gridModel.runLoadFlow(currTime);
+                gridModel.runLoadFlow();
             }
         }
 

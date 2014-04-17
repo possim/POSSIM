@@ -150,6 +150,11 @@ void Config::correctValues() {
             value.compare("wplug2") == 0 ||
             value.compare("11") == 0)
                 setConfigVar("chargingalgorithm", "wplug2");
+    else if(value.compare("gamemechanism") == 0 ||
+            value.compare("GAMEMECHANISM") == 0 ||
+            value.compare("GameMechanism") == 0 ||
+            value.compare("12") == 0)
+                setConfigVar("chargingalgorithm", "gamemechanism");
 }
 
 // Return string value of a given config variable.
@@ -227,6 +232,8 @@ int Config::getChargingAlg() {
         return 10;
     else if(value.compare("wplug2") == 0)
         return 11;
+    else if(value.compare("gamemechanism") == 0)
+        return 12;
     
     return 0;
 }

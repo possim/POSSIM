@@ -36,8 +36,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ChargingUncontrolled::ChargingUncontrolled(Config* config, GridModel gridModel) :
 ChargingBaseClass(config, gridModel){
-    name = "uncontrolled";
-    
     maxChargeRate = config->getDouble("maxchargerate");
 }
 
